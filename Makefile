@@ -13,7 +13,7 @@ TARGET ?= debug
 OUT ?= tejoy
 
 CXX ?= g++
-CXXFLAGS += -Wall -Wextra -std=c++17 -g -fdiagnostics-color -Werror
+CXXFLAGS += -Wall -Wextra -std=c++20 -g -fdiagnostics-color -Werror
 LDFLAGS +=
 
 PKG_CONFIG ?= pkg-config
