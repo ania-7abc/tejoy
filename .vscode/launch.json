@@ -5,11 +5,12 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Debugging tejoy",
+            "name": "Debug tejoy",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/bin/debug/tejoy",
+            "program": "${workspaceFolder}/build/bin/tejoy_demo",
             "args": [],
+            "stopAtEntry": false,
             "cwd": "${fileDirname}",
             "environment": [],
             "externalConsole": false,
@@ -26,7 +27,7 @@
                     "ignoreFailures": true
                 }
             ],
-            "preLaunchTask": "make-debug"
+            "preLaunchTask": "CMake: build"
         }
     ]
 }

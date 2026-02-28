@@ -1,31 +1,12 @@
 {
-    "version": "2.0.0",
-    "tasks": [
-        {
-            "label": "make-debug",
-            "type": "shell",
-            "command": "make",
-            "args": [
-                "TARGET=debug"
-            ],
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            },
-            "presentation": {
-                "reveal": "always",
-                "panel": "shared",
-                "clear": true,
-                "echo": true,
-                "showReuseMessage": true,
-                "focus": false
-            },
-            "problemMatcher": [
-                "$gcc"
-            ],
-            "options": {
-                "cwd": "${workspaceFolder}"
-            }
-        }
-    ]
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "cmake",
+			"label": "CMake: build",
+			"command": "build",
+			"group": "build",
+			"problemMatcher": []
+		}
+	]
 }
