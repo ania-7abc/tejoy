@@ -1,6 +1,6 @@
-#include <eventbus/event_bus.hpp>
+#include <event_system/event_bus.hpp>
 
-namespace eventbus
+namespace event_system
 {
 
     EventBus::EventBus(boost::asio::io_context &io) : io_(io) {}
@@ -46,4 +46,4 @@ namespace eventbus
                            { return s.weak_subscriber.expired(); });
     }
 
-} // namespace eventbus
+} // namespace event_system

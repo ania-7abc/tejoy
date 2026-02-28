@@ -6,9 +6,11 @@
 #include <list>
 #include <mutex>
 #include <boost/asio.hpp>
-#include <eventbus/event.hpp>
+#include <event_system/event.hpp>
 
-namespace eventbus
+class Subscriber;
+
+namespace event_system
 {
 
     class EventBus
@@ -53,4 +55,4 @@ namespace eventbus
         std::mutex mutex_;
     };
 
-} // namespace eventbus
+} // namespace event_system

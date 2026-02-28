@@ -1,8 +1,8 @@
 // subscriber.hpp
 #pragma once
-#include <eventbus/event_bus.hpp>
+#include <event_system/event_bus.hpp>
 
-namespace eventbus
+namespace event_system
 {
 
     class Subscriber : public std::enable_shared_from_this<Subscriber>
@@ -22,11 +22,16 @@ namespace eventbus
             bus_.subscribe(weak_from_this(), handler, senderFilter);
         }
 
-        EventBus &bus() { return bus_; }
-        const EventBus &bus() const { return bus_; }
+        template <typename EventType, typename... Args>
+        void publish(Args &&...args)
+        {
+            auto event = std::make_shared<EventType>(std::forward<Args>(args)...);
+            event->set_sender(this);
+            bus_.publish(event);
+        }
 
     private:
         EventBus &bus_;
     };
 
-} // namespace eventbus
+} // namespace event_system
