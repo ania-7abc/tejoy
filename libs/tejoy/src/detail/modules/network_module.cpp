@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// network_module
+// network_module.cpp
 #include <tejoy/detail/modules/network_module.hpp>
 
 namespace tejoy::detail::modules

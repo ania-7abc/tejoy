@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// event_system.cpp
+// event_bus.cpp
 #include <event_system/event_bus.hpp>
 #include <typeindex>
 #include <iostream>
