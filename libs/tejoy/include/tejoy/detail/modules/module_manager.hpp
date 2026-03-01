@@ -26,7 +26,7 @@
 #include <memory>
 #include <unordered_map>
 #include <typeindex>
-#include "module.hpp"
+#include <tejoy/detail/modules/module.hpp>
 
 namespace tejoy::detail::modules
 {
