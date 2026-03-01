@@ -22,17 +22,19 @@
 
 // network_module.cpp
 #include <tejoy/detail/modules/network_module.hpp>
+#include <tejoy/events/data_request.hpp>
 
 namespace tejoy::detail::modules
 {
+
     NetworkModule::NetworkModule(event_system::EventBus &bus, uint16_t port) : Module(bus), udp_(port) {}
 
     void NetworkModule::on_start()
     {
         udp_.start([this](auto &message, auto &ip, auto port)
-                   { onNetworkMessage(message, ip, port); });
+                    { onNetworkMessage(message, ip, port); });
         subscribe<tejoy::events::detail::SendPacketRequest>([this](auto &e)
-                                       { onNeedSendPacket(e); });
+                                                            { onSendPacketRequest(e); });
     }
 
     void NetworkModule::on_stop()
@@ -40,7 +42,7 @@ namespace tejoy::detail::modules
         udp_.stop();
     }
 
-    void NetworkModule::onNeedSendPacket(const tejoy::events::detail::SendPacketRequest &e)
+    void NetworkModule::onSendPacketRequest(const tejoy::events::detail::SendPacketRequest &e)
     {
         udp_.send(e.message, e.ip, e.port);
     }
@@ -49,4 +51,4 @@ namespace tejoy::detail::modules
     {
         publish<tejoy::events::detail::PacketReceived>(message, ip, port);
     }
-} // namespace tejoy::detail::modules::NetworkModule
+} // namespace tejoy::detail::modules
