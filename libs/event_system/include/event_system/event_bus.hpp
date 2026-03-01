@@ -1,17 +1,17 @@
 // MIT License
-// 
+//
 // Copyright (c) 2026 Anya Baykina Dmitrievna
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -26,22 +26,25 @@
 #include <functional>
 #include <string>
 #include <map>
+#include <thread>
 #include <list>
 #include <mutex>
 #include <boost/asio.hpp>
+#include <typeindex>
 #include <event_system/event.hpp>
-
-class Subscriber;
 
 namespace event_system
 {
+
+    class Subscriber;
 
     class EventBus
     {
     public:
         using EventPtr = std::shared_ptr<const Event>;
 
-        explicit EventBus(boost::asio::io_context &io);
+        explicit EventBus();
+        ~EventBus();
 
         template <typename EventType, typename T>
         void subscribe(std::weak_ptr<T> subscriber,
@@ -50,7 +53,7 @@ namespace event_system
         {
             static_assert(std::is_base_of_v<Event, EventType>,
                           "EventType must derive from Event");
-            subscribe_impl(EventType::static_type(), [handler = std::move(handler)](EventPtr e)
+            subscribe_impl(std::type_index(typeid(EventType)), [handler = std::move(handler)](EventPtr e)
                            {
                              if (auto concrete = dynamic_cast<const EventType*>(e.get()))
                                handler(*concrete); }, sender_filter, subscriber);
@@ -68,14 +71,17 @@ namespace event_system
             std::weak_ptr<void> weak_subscriber;
         };
 
-        void subscribe_impl(const std::string &eventType,
+        void subscribe_impl(const std::type_index &eventType,
                             std::function<void(EventPtr)> handler,
                             Subscriber *sender_filter,
                             std::weak_ptr<void> weak_subscriber);
 
-        boost::asio::io_context &io_;
-        std::map<std::string, std::list<Subscription>> subscriptions_;
+        std::map<std::type_index, std::list<Subscription>> subscriptions_;
         std::mutex mutex_;
+
+        boost::asio::io_context io_;
+        boost::asio::executor_work_guard<boost::asio::io_context::executor_type> work_guard_;
+        std::thread thread_;
     };
 
 } // namespace event_system
