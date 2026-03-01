@@ -4,8 +4,8 @@
 #include <csignal>
 
 #include <tejoy/node.hpp>
-#include <tejoy/events/detail/packet_events.hpp>
 #include <tejoy/events/data_request.hpp>
+#include <tejoy/events/updates.hpp>
 #include "config.hpp"
 #include <future>
 
@@ -26,21 +26,16 @@ int main()
 
   tejoy::Node node("data", PORT);
 
-  auto sub1 = node.get_event_bus().make_subscriber<tejoy::events::detail::PacketReceived>(
+  auto sub = node.get_event_bus().make_subscriber<tejoy::events::MessageUpdateReceived>(
       [](auto &e)
       {
-        std::cout << "Packet with text \"" << e.message << "\" from " << e.ip << ":" << e.port << std::endl;
-      });
-  auto sub2 = node.get_event_bus().make_subscriber<tejoy::events::detail::UpdateReceived>(
-      [](auto &e)
-      {
-        std::cout << "Packet with text \"" << e.update << "\" from " << e.from.ip << ":" << e.from.port << std::endl;
+        std::cout << "Packet with text \"" << e.text << "\" from " << e.from.ip << ":" << e.from.port << std::endl;
       });
   std::promise<tejoy::User> promise;
   std::future<tejoy::User> fut = promise.get_future();
   node.get_event_bus().publish<tejoy::events::RequestI>(nullptr, promise);
   tejoy::User i = fut.get();
-  node.get_event_bus().publish<tejoy::events::detail::SendUpdateRequest>(nullptr, nlohmann::json{{"text", "Hello, World!"}} /* update */, i /* to */);
+  node.get_event_bus().publish<tejoy::events::detail::SendUpdateRequest>(nullptr, nlohmann::json{{"type", "message"}, {"data", {{"text", "Hello, World!"}}}}, i);
 
   while (!need_stop)
   {
