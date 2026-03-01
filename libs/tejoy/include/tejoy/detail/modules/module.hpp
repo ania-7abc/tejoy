@@ -25,14 +25,14 @@
 
 #include <event_system/subscriber.hpp>
 
-namespace tejoy {
+namespace tejoy::detail::modules {
 
 class Module : public event_system::Subscriber {
 public:
     using Subscriber::Subscriber;
     virtual ~Module() = default;
-    virtual void onStart() {}
-    virtual void onStop() {}
+    virtual void on_start() {}
+    virtual void on_stop() {}
 };
 
 } // namespace tejoy

@@ -37,7 +37,7 @@ namespace tejoy::detail::modules
         explicit ModuleManager(event_system::EventBus &bus);
 
         template <typename T, typename... Args>
-        T &createModule(Args &&...args)
+        T &create_module(Args &&...args)
         {
             static_assert(std::is_base_of_v<Module, T>, "T must be derived from Module");
             auto module = std::make_shared<T>(bus_, std::forward<Args>(args)...);
@@ -49,7 +49,7 @@ namespace tejoy::detail::modules
         }
 
         template <typename T>
-        T &getModule()
+        T &get_module()
         {
             auto it = modules_.find(std::type_index(typeid(T)));
             if (it == modules_.end())
@@ -58,30 +58,30 @@ namespace tejoy::detail::modules
         }
 
         template <typename T>
-        void restartModule()
+        void restart_module()
         {
-            auto &mod = getModule<T>();
-            mod.onStop();
-            mod.onStart();
+            auto &mod = get_module<T>();
+            mod.on_stop();
+            mod.on_start();
         }
 
         template <typename T, typename... Args>
-        void recreateModule(Args &&...args)
+        void recreate_module(Args &&...args)
         {
             auto it = modules_.find(std::type_index(typeid(T)));
             if (it != modules_.end())
             {
-                it->second->onStop();
+                it->second->on_stop();
                 modules_.erase(it);
             }
-            createModule<T>(std::forward<Args>(args)...);
+            create_module<T>(std::forward<Args>(args)...);
         }
 
-        void startAll();
-        void stopAll();
+        void start_all();
+        void stop_all();
 
     private:
-        const event_system::EventBus &bus_;
+        event_system::EventBus &bus_;
         std::unordered_map<std::type_index, std::shared_ptr<Module>> modules_;
     };
 

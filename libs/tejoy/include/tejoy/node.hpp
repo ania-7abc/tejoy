@@ -31,6 +31,7 @@
 #include <udp.hpp>
 #include <storage.hpp>
 #include <event_system/event_bus.hpp>
+#include <tejoy/detail/modules/module_manager.hpp>
 
 namespace tejoy
 {
@@ -40,15 +41,13 @@ namespace tejoy
     {
     private:
         Storage storage_;
-        UDP udp_;
         EventBus bus_;
-
-        boost::asio::io_context &io_;
+        detail::modules::ModuleManager module_manager_;
     public:
-        Node(boost::asio::io_context &io_, std::string data_path, uint16_t port = 5768);
+        Node(std::string data_path, uint16_t port = 5768);
         ~Node();
 
-        const EventBus &get_event_bus() const;
+        EventBus &get_event_bus();
     };
 
 } // namespace tejoy

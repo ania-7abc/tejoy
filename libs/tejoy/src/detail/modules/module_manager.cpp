@@ -21,23 +21,23 @@
 // SOFTWARE.
 
 // module_manager.cpp
-#include "module_manager.hpp"
+#include <tejoy/detail/modules/module_manager.hpp>
 
 namespace tejoy::detail::modules
 {
 
-    ModuleManager::ModuleManager(const event_system::EventBus &bus) : bus_(bus) {}
+    ModuleManager::ModuleManager(event_system::EventBus &bus) : bus_(bus) {}
 
-    void ModuleManager::startAll()
+    void ModuleManager::start_all()
     {
         for (auto &[_, mod] : modules_)
-            mod->onStart();
+            mod->on_start();
     }
 
-    void ModuleManager::stopAll()
+    void ModuleManager::stop_all()
     {
-        for (auto it = modules_.rbegin(); it != modules_.rend(); ++it)
-            it->second->onStop();
+        for (auto &[_, mod] : modules_)
+            mod->on_stop();
     }
 
 } // namespace tejoy

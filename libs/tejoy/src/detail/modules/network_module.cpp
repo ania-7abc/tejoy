@@ -20,30 +20,33 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// node.cpp
-#include <tejoy/node.hpp>
+// network_module
 #include <tejoy/detail/modules/network_module.hpp>
 
-namespace tejoy
+namespace tejoy::detail::modules
 {
-    Node::Node(std::string data_path, uint16_t port) : storage_(data_path),
-                                                       bus_(),
-                                                       module_manager_(bus_)
+    NetworkModule::NetworkModule(event_system::EventBus &bus, uint16_t port) : Module(bus), udp_(port) {}
+
+    void NetworkModule::on_start()
     {
-        storage_.load();
-        module_manager_.create_module<detail::modules::NetworkModule>(port);
-        module_manager_.start_all();
+        udp_.start([this](auto &message, auto &ip, auto port)
+                   { onNetworkMessage(message, ip, port); });
+        subscribe<NeedSendPacketEvent>([this](auto &e)
+                                       { onNeedSendPacket(e); });
     }
 
-    Node::~Node()
+    void NetworkModule::on_stop()
     {
-        module_manager_.stop_all();
-        storage_.save();
+        udp_.stop();
     }
 
-    EventBus &Node::get_event_bus()
+    void NetworkModule::onNeedSendPacket(const NeedSendPacketEvent &e)
     {
-        return bus_;
+        udp_.send(e.message, e.ip, e.port);
     }
 
-} // namespace tejoy
+    void NetworkModule::onNetworkMessage(const std::string &message, const std::string &ip, uint16_t port)
+    {
+        publish<PacketReceivedEvent>(message, ip, port);
+    }
+} // namespace tejoy::detail::modules::NetworkModule
