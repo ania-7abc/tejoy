@@ -2,10 +2,6 @@
 #include <iostream>
 #include <atomic>
 #include <csignal>
-#include <queue>
-#include <unistd.h>
-
-#include <boost/asio.hpp>
 
 #include <tejoy/node.hpp>
 #include <tejoy/events/detail/packet_events.hpp>
@@ -22,20 +18,6 @@ extern "C" void handle_signal(int signal)
   }
 }
 
-class c : public event_system::Subscriber
-{
-public:
-  c(event_system::EventBus &bus) : Subscriber(bus)
-  {
-  }
-  void on_start()
-  {
-    subscribe<PacketReceivedEvent>([this](const PacketReceivedEvent &e)
-                                   { std::cout << e.message << " from " << e.ip << ":" << e.port << std::endl; });
-    publish<NeedSendPacketEvent>("message", "127.0.0.1", PORT);
-  }
-};
-
 int main()
 {
   std::signal(SIGINT, handle_signal);
@@ -43,10 +25,9 @@ int main()
 
   tejoy::Node node("data", PORT);
 
-  sleep(1);
-
-  auto cl = std::make_shared<c>(node.get_event_bus());
-  cl->on_start();
+  auto sub = node.get_event_bus().make_subscriber<PacketReceivedEvent>([](const PacketReceivedEvent &e)
+                                                            { std::cout << "Packet with text \"" << e.message << "\" from " << e.ip << ":" << e.port << std::endl; });
+  node.get_event_bus().publish<NeedSendPacketEvent>(nullptr, "Hello, World!", "127.0.0.1", PORT);
 
   while (!need_stop)
   {
