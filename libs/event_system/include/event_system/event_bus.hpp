@@ -24,7 +24,6 @@
 #pragma once
 #include <memory>
 #include <functional>
-#include <string>
 #include <map>
 #include <thread>
 #include <list>
@@ -61,12 +60,7 @@ namespace event_system
 
         template <typename EventType>
         auto make_subscriber(std::function<void(const EventType &)> callback,
-                             Subscriber *sender_filter = nullptr)
-        {
-            static_assert(std::is_base_of_v<Event, EventType>,
-                          "EventType must derive from Event");
-            return std::make_shared<CallbackSubscriber<EventType>>(*this, std::move(callback), sender_filter);
-        }
+                             Subscriber *sender_filter = nullptr);
 
         template <typename EventType, typename... Args>
         void publish(Subscriber *sender, Args &&...args)
@@ -84,19 +78,6 @@ namespace event_system
         void cleanup();
 
     private:
-        template <typename EventType>
-        class CallbackSubscriber : public Subscriber
-        {
-        public:
-            CallbackSubscriber(EventBus &bus, std::function<void(const EventType &)> callback, Subscriber *sender_filter = nullptr)
-                : Subscriber(bus)
-            {
-                static_assert(std::is_base_of_v<Event, EventType>,
-                              "EventType must derive from Event");
-                subscribe<EventType>(std::move(callback), sender_filter);
-            }
-        };
-
         struct Subscription
         {
             std::function<void(EventPtr)> handler;
@@ -116,5 +97,21 @@ namespace event_system
         boost::asio::executor_work_guard<boost::asio::io_context::executor_type> work_guard_;
         std::thread thread_;
     };
+
+} // namespace event_system
+
+#include <event_system/subscriber.hpp>
+
+namespace event_system
+{
+    template <typename EventType>
+    auto EventBus::make_subscriber(std::function<void(const EventType &)> callback,
+                                   Subscriber *sender_filter)
+    {
+        static_assert(std::is_base_of_v<Event, EventType>, "EventType must derive from Event");
+        auto sub = std::make_shared<Subscriber>(*this);
+        sub->subscribe<EventType>(std::move(callback), sender_filter);
+        return sub;
+    }
 
 } // namespace event_system

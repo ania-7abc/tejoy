@@ -22,13 +22,18 @@
 
 // subscriber.hpp
 #pragma once
-#include <event_system/event_bus.hpp>
+#include <memory>
+#include <functional>
 
 namespace event_system
 {
 
+    class EventBus;
+
     class Subscriber : public std::enable_shared_from_this<Subscriber>
     {
+        friend class EventBus;
+
     public:
         explicit Subscriber(EventBus &bus) : bus_(bus) {}
         virtual ~Subscriber() = default;
@@ -39,24 +44,35 @@ namespace event_system
     protected:
         template <typename EventType>
         void subscribe(std::function<void(const EventType &)> handler,
-                       Subscriber *senderFilter = nullptr)
-        {
-            static_assert(std::is_base_of_v<Event, EventType>,
-                          "EventType must derive from Event");
-
-            bus_.subscribe(weak_from_this(), handler, senderFilter);
-        }
+                       Subscriber *senderFilter = nullptr);
 
         template <typename EventType, typename... Args>
-        void publish(Args &&...args)
-        {
-            static_assert(std::is_base_of_v<Event, EventType>,
-                          "EventType must derive from Event");
-            bus_.publish(args...);
-        }
+        void publish(Args &&...args);
 
     private:
         EventBus &bus_;
     };
+
+} // namespace event_system
+
+#include <event_system/event_bus.hpp>
+
+namespace event_system
+{
+
+    template <typename EventType>
+    void Subscriber::subscribe(std::function<void(const EventType &)> handler,
+                               Subscriber *senderFilter)
+    {
+        bus_.subscribe(weak_from_this(), std::move(handler), senderFilter);
+    }
+
+    template <typename EventType, typename... Args>
+    void Subscriber::publish(Args &&...args)
+    {
+        auto event = std::make_shared<EventType>(std::forward<Args>(args)...);
+        event->set_sender(this);
+        bus_.publish(event);
+    }
 
 } // namespace event_system

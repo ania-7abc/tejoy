@@ -23,7 +23,6 @@
 // event_bus.cpp
 #include <event_system/event_bus.hpp>
 #include <typeindex>
-#include <iostream>
 
 namespace event_system
 {
