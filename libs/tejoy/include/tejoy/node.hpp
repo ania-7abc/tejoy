@@ -29,6 +29,7 @@
 #include <storage.hpp>
 #include <event_system/event_bus.hpp>
 #include <tejoy/detail/modules/module_manager.hpp>
+#include <tejoy/events/data_request.hpp>
 
 namespace tejoy
 {
@@ -40,6 +41,9 @@ namespace tejoy
         Storage storage_;
         EventBus bus_;
         detail::modules::ModuleManager module_manager_;
+        uint16_t port_;
+        std::vector<std::shared_ptr<event_system::Subscriber>> request_data_subs_;
+
     public:
         Node(std::string data_path, uint16_t port = 5768);
         ~Node();

@@ -23,15 +23,27 @@
 // node.cpp
 #include <tejoy/node.hpp>
 #include <tejoy/detail/modules/network_module.hpp>
+#include <tejoy/detail/modules/update_manager_module.hpp>
 
 namespace tejoy
 {
     Node::Node(std::string data_path, uint16_t port) : storage_(data_path),
                                                        bus_(),
-                                                       module_manager_(bus_)
+                                                       module_manager_(bus_),
+                                                       port_(port),
+                                                       request_data_subs_()
     {
         storage_.load();
-        module_manager_.create_module<detail::modules::NetworkModule>(port);
+
+        request_data_subs_.push_back(bus_.make_subscriber<tejoy::events::RequestPort>(
+            [this](const auto &e)
+            { e.promise.set_value(port_); }));
+        request_data_subs_.push_back(bus_.make_subscriber<tejoy::events::RequestIp>(
+            [this](const auto &e)
+            { e.promise.set_value("127.0.0.1"); }));
+
+        module_manager_.create_module<detail::modules::NetworkModule>(port_);
+        module_manager_.create_module<detail::modules::UpdateManagerModule>(storage_);
         module_manager_.start_all();
     }
 
