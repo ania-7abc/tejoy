@@ -24,6 +24,7 @@
 #include <tejoy/node.hpp>
 #include <tejoy/detail/modules/network_module.hpp>
 #include <tejoy/detail/modules/update_manager_module.hpp>
+#include <tejoy/detail/modules/update_sort_module.hpp>
 
 namespace tejoy
 {
@@ -44,6 +45,7 @@ namespace tejoy
 
         module_manager_.create_module<detail::modules::NetworkModule>(port_);
         module_manager_.create_module<detail::modules::UpdateManagerModule>(storage_);
+        module_manager_.create_module<detail::modules::UpdateSortModule>();
         module_manager_.start_all();
     }
 
