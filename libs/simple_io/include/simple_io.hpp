@@ -29,7 +29,6 @@
 #include <format>
 #include <fstream>
 #include <ios>
-#include <utility>
 #include <iterator>
 
 class SimpleIO

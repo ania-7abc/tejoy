@@ -22,7 +22,6 @@
 
 // event.hpp
 #pragma once
-#include <string>
 
 namespace event_system
 {

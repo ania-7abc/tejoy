@@ -24,7 +24,7 @@
 #pragma once
 #include <secret_box.hpp>
 #include <base64.hpp>
-#include <string.h>
+#include <string>
 #include <nlohmann/json.hpp>
 #include <cstdint>
 

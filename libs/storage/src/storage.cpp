@@ -24,7 +24,6 @@
 #include "storage.hpp"
 #include <simple_io.hpp>
 #include <vector>
-#include <functional>
 
 void Storage::save_impl(const std::string &path, const nlohmann::json &j)
 {

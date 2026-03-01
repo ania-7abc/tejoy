@@ -24,9 +24,9 @@
 #pragma once
 #include <cstdint>
 #include <nlohmann/json.hpp>
-#include <secret_box.hpp>
 #include <event_system/event.hpp>
 #include <tejoy/user.hpp>
+#include <string>
 
 struct PacketReceivedEvent : event_system::Event
 {

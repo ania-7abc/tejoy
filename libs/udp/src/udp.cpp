@@ -30,7 +30,6 @@
 #include <exception>
 #include <string>
 #include <array>
-#include <iostream>
 
 UDP::UDP(uint16_t port)
     : io_(), work_guard_(boost::asio::make_work_guard(io_)), thread_([this]()
