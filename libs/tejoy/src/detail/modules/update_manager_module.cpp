@@ -33,7 +33,7 @@ namespace tejoy::detail::modules
 
     void UpdateManagerModule::on_start()
     {
-        if (!storage_.data.contains("/i"_json_pointer))
+        if (!storage_.data.contains("i"))
         {
             std::promise<uint16_t> promise_port;
             std::future<uint16_t> fut_port = promise_port.get_future();
@@ -44,10 +44,10 @@ namespace tejoy::detail::modules
             publish<tejoy::events::RequestIp>(promise_ip);
 
             i_ = User{.box = SecretBox(), .ip = fut_ip.get(), .port = fut_port.get()};
-            storage_.data["/i"_json_pointer] = i_;
+            storage_.data["i"] = i_;
         }
         else
-            storage_.data.at("/i"_json_pointer).get_to(i_);
+            storage_.data.at("i").get_to(i_);
 
         subscribe<tejoy::events::detail::SendUpdateRequest>([this](auto &e)
                                                             { onSendUpdateRequest(e); });
