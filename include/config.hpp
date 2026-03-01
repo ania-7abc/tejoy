@@ -3,4 +3,4 @@
 
 #define STORAGE_DIR "data"
 
-#define PORT 12345
+#define PORT 5768
