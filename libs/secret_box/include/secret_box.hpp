@@ -36,14 +36,12 @@ private:
   void init_sodium();
 
 public:
-  SecretBox(const SecretBox &) = delete;
-  SecretBox &operator=(const SecretBox &) = delete;
-  SecretBox(SecretBox &&) = default;
-
   SecretBox();
   SecretBox(const std::vector<uint8_t> &public_key);
+  SecretBox(const std::vector<uint8_t> &secret_key, const std::vector<uint8_t> &public_key);
 
   const std::vector<uint8_t> &get_public_key() const;
+  const std::vector<uint8_t> &get_secret_key() const;
   bool has_secret_key() const;
 
   std::vector<uint8_t> encrypt(const std::string &text, const std::vector<uint8_t> &recipient_public_key) const;
