@@ -59,11 +59,44 @@ namespace event_system
                                handler(*concrete); }, sender_filter, subscriber);
         }
 
+        template <typename EventType>
+        auto make_subscriber(std::function<void(const EventType &)> callback,
+                             Subscriber *sender_filter = nullptr)
+        {
+            static_assert(std::is_base_of_v<Event, EventType>,
+                          "EventType must derive from Event");
+            return std::make_shared<CallbackSubscriber<EventType>>(*this, std::move(callback), sender_filter);
+        }
+
+        template <typename EventType, typename... Args>
+        void publish(Subscriber *sender, Args &&...args)
+        {
+            static_assert(std::is_base_of_v<Event, EventType>,
+                          "EventType must derive from Event");
+
+            auto event = std::make_shared<EventType>(std::forward<Args>(args)...);
+            event->set_sender(sender);
+            publish(event);
+        }
+
         void publish(EventPtr event);
 
         void cleanup();
 
     private:
+        template <typename EventType>
+        class CallbackSubscriber : public Subscriber
+        {
+        public:
+            CallbackSubscriber(EventBus &bus, std::function<void(const EventType &)> callback, Subscriber *sender_filter = nullptr)
+                : Subscriber(bus)
+            {
+                static_assert(std::is_base_of_v<Event, EventType>,
+                              "EventType must derive from Event");
+                subscribe<EventType>(std::move(callback), sender_filter);
+            }
+        };
+
         struct Subscription
         {
             std::function<void(EventPtr)> handler;
