@@ -52,7 +52,7 @@ namespace tejoy::events::detail
     struct UpdateReceived : event_system::Event
     {
         UpdateReceived(nlohmann::json update, tejoy::User from)
-            : update(update), from(from) {}
+            : update(std::move(update)), from(std::move(from)) {}
         const nlohmann::json update;
         const tejoy::User from;
     };
@@ -60,7 +60,7 @@ namespace tejoy::events::detail
     struct SendUpdateRequest : event_system::Event
     {
         SendUpdateRequest(nlohmann::json update, tejoy::User to)
-            : update(update), to(to) {}
+            : update(std::move(update)), to(std::move(to)) {}
         const nlohmann::json update;
         const tejoy::User to;
     };
