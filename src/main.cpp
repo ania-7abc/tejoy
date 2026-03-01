@@ -5,7 +5,6 @@
 
 #include <tejoy/node.hpp>
 #include <tejoy/events/detail/packet_events.hpp>
-#include <event_system/subscriber.hpp>
 #include "config.hpp"
 
 static std::atomic<bool> need_stop = false;
@@ -25,9 +24,12 @@ int main()
 
   tejoy::Node node("data", PORT);
 
-  auto sub = node.get_event_bus().make_subscriber<PacketReceivedEvent>([](const PacketReceivedEvent &e)
-                                                            { std::cout << "Packet with text \"" << e.message << "\" from " << e.ip << ":" << e.port << std::endl; });
-  node.get_event_bus().publish<NeedSendPacketEvent>(nullptr, "Hello, World!", "127.0.0.1", PORT);
+  auto sub = node.get_event_bus().make_subscriber<tejoy::events::detail::PacketReceived>(
+      [](auto &e)
+      {
+        std::cout << "Packet with text \"" << e.message << "\" from " << e.ip << ":" << e.port << std::endl;
+      });
+  node.get_event_bus().publish<tejoy::events::detail::SendPacketRequest>(sub.get(), "Hello, World!", "127.0.0.1", PORT);
 
   while (!need_stop)
   {

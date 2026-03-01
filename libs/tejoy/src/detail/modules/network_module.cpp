@@ -31,7 +31,7 @@ namespace tejoy::detail::modules
     {
         udp_.start([this](auto &message, auto &ip, auto port)
                    { onNetworkMessage(message, ip, port); });
-        subscribe<NeedSendPacketEvent>([this](auto &e)
+        subscribe<tejoy::events::detail::SendPacketRequest>([this](auto &e)
                                        { onNeedSendPacket(e); });
     }
 
@@ -40,13 +40,13 @@ namespace tejoy::detail::modules
         udp_.stop();
     }
 
-    void NetworkModule::onNeedSendPacket(const NeedSendPacketEvent &e)
+    void NetworkModule::onNeedSendPacket(const tejoy::events::detail::SendPacketRequest &e)
     {
         udp_.send(e.message, e.ip, e.port);
     }
 
     void NetworkModule::onNetworkMessage(const std::string &message, const std::string &ip, uint16_t port)
     {
-        publish<PacketReceivedEvent>(message, ip, port);
+        publish<tejoy::events::detail::PacketReceived>(message, ip, port);
     }
 } // namespace tejoy::detail::modules::NetworkModule

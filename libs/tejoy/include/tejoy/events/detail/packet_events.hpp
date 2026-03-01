@@ -28,36 +28,40 @@
 #include <tejoy/user.hpp>
 #include <string>
 
-struct PacketReceivedEvent : event_system::Event
+namespace tejoy::events::detail {
+
+struct PacketReceived : event_system::Event
 {
-    PacketReceivedEvent(std::string message, std::string ip, uint16_t port)
+    PacketReceived(std::string message, std::string ip, uint16_t port)
         : message(std::move(message)), ip(std::move(ip)), port(port) {}
     std::string message;
     std::string ip;
     uint16_t port;
 };
 
-struct NeedSendPacketEvent : event_system::Event
+struct SendPacketRequest : event_system::Event
 {
-    NeedSendPacketEvent(std::string message, std::string ip, uint16_t port)
+    SendPacketRequest(std::string message, std::string ip, uint16_t port)
         : message(std::move(message)), ip(std::move(ip)), port(port) {}
     std::string message;
     std::string ip;
     uint16_t port;
 };
 
-struct UpdateReceivedEvent : event_system::Event
+struct UpdateReceived : event_system::Event
 {
-    UpdateReceivedEvent(nlohmann::json update, tejoy::User from)
+    UpdateReceived(nlohmann::json update, tejoy::User from)
         : update(update), from(from) {}
     const nlohmann::json update;
     const tejoy::User from;
 };
 
-struct NeedSendUpdateEvent : event_system::Event
+struct SendUpdateRequest : event_system::Event
 {
-    NeedSendUpdateEvent(nlohmann::json update, tejoy::User to)
+    SendUpdateRequest(nlohmann::json update, tejoy::User to)
         : update(update), to(to) {}
     const nlohmann::json update;
     const tejoy::User to;
 };
+
+} // namespace tejoy::events::detail

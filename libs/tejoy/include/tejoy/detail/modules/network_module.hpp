@@ -36,7 +36,7 @@ namespace tejoy::detail::modules
         NetworkModule(event_system::EventBus &bus, uint16_t port);
         void on_start() override;
         void on_stop() override;
-        void onNeedSendPacket(const NeedSendPacketEvent &e);
+        void onNeedSendPacket(const tejoy::events::detail::SendPacketRequest &e);
         void onNetworkMessage(const std::string &message, const std::string &ip, uint16_t port);
 
     private:
