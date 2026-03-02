@@ -29,11 +29,11 @@
 
 namespace tejoy
 {
-    Node::Node(std::string data_path, uint16_t port, uint32_t max_attempts) : storage_(data_path),
-                                                                              bus_(),
-                                                                              module_manager_(bus_),
-                                                                              port_(port),
-                                                                              request_data_subs_()
+    Node::Node(std::string data_path, uint16_t port, size_t max_attempts) : storage_(data_path),
+                                                                            bus_(),
+                                                                            module_manager_(bus_),
+                                                                            port_(port),
+                                                                            request_data_subs_()
     {
         storage_.load();
 
