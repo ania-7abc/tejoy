@@ -25,6 +25,7 @@
 #include <udp.hpp>
 #include <string>
 #include <cstdint>
+#include <storage.hpp>
 #include <tejoy/detail/modules/module.hpp>
 #include <tejoy/events/detail/packet_events.hpp>
 
@@ -33,7 +34,7 @@ namespace tejoy::detail::modules
     class NetworkModule : public Module
     {
     public:
-        NetworkModule(event_system::EventBus &bus, uint16_t port);
+        NetworkModule(event_system::EventBus &bus, uint16_t port, Storage &storage);
         void on_start() override;
         void on_stop() override;
 
@@ -42,5 +43,10 @@ namespace tejoy::detail::modules
         void onNetworkMessage(const std::string &message, const std::string &ip, uint16_t port);
 
         UDP udp_;
+        bool print_;
+        bool simulate_loss_;
+        size_t loss_every_;
+        bool print_loss_;
+        Storage &storage_;
     };
 } // namespace tejoy::detail::modules
