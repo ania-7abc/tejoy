@@ -42,5 +42,6 @@ namespace tejoy::detail::modules
 
         Storage &storage_;
         User i_;
+        bool encrypt_;
     };
 } // namespace tejoy::detail::modules
