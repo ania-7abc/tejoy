@@ -25,14 +25,15 @@
 #include <tejoy/detail/modules/network_module.hpp>
 #include <tejoy/detail/modules/update_manager_module.hpp>
 #include <tejoy/detail/modules/update_sort_module.hpp>
+#include <tejoy/detail/modules/ack_module.hpp>
 
 namespace tejoy
 {
-    Node::Node(std::string data_path, uint16_t port) : storage_(data_path),
-                                                       bus_(),
-                                                       module_manager_(bus_),
-                                                       port_(port),
-                                                       request_data_subs_()
+    Node::Node(std::string data_path, uint16_t port, uint32_t max_attempts) : storage_(data_path),
+                                                                              bus_(),
+                                                                              module_manager_(bus_),
+                                                                              port_(port),
+                                                                              request_data_subs_()
     {
         storage_.load();
 
@@ -43,9 +44,10 @@ namespace tejoy
             [this](const auto &e)
             { e.promise.set_value("127.0.0.1"); }));
 
-        module_manager_.create_module<detail::modules::NetworkModule>(port_);
+        module_manager_.create_module<detail::modules::NetworkModule>(port_, storage_);
         module_manager_.create_module<detail::modules::UpdateManagerModule>(storage_);
         module_manager_.create_module<detail::modules::UpdateSortModule>();
+        module_manager_.create_module<detail::modules::AckModule>(max_attempts);
         module_manager_.start_all();
     }
 

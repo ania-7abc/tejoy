@@ -33,6 +33,7 @@ namespace tejoy::detail::modules
         subscribe<tejoy::events::detail::UpdateReceived>([this](auto &e)
                                                          { onUpdateReceived(e); });
     }
+
     void UpdateSortModule::on_stop()
     {
     }
@@ -40,10 +41,11 @@ namespace tejoy::detail::modules
     void UpdateSortModule::onUpdateReceived(const tejoy::events::detail::UpdateReceived &e)
     {
         std::string type = e.update.at("type").get<std::string>();
+        uint32_t pkg_id = e.update.at("pkg_id").get<uint32_t>();
         if (type == "ack")
-            publish<tejoy::events::AckUpdateReceived>(e.update.at("pkg_id").get<int>(), e.from);
+            publish<tejoy::events::AckUpdateReceived>(pkg_id, e.from);
         else if (type == "message")
-            publish<tejoy::events::MessageUpdateReceived>(e.update.at("data").at("text").get<std::string>(), e.from);
+            publish<tejoy::events::MessageUpdateReceived>(e.update.at("data").at("text").get<std::string>(), pkg_id, e.from);
     }
 
 } // namespace tejoy::detail::modules

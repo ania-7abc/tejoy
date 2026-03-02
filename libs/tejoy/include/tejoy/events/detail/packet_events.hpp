@@ -53,16 +53,26 @@ namespace tejoy::events::detail
     {
         UpdateReceived(nlohmann::json update, tejoy::User from)
             : update(std::move(update)), from(std::move(from)) {}
-        const nlohmann::json update;
-        const tejoy::User from;
+        nlohmann::json update;
+        tejoy::User from;
+    };
+
+    struct SendAckUpdateRequest : event_system::Event
+    {
+        SendAckUpdateRequest(const UpdateReceived &e)
+            : pkg_id(e.update.at("pkg_id").get<uint32_t>()), to(e.from) {}
+        uint32_t pkg_id;
+        tejoy::User to;
     };
 
     struct SendUpdateRequest : event_system::Event
     {
         SendUpdateRequest(nlohmann::json update, tejoy::User to)
             : update(std::move(update)), to(std::move(to)) {}
-        const nlohmann::json update;
-        const tejoy::User to;
+        SendUpdateRequest(const SendUpdateRequest &e)
+            : SendUpdateRequest(e.update, e.to) {}
+        nlohmann::json update;
+        tejoy::User to;
     };
 
 } // namespace tejoy::events::detail

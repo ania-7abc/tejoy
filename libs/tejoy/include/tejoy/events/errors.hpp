@@ -1,6 +1,6 @@
 // MIT License
 //
-// Copyright (c) 2026 Anya Baykina Dmitrievna
+// Copyright (c) 2026 ania_7 (Anya Baykina Dmitrievna)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,35 +20,19 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// Node.hpp
+// errors.hpp
 #pragma once
-
+#include <event_system/event.hpp>
 #include <string>
-#include <cstdint>
 
-#include <storage.hpp>
-#include <event_system/event_bus.hpp>
-#include <tejoy/detail/modules/module_manager.hpp>
-#include <tejoy/events/data_request.hpp>
-
-namespace tejoy
+namespace tejoy::events
 {
 
-    using EventBus = event_system::EventBus;
-    class Node
+    struct UpdateSendError : event_system::Event
     {
-    private:
-        Storage storage_;
-        EventBus bus_;
-        detail::modules::ModuleManager module_manager_;
-        uint16_t port_;
-        std::vector<std::shared_ptr<event_system::Subscriber>> request_data_subs_;
-
-    public:
-        Node(std::string data_path, uint16_t port = 5768, size_t max_attempts = 3);
-        ~Node();
-
-        EventBus &get_event_bus();
+        UpdateSendError(uint32_t pkg_id, std::string reason) : pkg_id(pkg_id), reason(std::move(reason)) {}
+        uint32_t pkg_id;
+        std::string reason;
     };
 
-} // namespace tejoy
+} // namespace tejoy::events

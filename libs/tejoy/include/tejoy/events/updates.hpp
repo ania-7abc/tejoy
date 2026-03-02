@@ -31,17 +31,18 @@ namespace tejoy::events
 
     struct MessageUpdateReceived : event_system::Event
     {
-        MessageUpdateReceived(std::string message, User from)
-            : text(std::move(message)), from(std::move(from)) {}
+        MessageUpdateReceived(std::string text, uint32_t pkg_id, User from)
+            : text(std::move(text)), pkg_id(pkg_id), from(std::move(from)) {}
         std::string text;
+        uint32_t pkg_id;
         User from;
     };
 
     struct AckUpdateReceived : event_system::Event
     {
-        AckUpdateReceived(int pkg_id, User from)
+        AckUpdateReceived(uint32_t pkg_id, User from)
             : pkg_id(pkg_id), from(std::move(from)) {}
-        int pkg_id;
+        uint32_t pkg_id;
         User from;
     };
 
