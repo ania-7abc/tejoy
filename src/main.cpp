@@ -5,6 +5,7 @@
 
 #include <tejoy/node.hpp>
 #include <tejoy/events/data_request.hpp>
+#include <tejoy/events/detail/packet_events.hpp>
 #include <tejoy/events/updates.hpp>
 #include "config.hpp"
 #include <future>
@@ -29,13 +30,14 @@ int main()
   auto sub = node.get_event_bus().make_subscriber<tejoy::events::MessageUpdateReceived>(
       [](auto &e)
       {
-        std::cout << "Packet with text \"" << e.text << "\" from " << e.from.ip << ":" << e.from.port << std::endl;
+        std::cout << "Packet with text \"" << e.text << "\" with id " << e.pkg_id << " from " << e.from.ip << ":" << e.from.port << std::endl;
       });
   std::promise<tejoy::User> promise;
   std::future<tejoy::User> fut = promise.get_future();
   node.get_event_bus().publish<tejoy::events::RequestI>(nullptr, promise);
   tejoy::User i = fut.get();
-  node.get_event_bus().publish<tejoy::events::detail::SendUpdateRequest>(nullptr, nlohmann::json{{"type", "message"}, {"data", {{"text", "Hello, World!"}}}}, i);
+  node.get_event_bus().publish<tejoy::events::detail::SendUpdateRequest>(nullptr, R"({"pkg_id":1,"type":"message","data":{"text":"Hello, World!"}})"_json, i);
+  node.get_event_bus().publish<tejoy::events::detail::SendUpdateRequest>(nullptr, R"({"pkg_id":2,"type":"message","data":{"text":"Hello, World!"}})"_json, i);
 
   while (!need_stop)
   {
