@@ -24,9 +24,13 @@
 #include <tejoy/detail/modules/update_sort_module.hpp>
 #include <tejoy/events/updates.hpp>
 #include <nlohmann/json.hpp>
+#include <algorithm>
+#include <iostream>
 
 namespace tejoy::detail::modules
 {
+
+    UpdateSortModule::UpdateSortModule(event_system::EventBus &bus) : Module(bus), last_ids_(10) {}
 
     void UpdateSortModule::on_start()
     {
@@ -44,7 +48,12 @@ namespace tejoy::detail::modules
         uint32_t pkg_id = e.update.at("pkg_id").get<uint32_t>();
         if (type == "ack")
             publish<tejoy::events::AckUpdateReceived>(pkg_id, e.from);
-        else if (type == "message")
+
+        if (std::find(last_ids_.begin(), last_ids_.end(), pkg_id) != last_ids_.end())
+            return;
+        last_ids_.push_back(pkg_id);
+
+        if (type == "message")
             publish<tejoy::events::MessageUpdateReceived>(e.update.at("data").at("text").get<std::string>(), pkg_id, e.from);
     }
 
