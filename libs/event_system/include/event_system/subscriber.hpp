@@ -49,6 +49,8 @@ namespace event_system
         template <typename EventType, typename... Args>
         void publish(Args &&...args);
 
+        EventBus &bus() { return bus_; }
+
     private:
         EventBus &bus_;
     };

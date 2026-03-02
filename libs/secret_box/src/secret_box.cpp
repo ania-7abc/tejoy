@@ -90,7 +90,7 @@ std::string SecretBox::decrypt(const std::vector<uint8_t> &data, const SecretBox
     if (!has_secret_)
         throw std::runtime_error("Decryption unavailable without secret key");
 
-    int text_len = (data.size() - crypto_box_NONCEBYTES) - crypto_box_MACBYTES;
+    size_t text_len = (data.size() - crypto_box_NONCEBYTES) - crypto_box_MACBYTES;
     if (text_len < 0)
         throw std::runtime_error("Invalid encrypted data");
 
