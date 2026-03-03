@@ -23,6 +23,7 @@
 // update_sort_module.cpp
 #include <tejoy/detail/modules/update_sort_module.hpp>
 #include <tejoy/events/updates.hpp>
+#include <tejoy/events/errors.hpp>
 #include <nlohmann/json.hpp>
 #include <algorithm>
 #include <iostream>
@@ -55,6 +56,8 @@ namespace tejoy::detail::modules
 
         if (type == "message")
             publish<tejoy::events::MessageUpdateReceived>(e.update.at("data").at("text").get<std::string>(), pkg_id, e.from);
+        else
+            publish<events::InvalidUpdateError>(pkg_id, type, "Invalid update type");
     }
 
 } // namespace tejoy::detail::modules
