@@ -1,13 +1,15 @@
 // node.cpp
-#include <tejoy/node.hpp>
-#include <tejoy/events/message.hpp>
+
+#include <tejoy/detail/modules/ack_module.hpp>
 #include <tejoy/detail/modules/network_module.hpp>
 #include <tejoy/detail/modules/update_manager_module.hpp>
 #include <tejoy/detail/modules/update_sort_module.hpp>
-#include <tejoy/detail/modules/ack_module.hpp>
+#include <tejoy/events/message.hpp>
+#include <tejoy/node.hpp>
 
 namespace tejoy
 {
+
   Node::Node(std::string data_path, uint16_t port, size_t max_attempts) : storage_(data_path),
                                                                           bus_(),
                                                                           module_manager_(bus_),

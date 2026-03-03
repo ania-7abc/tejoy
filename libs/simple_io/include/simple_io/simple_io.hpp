@@ -1,12 +1,13 @@
 // simple_io.hpp
 #pragma once
-#include <string>
-#include <vector>
+
+#include <ios>
+#include <iterator>
 #include <filesystem>
 #include <format>
 #include <fstream>
-#include <ios>
-#include <iterator>
+#include <string>
+#include <vector>
 
 class SimpleIO
 {

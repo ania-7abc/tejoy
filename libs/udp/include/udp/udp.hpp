@@ -1,10 +1,11 @@
 // udp.hpp
 #pragma once
+
+#include <array>
 #include <cstdint>
 #include <functional>
 #include <thread>
 #include <string>
-#include <array>
 
 #include <boost/asio.hpp>
 

@@ -1,7 +1,8 @@
 // update_sort_module.cpp
+
 #include <tejoy/detail/modules/update_sort_module.hpp>
-#include <tejoy/events/updates.hpp>
 #include <tejoy/events/errors.hpp>
+#include <tejoy/events/updates.hpp>
 
 #include <algorithm>
 #include <iostream>

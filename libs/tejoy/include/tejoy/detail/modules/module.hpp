@@ -1,5 +1,6 @@
 // module.hpp
 #pragma once
+
 #include <event_system/subscriber.hpp>
 
 namespace tejoy::detail::modules

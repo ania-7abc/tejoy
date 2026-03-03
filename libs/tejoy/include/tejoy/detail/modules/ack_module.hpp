@@ -1,20 +1,21 @@
 // ack_module.hpp
 #pragma once
+
 #include <tejoy/detail/modules/module.hpp>
 #include <tejoy/events/detail/packet_events.hpp>
 #include <tejoy/events/updates.hpp>
 
-#include <unordered_map>
 #include <memory>
-#include <thread>
 #include <mutex>
+#include <thread>
+#include <unordered_map>
 
 #include <boost/asio.hpp>
 
 namespace tejoy::detail::modules
 {
 
-  class AckModule : public Module
+  class AckModule : public tejoy::detail::modules::Module
   {
   public:
     explicit AckModule(event_system::EventBus &bus, size_t max_attempts = 3);

@@ -1,5 +1,6 @@
 // updates.hpp
 #pragma once
+
 #include <tejoy/user.hpp>
 
 #include <string>

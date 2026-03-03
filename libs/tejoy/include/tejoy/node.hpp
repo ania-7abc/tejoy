@@ -1,16 +1,17 @@
 // node.hpp
 #pragma once
+
 #include <tejoy/detail/modules/module_manager.hpp>
 #include <tejoy/events/data_requests.hpp>
 
-#include <string>
 #include <cstdint>
-#include <vector>
 #include <memory>
+#include <string>
+#include <vector>
 
-#include <storage/storage.hpp>
 #include <event_system/event_bus.hpp>
 #include <event_system/subscriber.hpp>
+#include <storage/storage.hpp>
 
 namespace tejoy
 {

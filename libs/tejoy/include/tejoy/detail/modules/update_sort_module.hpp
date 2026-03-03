@@ -1,5 +1,6 @@
 // update_sort_module.hpp
 #pragma once
+
 #include <tejoy/detail/modules/module.hpp>
 #include <tejoy/events/detail/packet_events.hpp>
 
@@ -7,7 +8,8 @@
 
 namespace tejoy::detail::modules
 {
-  class UpdateSortModule : public Module
+
+  class UpdateSortModule : public tejoy::detail::modules::Module
   {
   public:
     UpdateSortModule(event_system::EventBus &bus);
@@ -20,4 +22,5 @@ namespace tejoy::detail::modules
 
     boost::circular_buffer<uint32_t> last_ids_;
   };
+
 } // namespace tejoy::detail::modules

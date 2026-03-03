@@ -1,10 +1,11 @@
 // module_manager.hpp
 #pragma once
+
 #include <tejoy/detail/modules/module.hpp>
 
 #include <memory>
-#include <unordered_map>
 #include <typeindex>
+#include <unordered_map>
 
 namespace tejoy::detail::modules
 {

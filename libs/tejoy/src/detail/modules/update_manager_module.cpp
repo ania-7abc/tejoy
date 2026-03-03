@@ -1,12 +1,16 @@
 // update_manager_module.cpp
+
 #include <tejoy/detail/modules/update_manager_module.hpp>
 #include <tejoy/events/data_requests.hpp>
+
 #include <future>
+
 #include <base64/base64.hpp>
 #include <secret_box/secret_box.hpp>
 
 namespace tejoy::detail::modules
 {
+
   UpdateManagerModule::UpdateManagerModule(event_system::EventBus &bus, Storage &storage) : Module(bus), storage_(storage) {}
 
   void UpdateManagerModule::on_start()

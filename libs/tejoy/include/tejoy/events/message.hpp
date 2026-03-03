@@ -1,8 +1,11 @@
 // message.hpp
 #pragma once
-#include <event_system/event.hpp>
+
 #include <tejoy/user.hpp>
+
 #include <string>
+
+#include <event_system/event.hpp>
 
 namespace tejoy::events
 {

@@ -1,7 +1,9 @@
 // errors.hpp
 #pragma once
-#include <event_system/event.hpp>
+
 #include <string>
+
+#include <event_system/event.hpp>
 
 namespace tejoy::events
 {

@@ -1,9 +1,12 @@
 // data_requests.hpp
 #pragma once
+
+#include <tejoy/user.hpp>
+
 #include <cstdint>
 #include <future>
+
 #include <event_system/event.hpp>
-#include <tejoy/user.hpp>
 
 namespace tejoy::events
 {

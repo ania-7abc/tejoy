@@ -1,6 +1,8 @@
 // network_module.cpp
+
 #include <tejoy/detail/modules/network_module.hpp>
 #include <tejoy/events/data_requests.hpp>
+
 #include <iostream>
 
 namespace tejoy::detail::modules
@@ -51,4 +53,5 @@ namespace tejoy::detail::modules
   {
     publish<events::detail::PacketReceived>(message, ip, port);
   }
+
 } // namespace tejoy::detail::modules

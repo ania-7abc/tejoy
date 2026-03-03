@@ -1,4 +1,5 @@
 // event_bus.cpp
+
 #include <event_system/event_bus.hpp>
 
 namespace event_system

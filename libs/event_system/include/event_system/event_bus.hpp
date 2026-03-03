@@ -1,5 +1,6 @@
 // event_bus.hpp
 #pragma once
+
 #include <event_system/event.hpp>
 
 #include <memory>
@@ -84,6 +85,7 @@ namespace event_system
 
 namespace event_system
 {
+
   template <typename EventType>
   auto EventBus::make_subscriber(std::function<void(const EventType &)> callback,
                                  Subscriber *sender_filter)

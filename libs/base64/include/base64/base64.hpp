@@ -1,8 +1,9 @@
 // base64.hpp
 #pragma once
+
+#include <cstdint>
 #include <string>
 #include <vector>
-#include <cstdint>
 
 class Base64
 {

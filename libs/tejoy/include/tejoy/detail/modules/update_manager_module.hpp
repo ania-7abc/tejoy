@@ -1,13 +1,16 @@
 // update_manager_module.hpp
 #pragma once
+
 #include <tejoy/detail/modules/module.hpp>
 #include <tejoy/events/detail/packet_events.hpp>
 #include <tejoy/user.hpp>
+
 #include <storage/storage.hpp>
 
 namespace tejoy::detail::modules
 {
-  class UpdateManagerModule : public Module
+
+  class UpdateManagerModule : public tejoy::detail::modules::Module
   {
   public:
     UpdateManagerModule(event_system::EventBus &bus, Storage &storage);
@@ -22,4 +25,5 @@ namespace tejoy::detail::modules
     User i_;
     bool encrypt_;
   };
+
 } // namespace tejoy::detail::modules

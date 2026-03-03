@@ -1,14 +1,16 @@
 // user.hpp
 #pragma once
-#include <string>
-#include <cstdint>
 
-#include <secret_box/secret_box.hpp>
+#include <cstdint>
+#include <string>
+
 #include <base64/base64.hpp>
 #include <nlohmann/json.hpp>
+#include <secret_box/secret_box.hpp>
 
 namespace tejoy
 {
+
   struct User
   {
     SecretBox box;
@@ -32,4 +34,5 @@ namespace tejoy
     j.at("port").get_to(u.port);
     u.box = SecretBox(Base64::decode(j.at("box").at("key").get<std::string>()), Base64::decode(j.at("box").at("id").get<std::string>()));
   }
+
 }
