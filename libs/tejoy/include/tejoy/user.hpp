@@ -22,8 +22,8 @@
 
 // user.hpp
 #pragma once
-#include <secret_box.hpp>
-#include <base64.hpp>
+#include <secret_box/secret_box.hpp>
+#include <base64/base64.hpp>
 #include <string>
 #include <nlohmann/json.hpp>
 #include <cstdint>

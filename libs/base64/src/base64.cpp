@@ -21,7 +21,7 @@
 // SOFTWARE.
 
 // base64.cpp
-#include <base64.hpp>
+#include <base64/base64.hpp>
 
 #include <vector>
 #include <string>

@@ -25,7 +25,7 @@
 #include <tejoy/detail/modules/module.hpp>
 #include <tejoy/events/detail/packet_events.hpp>
 #include <tejoy/user.hpp>
-#include <storage.hpp>
+#include <storage/storage.hpp>
 
 namespace tejoy::detail::modules
 {

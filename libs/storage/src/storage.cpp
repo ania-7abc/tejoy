@@ -21,8 +21,8 @@
 // SOFTWARE.
 
 // storage.cpp
-#include "storage.hpp"
-#include <simple_io.hpp>
+#include <storage/storage.hpp>
+#include <simple_io/simple_io.hpp>
 #include <vector>
 
 void Storage::save_impl(const std::string &path, const nlohmann::json &j)

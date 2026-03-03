@@ -21,7 +21,7 @@
 // SOFTWARE.
 
 // secret_box.cpp
-#include <secret_box.hpp>
+#include <secret_box/secret_box.hpp>
 
 #include <stdexcept>
 #include <vector>

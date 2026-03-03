@@ -22,10 +22,10 @@
 
 // network_module.hpp
 #pragma once
-#include <udp.hpp>
+#include <udp/udp.hpp>
 #include <string>
 #include <cstdint>
-#include <storage.hpp>
+#include <storage/storage.hpp>
 #include <tejoy/detail/modules/module.hpp>
 #include <tejoy/events/detail/packet_events.hpp>
 

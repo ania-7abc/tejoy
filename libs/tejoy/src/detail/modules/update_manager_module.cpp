@@ -24,8 +24,8 @@
 #include <tejoy/detail/modules/update_manager_module.hpp>
 #include <tejoy/events/data_request.hpp>
 #include <future>
-#include <base64.hpp>
-#include <secret_box.hpp>
+#include <base64/base64.hpp>
+#include <secret_box/secret_box.hpp>
 
 namespace tejoy::detail::modules
 {

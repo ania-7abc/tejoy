@@ -26,7 +26,7 @@
 #include <string>
 #include <cstdint>
 
-#include <storage.hpp>
+#include <storage/storage.hpp>
 #include <event_system/event_bus.hpp>
 #include <tejoy/detail/modules/module_manager.hpp>
 #include <tejoy/events/data_request.hpp>
