@@ -1,54 +1,35 @@
-// MIT License
-//
-// Copyright (c) 2026 Anya Baykina Dmitrievna
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-// SOFTWARE.
-
-// Node.hpp
+// node.hpp
 #pragma once
+#include <tejoy/detail/modules/module_manager.hpp>
+#include <tejoy/events/data_requests.hpp>
 
 #include <string>
 #include <cstdint>
+#include <vector>
+#include <memory>
 
 #include <storage/storage.hpp>
 #include <event_system/event_bus.hpp>
-#include <tejoy/detail/modules/module_manager.hpp>
-#include <tejoy/events/data_request.hpp>
+#include <event_system/subscriber.hpp>
 
 namespace tejoy
 {
 
-    using EventBus = event_system::EventBus;
-    class Node
-    {
-    private:
-        Storage storage_;
-        EventBus bus_;
-        detail::modules::ModuleManager module_manager_;
-        uint16_t port_;
-        std::vector<std::shared_ptr<event_system::Subscriber>> request_data_subs_;
+  using EventBus = event_system::EventBus;
+  class Node
+  {
+  private:
+    Storage storage_;
+    EventBus bus_;
+    tejoy::detail::modules::ModuleManager module_manager_;
+    uint16_t port_;
+    std::vector<std::shared_ptr<event_system::Subscriber>> request_data_subs_;
 
-    public:
-        Node(std::string data_path, uint16_t port = 5768, size_t max_attempts = 3);
-        ~Node();
+  public:
+    Node(std::string data_path, uint16_t port = 5768, size_t max_attempts = 3);
+    ~Node();
 
-        EventBus &get_event_bus();
-    };
+    EventBus &get_event_bus();
+  };
 
 } // namespace tejoy

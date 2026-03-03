@@ -1,14 +1,15 @@
 // main.cpp
+#include "config.hpp"
+
 #include <iostream>
 #include <atomic>
 #include <csignal>
+#include <future>
 
 #include <tejoy/node.hpp>
-#include <tejoy/events/data_request.hpp>
+#include <tejoy/events/data_requests.hpp>
 #include <tejoy/events/message.hpp>
 #include <tejoy/events/updates.hpp>
-#include "config.hpp"
-#include <future>
 
 static std::atomic<bool> need_stop = false;
 extern "C" void handle_signal(int signal)

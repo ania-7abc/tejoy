@@ -1,102 +1,82 @@
-// MIT License
-//
-// Copyright (c) 2026 Anya Baykina Dmitrievna
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-// SOFTWARE.
-
 // event_bus.hpp
 #pragma once
+#include <event_system/event.hpp>
+
 #include <memory>
 #include <functional>
 #include <map>
 #include <thread>
 #include <list>
 #include <mutex>
-#include <boost/asio.hpp>
 #include <typeindex>
-#include <event_system/event.hpp>
+
+#include <boost/asio.hpp>
 
 namespace event_system
 {
 
-    class Subscriber;
+  class Subscriber;
 
-    class EventBus
+  class EventBus
+  {
+  public:
+    using EventPtr = std::shared_ptr<const Event>;
+
+    explicit EventBus();
+    ~EventBus();
+
+    template <typename EventType, typename T>
+    void subscribe(std::weak_ptr<T> subscriber,
+                   std::function<void(const EventType &)> handler,
+                   Subscriber *sender_filter = nullptr)
     {
-    public:
-        using EventPtr = std::shared_ptr<const Event>;
-
-        explicit EventBus();
-        ~EventBus();
-
-        template <typename EventType, typename T>
-        void subscribe(std::weak_ptr<T> subscriber,
-                       std::function<void(const EventType &)> handler,
-                       Subscriber *sender_filter = nullptr)
-        {
-            static_assert(std::is_base_of_v<Event, EventType>,
-                          "EventType must derive from Event");
-            subscribe_impl(std::type_index(typeid(EventType)), [handler = std::move(handler)](EventPtr e)
-                           {
+      static_assert(std::is_base_of_v<Event, EventType>,
+                    "EventType must derive from Event");
+      subscribe_impl(std::type_index(typeid(EventType)), [handler = std::move(handler)](EventPtr e)
+                     {
                              if (auto concrete = dynamic_cast<const EventType*>(e.get()))
                                handler(*concrete); }, sender_filter, subscriber);
-        }
+    }
 
-        template <typename EventType>
-        auto make_subscriber(std::function<void(const EventType &)> callback,
-                             Subscriber *sender_filter = nullptr);
+    template <typename EventType>
+    auto make_subscriber(std::function<void(const EventType &)> callback,
+                         Subscriber *sender_filter = nullptr);
 
-        template <typename EventType, typename... Args>
-        void publish(Subscriber *sender, Args &&...args)
-        {
-            static_assert(std::is_base_of_v<Event, EventType>,
-                          "EventType must derive from Event");
+    template <typename EventType, typename... Args>
+    void publish(Subscriber *sender, Args &&...args)
+    {
+      static_assert(std::is_base_of_v<Event, EventType>,
+                    "EventType must derive from Event");
 
-            auto event = std::make_shared<EventType>(std::forward<Args>(args)...);
-            event->set_sender(sender);
-            publish(event);
-        }
+      auto event = std::make_shared<EventType>(std::forward<Args>(args)...);
+      event->set_sender(sender);
+      publish(event);
+    }
 
-        void publish(EventPtr event);
+    void publish(EventPtr event);
 
-        void cleanup();
+    void cleanup();
 
-    private:
-        struct Subscription
-        {
-            std::function<void(EventPtr)> handler;
-            Subscriber *sender_filter;
-            std::weak_ptr<void> weak_subscriber;
-        };
-
-        void subscribe_impl(const std::type_index &eventType,
-                            std::function<void(EventPtr)> handler,
-                            Subscriber *sender_filter,
-                            std::weak_ptr<void> weak_subscriber);
-
-        std::map<std::type_index, std::list<Subscription>> subscriptions_;
-        std::mutex mutex_;
-
-        boost::asio::io_context io_;
-        boost::asio::executor_work_guard<boost::asio::io_context::executor_type> work_guard_;
-        std::thread thread_;
+  private:
+    struct Subscription
+    {
+      std::function<void(EventPtr)> handler;
+      Subscriber *sender_filter;
+      std::weak_ptr<void> weak_subscriber;
     };
+
+    void subscribe_impl(const std::type_index &eventType,
+                        std::function<void(EventPtr)> handler,
+                        Subscriber *sender_filter,
+                        std::weak_ptr<void> weak_subscriber);
+
+    std::map<std::type_index, std::list<Subscription>> subscriptions_;
+    std::mutex mutex_;
+
+    boost::asio::io_context io_;
+    boost::asio::executor_work_guard<boost::asio::io_context::executor_type> work_guard_;
+    std::thread thread_;
+  };
 
 } // namespace event_system
 
@@ -104,14 +84,14 @@ namespace event_system
 
 namespace event_system
 {
-    template <typename EventType>
-    auto EventBus::make_subscriber(std::function<void(const EventType &)> callback,
-                                   Subscriber *sender_filter)
-    {
-        static_assert(std::is_base_of_v<Event, EventType>, "EventType must derive from Event");
-        auto sub = std::make_shared<Subscriber>(*this);
-        sub->subscribe<EventType>(std::move(callback), sender_filter);
-        return sub;
-    }
+  template <typename EventType>
+  auto EventBus::make_subscriber(std::function<void(const EventType &)> callback,
+                                 Subscriber *sender_filter)
+  {
+    static_assert(std::is_base_of_v<Event, EventType>, "EventType must derive from Event");
+    auto sub = std::make_shared<Subscriber>(*this);
+    sub->subscribe<EventType>(std::move(callback), sender_filter);
+    return sub;
+  }
 
 } // namespace event_system
