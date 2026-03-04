@@ -12,6 +12,8 @@ namespace tejoy::detail::modules
 
   void NetworkModule::on_start()
   {
+    srand(time(nullptr));
+
     config_.emplace("loss", nlohmann::json::object());
     config_.emplace("print", false);
     config_["loss"].emplace("enable", false);
