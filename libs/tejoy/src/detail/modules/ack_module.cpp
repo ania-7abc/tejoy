@@ -40,6 +40,10 @@ namespace tejoy::detail::modules
 
   void AckModule::on_send_update_request(const events::detail::SendUpdateRequest &e)
   {
+    bool no_ack = e.update.value("no_ack", false);
+    if (no_ack)
+      return;
+
     uint32_t pkg_id = e.update.at("pkg_id").get<uint32_t>();
 
     std::lock_guard<std::mutex> lock(pending_mutex_);
@@ -78,6 +82,10 @@ namespace tejoy::detail::modules
 
   void AckModule::on_update_received(const events::detail::UpdateReceived &e)
   {
+    bool no_ack = e.update.value("no_ack", false);
+    if (no_ack)
+      return;
+
     std::string type = e.update.at("type").get<std::string>();
     if (type != "ack")
       publish<events::detail::SendAckUpdateRequest>(e);
