@@ -11,11 +11,11 @@
 namespace tejoy::detail::modules
 {
 
-  UpdateManagerModule::UpdateManagerModule(event_system::EventBus &bus, Storage &storage) : Module(bus), storage_(storage) {}
+  UpdateManagerModule::UpdateManagerModule(event_system::EventBus &bus, nlohmann::json &config) : Module(bus, config) {}
 
   void UpdateManagerModule::on_start()
   {
-    if (!storage_.data.contains("i"))
+    if (!config_.contains("i"))
     {
       std::promise<uint16_t> promise_port;
       std::future<uint16_t> fut_port = promise_port.get_future();
@@ -26,13 +26,12 @@ namespace tejoy::detail::modules
       publish<events::RequestIp>(promise_ip);
 
       i_ = User{.box = SecretBox(), .ip = fut_ip.get(), .port = fut_port.get()};
-      storage_.data["i"] = i_;
+      config_["i"] = i_;
     }
     else
-      storage_.data.at("i").get_to(i_);
+      config_.at("i").get_to(i_);
 
-    storage_.data.emplace("encrypt", true);
-    encrypt_ = storage_.data["encrypt"].get<bool>();
+    encrypt_ = config_.emplace("encrypt", true).first.value().get<bool>();
 
     subscribe<events::detail::SendUpdateRequest>([this](auto &e)
                                                  { on_send_update_request(e); });

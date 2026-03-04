@@ -1,4 +1,4 @@
-// update_sort_module.hpp
+// update_sorter_module.hpp
 #pragma once
 
 #include <tejoy/detail/modules/module.hpp>
@@ -9,10 +9,10 @@
 namespace tejoy::detail::modules
 {
 
-  class UpdateSortModule : public tejoy::detail::modules::Module
+  class UpdateSorterModule : public tejoy::detail::modules::Module
   {
   public:
-    UpdateSortModule(event_system::EventBus &bus);
+    UpdateSorterModule(event_system::EventBus &bus, nlohmann::json &config);
 
     void on_start() override;
     void on_stop() override;

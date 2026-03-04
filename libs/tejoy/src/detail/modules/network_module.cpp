@@ -8,21 +8,18 @@
 namespace tejoy::detail::modules
 {
 
-  NetworkModule::NetworkModule(event_system::EventBus &bus, uint16_t port, Storage &storage) : Module(bus), udp_(port), storage_(storage) {}
+  NetworkModule::NetworkModule(event_system::EventBus &bus, nlohmann::json &config, uint16_t port) : Module(bus, config), udp_(port) {}
 
   void NetworkModule::on_start()
   {
-    storage_.data.emplace("network", nlohmann::json::object());
-    storage_.data["network"].emplace("loss", nlohmann::json::object());
-    storage_.data["network"].emplace("print", false);
-    storage_.data["network"]["loss"].emplace("enable", false);
-    storage_.data["network"]["loss"].emplace("every", 3);
-    storage_.data["network"]["loss"].emplace("print", true);
+    config_.emplace("loss", nlohmann::json::object());
+    config_.emplace("print", false);
+    config_["loss"].emplace("enable", false);
+    config_["loss"].emplace("every", 3);
 
-    print_ = storage_.data["network"]["print"].get<bool>();
-    simulate_loss_ = storage_.data["network"]["loss"]["enable"].get<bool>();
-    loss_every_ = storage_.data["network"]["loss"]["every"].get<size_t>();
-    print_loss_ = storage_.data["network"]["loss"]["print"].get<bool>();
+    print_ = config_["print"].get<bool>();
+    simulate_loss_ = config_["loss"]["enable"].get<bool>();
+    loss_every_ = config_["loss"]["every"].get<size_t>();
 
     udp_.start([this](auto &message, auto &ip, auto port)
                { on_network_message(message, ip, port); });
@@ -40,8 +37,8 @@ namespace tejoy::detail::modules
     static size_t packet_counter = 0;
     if (simulate_loss_ && (++packet_counter % loss_every_ == 0))
     {
-      if (print_loss_)
-        std::cout << "Simulated loss message \"" << e.message << "\" to " << e.ip << ":" << e.port << std::endl;
+      if (print_)
+        std::cout << "Not sent message \"" << e.message << "\" to " << e.ip << ":" << e.port << std::endl;
       return;
     }
     udp_.send(e.message, e.ip, e.port);

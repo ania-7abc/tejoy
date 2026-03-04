@@ -13,7 +13,7 @@ namespace tejoy::detail::modules
   class UpdateManagerModule : public tejoy::detail::modules::Module
   {
   public:
-    UpdateManagerModule(event_system::EventBus &bus, Storage &storage);
+    UpdateManagerModule(event_system::EventBus &bus, nlohmann::json &config);
     void on_start() override;
     void on_stop() override;
 
@@ -21,7 +21,6 @@ namespace tejoy::detail::modules
     void on_send_update_request(const tejoy::events::detail::SendUpdateRequest &e);
     void on_packet_received(const tejoy::events::detail::PacketReceived &e);
 
-    Storage &storage_;
     User i_;
     bool encrypt_;
   };

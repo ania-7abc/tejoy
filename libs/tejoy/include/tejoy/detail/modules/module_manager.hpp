@@ -7,19 +7,24 @@
 #include <typeindex>
 #include <unordered_map>
 
+#include <nlohmann/json.hpp>
+#include <storage/storage.hpp>
+
 namespace tejoy::detail::modules
 {
 
   class ModuleManager
   {
   public:
-    explicit ModuleManager(event_system::EventBus &bus);
+    explicit ModuleManager(event_system::EventBus &bus, Storage &storage);
 
     template <typename T, typename... Args>
-    T &create_module(Args &&...args)
+    T &create_module(nlohmann::json_pointer<std::string> path_in_config, Args &&...args)
     {
       static_assert(std::is_base_of_v<Module, T>, "T must be derived from Module");
-      auto module = std::make_shared<T>(bus_, std::forward<Args>(args)...);
+      if (!storage_.data.contains(path_in_config))
+        storage_.data[path_in_config] = {};
+      auto module = std::make_shared<T>(bus_, storage_.data.at(path_in_config), std::forward<Args>(args)...);
       auto it = modules_.find(std::type_index(typeid(T)));
       if (it != modules_.end())
         throw std::runtime_error("Module of this type already exists");
@@ -60,6 +65,7 @@ namespace tejoy::detail::modules
     void stop_all();
 
   private:
+    Storage &storage_;
     event_system::EventBus &bus_;
     std::unordered_map<std::type_index, std::shared_ptr<tejoy::detail::modules::Module>> modules_;
   };

@@ -6,8 +6,8 @@
 namespace tejoy::detail::modules
 {
 
-  AckModule::AckModule(event_system::EventBus &bus, size_t max_attempts)
-      : Module(bus), max_attempts_(max_attempts) {}
+  AckModule::AckModule(event_system::EventBus &bus, nlohmann::json &config, size_t max_attempts, size_t retry_interval)
+      : Module(bus, config), max_attempts_(max_attempts), retry_interval_ms_(retry_interval) {}
 
   void AckModule::on_start()
   {
@@ -83,7 +83,7 @@ namespace tejoy::detail::modules
   {
     if (!pu.timer)
       pu.timer = std::make_unique<boost::asio::steady_timer>(io_context_);
-    pu.timer->expires_after(RETRY_INTERVAL);
+    pu.timer->expires_after(std::chrono::milliseconds(retry_interval_ms_));
     pu.timer->async_wait([this, pkg_id = pu.pkg_id](const boost::system::error_code &ec)
                          {
                                  if (!ec)

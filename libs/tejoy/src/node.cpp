@@ -3,22 +3,23 @@
 #include <tejoy/detail/modules/ack_module.hpp>
 #include <tejoy/detail/modules/network_module.hpp>
 #include <tejoy/detail/modules/update_manager_module.hpp>
-#include <tejoy/detail/modules/update_sort_module.hpp>
+#include <tejoy/detail/modules/update_sorter_module.hpp>
 #include <tejoy/events/message.hpp>
 #include <tejoy/node.hpp>
 
 namespace tejoy
 {
 
-  Node::Node(std::string data_path, uint16_t port, size_t max_attempts) : storage_(data_path),
-                                                                          bus_(),
-                                                                          module_manager_(bus_),
-                                                                          port_(port),
-                                                                          request_data_subs_()
+  Node::Node(std::string data_path, uint16_t port, size_t max_attempts, size_t retry_interval_ms) : storage_(data_path),
+                                                                                                    bus_(),
+                                                                                                    module_manager_(bus_, storage_),
+                                                                                                    port_(port),
+                                                                                                    request_data_subs_()
   {
     storage_.load();
 
-    storage_.data.emplace("next_pkg_id", nlohmann::json::object());
+    if (!storage_.data.contains("/node/contacts"_json_pointer))
+      storage_.data["/node/contacts"_json_pointer] = nlohmann::json({});
 
     request_data_subs_.push_back(bus_.make_subscriber<events::RequestPort>(
         [this](auto &e)
@@ -29,23 +30,21 @@ namespace tejoy
     request_data_subs_.push_back(bus_.make_subscriber<events::SendMessageRequest>(
         [this](auto &e)
         {
-          nlohmann::json update;
-          auto &next_pkg_id = storage_.data.at("next_pkg_id");
-          next_pkg_id.emplace(e.to.ip, 0);
+          auto &contact = storage_.data
+                              .at("/node/contacts"_json_pointer)
+                              .emplace(e.to.ip, nlohmann::json({}))
+                              .first.value();
+          uint32_t pkg_id = contact.value("last_pkg_id", (uint32_t)0) + 1;
+          contact["last_pkg_id"] = pkg_id;
 
-          uint32_t pkg_id = next_pkg_id[e.to.ip].template get<uint32_t>();
-          next_pkg_id[e.to.ip] = pkg_id + 1;
-
-          update["pkg_id"] = pkg_id;
-          update["type"] = "message";
-          update["data"] = {{"text", e.text}};
+          nlohmann::json update = {{"pkg_id", pkg_id}, {"type", "message"}, {"data", {{"text", e.text}}}};
           bus_.publish(std::make_shared<events::detail::SendUpdateRequest>(update, e.to));
         }));
 
-    module_manager_.create_module<detail::modules::NetworkModule>(port_, storage_);
-    module_manager_.create_module<detail::modules::UpdateManagerModule>(storage_);
-    module_manager_.create_module<detail::modules::UpdateSortModule>();
-    module_manager_.create_module<detail::modules::AckModule>(max_attempts);
+    module_manager_.create_module<detail::modules::NetworkModule>("/network"_json_pointer, port_);
+    module_manager_.create_module<detail::modules::UpdateManagerModule>("/update_manager"_json_pointer);
+    module_manager_.create_module<detail::modules::UpdateSorterModule>("/update_sorter"_json_pointer);
+    module_manager_.create_module<detail::modules::AckModule>("/ack"_json_pointer, max_attempts, retry_interval_ms);
     module_manager_.start_all();
   }
 

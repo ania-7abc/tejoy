@@ -1,6 +1,6 @@
-// update_sort_module.cpp
+// update_sorter_module.cpp
 
-#include <tejoy/detail/modules/update_sort_module.hpp>
+#include <tejoy/detail/modules/update_sorter_module.hpp>
 #include <tejoy/events/errors.hpp>
 #include <tejoy/events/updates.hpp>
 
@@ -12,19 +12,19 @@
 namespace tejoy::detail::modules
 {
 
-  UpdateSortModule::UpdateSortModule(event_system::EventBus &bus) : Module(bus), last_ids_(10) {}
+  UpdateSorterModule::UpdateSorterModule(event_system::EventBus &bus, nlohmann::json &config) : Module(bus, config), last_ids_(10) {}
 
-  void UpdateSortModule::on_start()
+  void UpdateSorterModule::on_start()
   {
     subscribe<events::detail::UpdateReceived>([this](auto &e)
                                               { on_update_received(e); });
   }
 
-  void UpdateSortModule::on_stop()
+  void UpdateSorterModule::on_stop()
   {
   }
 
-  void UpdateSortModule::on_update_received(const events::detail::UpdateReceived &e)
+  void UpdateSorterModule::on_update_received(const events::detail::UpdateReceived &e)
   {
     std::string type = e.update.at("type").get<std::string>();
     uint32_t pkg_id = e.update.at("pkg_id").get<uint32_t>();

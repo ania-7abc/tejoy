@@ -11,6 +11,7 @@
 #include <unordered_map>
 
 #include <boost/asio.hpp>
+#include <nlohmann/json.hpp>
 
 namespace tejoy::detail::modules
 {
@@ -18,7 +19,7 @@ namespace tejoy::detail::modules
   class AckModule : public tejoy::detail::modules::Module
   {
   public:
-    explicit AckModule(event_system::EventBus &bus, size_t max_attempts = 3);
+    explicit AckModule(event_system::EventBus &bus, nlohmann::json &config, size_t max_attempts = 3, size_t retry_interval_ms = 2000);
 
     void on_start() override;
     void on_stop() override;
@@ -47,7 +48,7 @@ namespace tejoy::detail::modules
     std::unordered_map<uint32_t, PendingUpdate> pending_;
     std::mutex pending_mutex_;
     size_t max_attempts_;
-    static constexpr std::chrono::seconds RETRY_INTERVAL{2};
+    size_t retry_interval_ms_;
   };
 
 } // namespace tejoy::detail::modules

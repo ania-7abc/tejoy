@@ -23,16 +23,20 @@ namespace tejoy
     j = nlohmann::json{};
     j["ip"] = u.ip;
     j["port"] = u.port;
-    j["box"] = nlohmann::json{};
-    j["box"]["key"] = Base64::encode(u.box.get_secret_key());
-    j["box"]["id"] = Base64::encode(u.box.get_public_key());
+    if (u.box.has_secret_key())
+      j["key"] = Base64::encode(u.box.get_secret_key());
+    j["id"] = Base64::encode(u.box.get_public_key());
   }
 
   inline void from_json(const nlohmann::json &j, User &u)
   {
     j.at("ip").get_to(u.ip);
     j.at("port").get_to(u.port);
-    u.box = SecretBox(Base64::decode(j.at("box").at("key").get<std::string>()), Base64::decode(j.at("box").at("id").get<std::string>()));
+    auto id = Base64::decode(j.at("key").get<std::string>());
+    if (j.contains("key"))
+      u.box = SecretBox(id, Base64::decode(j.at("id").get<std::string>()));
+    else
+      u.box = SecretBox(id);
   }
 
 }
