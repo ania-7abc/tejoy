@@ -15,11 +15,11 @@ namespace tejoy::detail::modules
     config_.emplace("loss", nlohmann::json::object());
     config_.emplace("print", false);
     config_["loss"].emplace("enable", false);
-    config_["loss"].emplace("every", 3);
+    config_["loss"].emplace("percent", 40);
 
     print_ = config_["print"].get<bool>();
     simulate_loss_ = config_["loss"]["enable"].get<bool>();
-    loss_every_ = config_["loss"]["every"].get<size_t>();
+    loss_percent_ = config_["loss"]["percent"].get<int>();
 
     udp_.start([this](auto &message, auto &ip, auto port)
                { on_network_message(message, ip, port); });
@@ -34,8 +34,7 @@ namespace tejoy::detail::modules
 
   void NetworkModule::on_send_packet_request(const events::detail::SendPacketRequest &e)
   {
-    static size_t packet_counter = 0;
-    if (simulate_loss_ && (++packet_counter % loss_every_ == 0))
+    if (rand() % 100 < loss_percent_)
     {
       if (print_)
         std::cout << "Not sent message \"" << e.message << "\" to " << e.ip << ":" << e.port << std::endl;

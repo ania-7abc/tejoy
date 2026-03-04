@@ -27,6 +27,6 @@ namespace tejoy::detail::modules
 
     bool print_;
     bool simulate_loss_;
-    size_t loss_every_;
+    size_t loss_percent_;
   };
 } // namespace tejoy::detail::modules
