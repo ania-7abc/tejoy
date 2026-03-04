@@ -19,7 +19,7 @@ namespace tejoy::detail::modules
   class AckModule : public tejoy::detail::modules::Module
   {
   public:
-    explicit AckModule(event_system::EventBus &bus, nlohmann::json &config, size_t max_attempts = 3, size_t retry_interval_ms = 2000);
+    explicit AckModule(event_system::EventBus &bus, nlohmann::json &config);
 
     void on_start() override;
     void on_stop() override;

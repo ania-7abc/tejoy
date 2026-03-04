@@ -6,8 +6,12 @@
 namespace tejoy::detail::modules
 {
 
-  AckModule::AckModule(event_system::EventBus &bus, nlohmann::json &config, size_t max_attempts, size_t retry_interval)
-      : Module(bus, config), max_attempts_(max_attempts), retry_interval_ms_(retry_interval) {}
+  AckModule::AckModule(event_system::EventBus &bus, nlohmann::json &config)
+      : Module(bus, config)
+  {
+    max_attempts_ = config.emplace("max_attempts", (std::size_t)3).first.value().get<std::size_t>();
+    retry_interval_ms_ = config.emplace("retry_interval_ms", (std::size_t)2000).first.value().get<std::size_t>();
+  }
 
   void AckModule::on_start()
   {

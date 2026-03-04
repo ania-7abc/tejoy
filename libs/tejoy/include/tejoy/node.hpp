@@ -27,7 +27,7 @@ namespace tejoy
     std::vector<std::shared_ptr<event_system::Subscriber>> request_data_subs_;
 
   public:
-    Node(std::string data_path, uint16_t port = 5768, size_t max_attempts = 3, size_t retry_interval_ms = 2000);
+    Node(std::string data_path, uint16_t port = 5768);
     ~Node();
 
     EventBus &get_event_bus();

@@ -10,11 +10,11 @@
 namespace tejoy
 {
 
-  Node::Node(std::string data_path, uint16_t port, size_t max_attempts, size_t retry_interval_ms) : storage_(data_path),
-                                                                                                    bus_(),
-                                                                                                    module_manager_(bus_, storage_),
-                                                                                                    port_(port),
-                                                                                                    request_data_subs_()
+  Node::Node(std::string data_path, uint16_t port) : storage_(data_path),
+                                                     bus_(),
+                                                     module_manager_(bus_, storage_),
+                                                     port_(port),
+                                                     request_data_subs_()
   {
     storage_.load();
 
@@ -44,7 +44,7 @@ namespace tejoy
     module_manager_.create_module<detail::modules::NetworkModule>("/network"_json_pointer, port_);
     module_manager_.create_module<detail::modules::UpdateManagerModule>("/update_manager"_json_pointer);
     module_manager_.create_module<detail::modules::UpdateSorterModule>("/update_sorter"_json_pointer);
-    module_manager_.create_module<detail::modules::AckModule>("/ack"_json_pointer, max_attempts, retry_interval_ms);
+    module_manager_.create_module<detail::modules::AckModule>("/ack"_json_pointer);
     module_manager_.start_all();
   }
 
