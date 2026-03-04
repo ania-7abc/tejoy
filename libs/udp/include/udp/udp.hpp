@@ -17,7 +17,12 @@ public:
   ~UDP();
   void start(Callback callback);
   void stop();
+
   void send(const std::string &msg, const std::string &ip, uint16_t port);
+
+  void join_multicast_group(const std::string &multicast_ip);
+  void leave_multicast_group(const std::string &multicast_ip);
+  void set_multicast_interface(const std::string &local_ip);
 
 private:
   void receive();

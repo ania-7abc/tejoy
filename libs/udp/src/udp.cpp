@@ -43,6 +43,24 @@ void UDP::send(const std::string &msg, const std::string &ip, uint16_t port)
                         [this](auto ec, size_t) {});
 }
 
+void UDP::join_multicast_group(const std::string &multicast_ip)
+{
+  auto address = boost::asio::ip::make_address(multicast_ip);
+  socket_.set_option(boost::asio::ip::multicast::join_group(address));
+}
+
+void UDP::leave_multicast_group(const std::string &multicast_ip)
+{
+  auto address = boost::asio::ip::make_address(multicast_ip);
+  socket_.set_option(boost::asio::ip::multicast::leave_group(address));
+}
+
+void UDP::set_multicast_interface(const std::string &local_ip)
+{
+  auto address = boost::asio::ip::make_address(local_ip);
+  socket_.set_option(boost::asio::ip::multicast::outbound_interface(address.to_v4()));
+}
+
 void UDP::receive()
 {
   if (!callback_)
