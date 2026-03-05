@@ -17,7 +17,7 @@ UDP::~UDP()
   stop();
 }
 
-void UDP::start(Callback callback)
+void UDP::set_callback(Callback callback)
 {
   if (!running_)
     throw std::runtime_error("UDP is not running");

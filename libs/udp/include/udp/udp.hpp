@@ -15,7 +15,7 @@ public:
   using Callback = std::function<void(const std::string &message, const std::string &ip, uint16_t port)>;
   UDP(uint16_t port);
   ~UDP();
-  void start(Callback callback);
+  void set_callback(Callback callback);
   void stop();
 
   void send(const std::string &msg, const std::string &ip, uint16_t port);

@@ -23,7 +23,7 @@ namespace tejoy::detail::modules
     simulate_loss_ = config_["loss"]["enable"].get<bool>();
     loss_percent_ = config_["loss"]["percent"].get<int>();
 
-    udp_.start([this](auto &message, auto &ip, auto port)
+    udp_.set_callback([this](auto &message, auto &ip, auto port)
                { on_network_message(message, ip, port); });
     subscribe<events::detail::SendPacketRequest>([this](auto &e)
                                                  { on_send_packet_request(e); });
