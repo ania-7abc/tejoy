@@ -2,6 +2,7 @@
 
 #include <tejoy/detail/modules/network_module.hpp>
 #include <tejoy/events/data_requests.hpp>
+#include <tejoy/events/detail/multicast_events.hpp>
 
 #include <iostream>
 
@@ -24,9 +25,14 @@ namespace tejoy::detail::modules
     loss_percent_ = config_["loss"]["percent"].get<int>();
 
     udp_.set_callback([this](auto &message, auto &ip, auto port)
-               { on_network_message(message, ip, port); });
+                      { on_network_message(message, ip, port); });
     subscribe<events::detail::SendPacketRequest>([this](auto &e)
                                                  { on_send_packet_request(e); });
+
+    subscribe<events::detail::JoinMulticastGroupRequest>([this](auto &e)
+                                                         { udp_.join_multicast_group(e.ip); });
+    subscribe<events::detail::LeaveMulticastGroupRequest>([this](auto &e)
+                                                          { udp_.leave_multicast_group(e.ip); });
   }
 
   void NetworkModule::on_stop()
