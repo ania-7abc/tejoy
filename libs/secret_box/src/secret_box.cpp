@@ -11,19 +11,20 @@ void SecretBox::init_sodium()
     throw std::runtime_error("Sodium is not initialized correctly");
 }
 
-SecretBox::SecretBox() : secret_key_(crypto_box_SECRETKEYBYTES), public_key_(crypto_box_PUBLICKEYBYTES), has_secret_(true)
+SecretBox::SecretBox(bool gen_keys) : secret_key_(crypto_box_SECRETKEYBYTES), public_key_(crypto_box_PUBLICKEYBYTES), has_secret_(gen_keys), has_public_(gen_keys)
 {
   init_sodium();
-  if (crypto_box_keypair(public_key_.data(), secret_key_.data()))
-    throw std::runtime_error("Failed to generate keys");
+  if (gen_keys)
+    if (crypto_box_keypair(public_key_.data(), secret_key_.data()))
+      throw std::runtime_error("Failed to generate keys");
 }
-SecretBox::SecretBox(const std::vector<uint8_t> &public_key) : public_key_(public_key), has_secret_(false)
+SecretBox::SecretBox(const std::vector<uint8_t> &public_key) : public_key_(public_key), has_secret_(false), has_public_(true)
 {
   init_sodium();
   if (public_key_.size() != crypto_box_PUBLICKEYBYTES)
     throw std::runtime_error("Invalid public key size");
 }
-SecretBox::SecretBox(const std::vector<uint8_t> &secret_key, const std::vector<uint8_t> &public_key) : public_key_(public_key), secret_key_(secret_key), has_secret_(true)
+SecretBox::SecretBox(const std::vector<uint8_t> &secret_key, const std::vector<uint8_t> &public_key) : public_key_(public_key), secret_key_(secret_key), has_secret_(true), has_public_(true)
 {
   init_sodium();
   if (public_key_.size() != crypto_box_PUBLICKEYBYTES)
@@ -35,12 +36,15 @@ SecretBox::SecretBox(const std::vector<uint8_t> &secret_key, const std::vector<u
 const std::vector<uint8_t> &SecretBox::get_public_key() const { return public_key_; }
 const std::vector<uint8_t> &SecretBox::get_secret_key() const { return secret_key_; }
 bool SecretBox::has_secret_key() const { return has_secret_; }
+bool SecretBox::has_public_key() const { return has_public_; }
 
 std::vector<uint8_t> SecretBox::encrypt(const std::string &text, const std::vector<uint8_t> &recipient_public_key) const { return encrypt(text, SecretBox(recipient_public_key)); }
 std::vector<uint8_t> SecretBox::encrypt(const std::string &text, const SecretBox &recipient) const
 {
   if (!has_secret_)
     throw std::runtime_error("Encryption unavailable without secret key");
+  if (!recipient.has_public_)
+    throw std::runtime_error("Encryption unavailable without recipient public key");
 
   std::vector<uint8_t> result;
   result.resize(crypto_box_NONCEBYTES + (text.length() + crypto_box_MACBYTES));
@@ -67,6 +71,8 @@ std::string SecretBox::decrypt(const std::vector<uint8_t> &data, const SecretBox
 {
   if (!has_secret_)
     throw std::runtime_error("Decryption unavailable without secret key");
+  if (!sender.has_public_)
+    throw std::runtime_error("Decryption unavailable without sender public key");
 
   size_t text_len = (data.size() - crypto_box_NONCEBYTES) - crypto_box_MACBYTES;
   if (text_len < 0)

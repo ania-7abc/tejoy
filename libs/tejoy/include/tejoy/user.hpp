@@ -13,7 +13,7 @@ namespace tejoy
 
   struct User
   {
-    SecretBox box;
+    SecretBox box = SecretBox(false);
     std::string ip;
     uint16_t port;
   };
@@ -25,18 +25,22 @@ namespace tejoy
     j["port"] = u.port;
     if (u.box.has_secret_key())
       j["key"] = Base64::encode(u.box.get_secret_key());
-    j["id"] = Base64::encode(u.box.get_public_key());
+    if (u.box.has_public_key())
+      j["id"] = Base64::encode(u.box.get_public_key());
   }
 
   inline void from_json(const nlohmann::json &j, User &u)
   {
     j.at("ip").get_to(u.ip);
     j.at("port").get_to(u.port);
-    auto id = Base64::decode(j.at("key").get<std::string>());
-    if (j.contains("key"))
-      u.box = SecretBox(id, Base64::decode(j.at("id").get<std::string>()));
+    if (j.contains("id") && j.contains("key"))
+      u.box = SecretBox(Base64::decode(j["key"]), Base64::decode(j["id"]));
+    else if (j.contains("id"))
+      u.box = SecretBox(Base64::decode(j["id"]));
+    else if (j.contains("key"))
+      throw std::runtime_error("SecretBox must not contain only the private key");
     else
-      u.box = SecretBox(id);
+      u.box = SecretBox(false);
   }
 
 }
