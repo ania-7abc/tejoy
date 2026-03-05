@@ -5,7 +5,7 @@
 
 #include <vector>
 
-void Storage::save_impl(const std::string &path, const nlohmann::json &j)
+void Storage::save_impl(const std::string &path, const nlohmann::json &j) const
 {
   if (j.is_object() || j.is_array())
   {
@@ -45,7 +45,7 @@ nlohmann::json Storage::load_impl(const std::string &path)
   }
 }
 
-void Storage::save()
+void Storage::save() const
 {
   if (SimpleIO::exists(storage_path_))
     SimpleIO::remove(storage_path_);
