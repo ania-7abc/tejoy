@@ -22,7 +22,7 @@ namespace tejoy::detail::modules
     void on_packet_received(const tejoy::events::detail::PacketReceived &e);
 
     User i_;
-    bool encrypt_;
+    bool always_no_encrypt_;
   };
 
 } // namespace tejoy::detail::modules

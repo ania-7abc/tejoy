@@ -31,7 +31,7 @@ namespace tejoy::detail::modules
     else
       config_.at("i").get_to(i_);
 
-    encrypt_ = config_.emplace("encrypt", true).first.value().get<bool>();
+    always_no_encrypt_ = config_.emplace("always_no_encrypt", false).first.value().get<bool>();
 
     subscribe<events::detail::SendUpdateRequest>([this](auto &e)
                                                  { on_send_update_request(e); });
@@ -54,10 +54,16 @@ namespace tejoy::detail::modules
   void UpdateManagerModule::on_send_update_request(const events::detail::SendUpdateRequest &e)
   {
     nlohmann::json packet;
-    if (encrypt_)
-      packet = nlohmann::json({{"data", Base64::encode(i_.box.encrypt(e.update.dump(), e.to.box))}});
+    bool no_encrypt;
+
+    no_encrypt |= always_no_encrypt_;
+    no_encrypt |= !e.to.box.has_public_key();
+    no_encrypt |= e.update.value("no_encrypt", false);
+
+    if (!no_encrypt)
+      packet = nlohmann::json({{"no_encrypt", false}, {"data", Base64::encode(i_.box.encrypt(e.update.dump(), e.to.box))}});
     else
-      packet = nlohmann::json({{"data", e.update}});
+      packet = nlohmann::json({{"no_encrypt", true}, {"data", e.update}});
     packet.emplace("id", Base64::encode(i_.box.get_public_key()));
     publish<events::detail::SendPacketRequest>(packet.dump(), e.to.ip, e.to.port);
   }
@@ -66,7 +72,7 @@ namespace tejoy::detail::modules
   {
     nlohmann::json packet = nlohmann::json::parse(e.message.begin(), e.message.end());
     SecretBox from_box(Base64::decode(packet.at("id")));
-    if (encrypt_)
+    if (!packet.at("no_encrypt").get<bool>())
       publish<events::detail::UpdateReceived>(
           nlohmann::json::parse(i_.box.decrypt(Base64::decode(packet.at("data")), from_box)),
           User{.box = from_box, .ip = e.ip, .port = e.port});
