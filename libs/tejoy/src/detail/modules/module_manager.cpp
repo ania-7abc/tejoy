@@ -9,7 +9,14 @@ namespace tejoy::detail::modules
 
   void ModuleManager::start_all()
   {
-    for (auto &[_, mod] : modules_)
+    std::vector<std::shared_ptr<Module>> modules;
+    modules.reserve(modules_.size());
+    for (const auto &[_, mod] : modules_)
+      modules.push_back(mod);
+    std::sort(modules.begin(), modules.end(),
+              [](const auto &a, const auto &b)
+              { return a->priority() > b->priority(); });
+    for (const auto &mod : modules)
       mod->on_start();
   }
 
@@ -21,9 +28,7 @@ namespace tejoy::detail::modules
       modules.push_back(mod);
     std::sort(modules.begin(), modules.end(),
               [](const auto &a, const auto &b)
-              {
-                return a->stop_priority() < b->stop_priority();
-              });
+              { return a->priority() < b->priority(); });
     for (const auto &mod : modules)
       mod->on_stop();
   }

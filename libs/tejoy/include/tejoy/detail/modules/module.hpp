@@ -15,7 +15,7 @@ namespace tejoy::detail::modules
     virtual ~Module() = default;
     virtual void on_start() {}
     virtual void on_stop() {}
-    virtual int stop_priority() const { return 0; }
+    virtual int priority() const { return 0; }
 
   protected:
     nlohmann::json &config_;

@@ -18,7 +18,7 @@ namespace tejoy::detail::modules
     using tejoy::detail::modules::Module::Module;
     void on_start() override;
     void on_stop() override;
-    virtual int stop_priority() const override { return 100; }
+    virtual int priority() const override { return 100; }
 
   private:
     void on_send_packet_request(const tejoy::events::detail::SendPacketRequest &e);
