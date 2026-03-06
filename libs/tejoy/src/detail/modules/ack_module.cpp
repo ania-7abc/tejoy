@@ -103,7 +103,7 @@ namespace tejoy::detail::modules
     std::lock_guard<std::mutex> lock(pending_mutex_);
     auto it = pending_.find(pkg_id);
     if (it != pending_.end())
-      publish<events::detail::SendUpdateRequest>(it->second.event);
+      publish<events::detail::SendUpdateRequest>(it->second.event.update, it->second.event.to);
   }
 
 } // namespace tejoy::detail::modules
