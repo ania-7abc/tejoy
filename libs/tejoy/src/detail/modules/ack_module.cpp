@@ -6,15 +6,11 @@
 namespace tejoy::detail::modules
 {
 
-  AckModule::AckModule(event_system::EventBus &bus, nlohmann::json &config)
-      : Module(bus, config)
-  {
-    max_attempts_ = config.emplace("max_attempts", (std::size_t)3).first.value().get<std::size_t>();
-    retry_interval_ms_ = config.emplace("retry_interval_ms", (std::size_t)2000).first.value().get<std::size_t>();
-  }
-
   void AckModule::on_start()
   {
+    max_attempts_ = config_.emplace("max_attempts", (std::size_t)3).first.value().get<std::size_t>();
+    retry_interval_ms_ = config_.emplace("retry_interval_ms", (std::size_t)2000).first.value().get<std::size_t>();
+
     work_guard_ = std::make_unique<boost::asio::io_context::work>(io_context_);
     io_thread_ = std::thread([this]
                              { io_context_.run(); });

@@ -12,14 +12,11 @@
 namespace tejoy::detail::modules
 {
 
-  UpdateSorterModule::UpdateSorterModule(event_system::EventBus &bus, nlohmann::json &config) : Module(bus, config)
-  {
-    last_ids_ = boost::circular_buffer<uint32_t>(
-        config.emplace("last_ids_buffer_size", (std::size_t)10).first.value().get<std::size_t>());
-  }
-
   void UpdateSorterModule::on_start()
   {
+    last_ids_ = boost::circular_buffer<uint32_t>(
+        config_.emplace("last_ids_buffer_size", (std::size_t)10).first.value().get<std::size_t>());
+
     subscribe<events::detail::UpdateReceived>([this](auto &e)
                                               { on_update_received(e); });
   }

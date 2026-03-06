@@ -12,8 +12,6 @@ namespace tejoy::detail::modules
   class UpdateSorterModule : public tejoy::detail::modules::Module
   {
   public:
-    UpdateSorterModule(event_system::EventBus &bus, nlohmann::json &config);
-
     void on_start() override;
     void on_stop() override;
 

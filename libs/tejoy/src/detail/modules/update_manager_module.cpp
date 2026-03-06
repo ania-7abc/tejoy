@@ -11,8 +11,6 @@
 namespace tejoy::detail::modules
 {
 
-  UpdateManagerModule::UpdateManagerModule(event_system::EventBus &bus, nlohmann::json &config) : Module(bus, config) {}
-
   void UpdateManagerModule::on_start()
   {
     if (!config_.contains("i"))

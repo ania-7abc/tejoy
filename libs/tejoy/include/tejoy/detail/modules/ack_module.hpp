@@ -19,8 +19,6 @@ namespace tejoy::detail::modules
   class AckModule : public tejoy::detail::modules::Module
   {
   public:
-    explicit AckModule(event_system::EventBus &bus, nlohmann::json &config);
-
     void on_start() override;
     void on_stop() override;
 

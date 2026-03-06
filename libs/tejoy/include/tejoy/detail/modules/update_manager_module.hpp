@@ -13,7 +13,6 @@ namespace tejoy::detail::modules
   class UpdateManagerModule : public tejoy::detail::modules::Module
   {
   public:
-    UpdateManagerModule(event_system::EventBus &bus, nlohmann::json &config);
     void on_start() override;
     void on_stop() override;
 
