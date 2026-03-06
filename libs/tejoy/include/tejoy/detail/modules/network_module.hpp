@@ -15,7 +15,6 @@ namespace tejoy::detail::modules
   class NetworkModule : public tejoy::detail::modules::Module
   {
   public:
-    NetworkModule(event_system::EventBus &bus, nlohmann::json &config, uint16_t port);
     void on_start() override;
     void on_stop() override;
 
@@ -23,7 +22,7 @@ namespace tejoy::detail::modules
     void on_send_packet_request(const tejoy::events::detail::SendPacketRequest &e);
     void on_network_message(const std::string &message, const std::string &ip, uint16_t port);
 
-    UDP udp_;
+    std::optional<UDP> udp_;
 
     bool print_;
     bool simulate_loss_;

@@ -41,7 +41,7 @@ namespace tejoy
           bus_.publish(std::make_shared<events::detail::SendUpdateRequest>(update, e.to));
         }));
 
-    module_manager_.create_module<detail::modules::NetworkModule>("/network"_json_pointer, port_);
+    module_manager_.create_module<detail::modules::NetworkModule>("/network"_json_pointer);
     module_manager_.create_module<detail::modules::UpdateManagerModule>("/update_manager"_json_pointer);
     module_manager_.create_module<detail::modules::UpdateSorterModule>("/update_sorter"_json_pointer);
     module_manager_.create_module<detail::modules::AckModule>("/ack"_json_pointer);

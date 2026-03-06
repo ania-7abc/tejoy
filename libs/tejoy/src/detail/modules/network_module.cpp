@@ -9,8 +9,6 @@
 namespace tejoy::detail::modules
 {
 
-  NetworkModule::NetworkModule(event_system::EventBus &bus, nlohmann::json &config, uint16_t port) : Module(bus, config), udp_(port) {}
-
   void NetworkModule::on_start()
   {
     srand(time(nullptr));
@@ -24,20 +22,26 @@ namespace tejoy::detail::modules
     simulate_loss_ = config_["loss"]["enable"].get<bool>();
     loss_percent_ = config_["loss"]["percent"].get<int>();
 
-    udp_.set_callback([this](auto &message, auto &ip, auto port)
-                      { on_network_message(message, ip, port); });
+    std::promise<uint16_t> promise;
+    auto ft = promise.get_future();
+    publish<events::RequestPort>(promise);
+
+    udp_.emplace(ft.get());
+    udp_.value().set_callback([this](auto &message, auto &ip, auto port)
+                              { on_network_message(message, ip, port); });
     subscribe<events::detail::SendPacketRequest>([this](auto &e)
                                                  { on_send_packet_request(e); });
 
     subscribe<events::detail::JoinMulticastGroupRequest>([this](auto &e)
-                                                         { udp_.join_multicast_group(e.ip); });
+                                                         { udp_.value().join_multicast_group(e.ip); });
     subscribe<events::detail::LeaveMulticastGroupRequest>([this](auto &e)
-                                                          { udp_.leave_multicast_group(e.ip); });
+                                                          { udp_.value().leave_multicast_group(e.ip); });
   }
 
   void NetworkModule::on_stop()
   {
-    udp_.stop();
+    udp_.value().stop();
+    udp_.reset();
   }
 
   void NetworkModule::on_send_packet_request(const events::detail::SendPacketRequest &e)
@@ -48,7 +52,7 @@ namespace tejoy::detail::modules
         std::cout << "Not sent message \"" << e.message << "\" to " << e.ip << ":" << e.port << std::endl;
       return;
     }
-    udp_.send(e.message, e.ip, e.port);
+    udp_.value().send(e.message, e.ip, e.port);
     if (print_)
       std::cout << "Sent message \"" << e.message << "\" to " << e.ip << ":" << e.port << std::endl;
   }
