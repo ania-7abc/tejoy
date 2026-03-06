@@ -13,6 +13,7 @@ namespace tejoy::detail::modules
   class UpdateManagerModule : public tejoy::detail::modules::Module
   {
   public:
+    using tejoy::detail::modules::Module::Module;
     void on_start() override;
     void on_stop() override;
 
