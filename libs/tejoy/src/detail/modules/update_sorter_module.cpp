@@ -38,6 +38,10 @@ namespace tejoy::detail::modules
 
     if (type == "message")
       publish<events::MessageUpdateReceived>(e.update.at("data").at("text").get<std::string>(), pkg_id, e.from);
+    else if (type == "allo")
+      publish<events::AlloUpdateReceived>(e.from);
+    else if (type == "imok")
+      publish<events::ImokUpdateReceived>(e.from);
     else
       publish<events::InvalidUpdateError>(pkg_id, type, "Invalid update type");
   }

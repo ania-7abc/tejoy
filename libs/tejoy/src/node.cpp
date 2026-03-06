@@ -4,7 +4,9 @@
 #include <tejoy/detail/modules/network_module.hpp>
 #include <tejoy/detail/modules/update_manager_module.hpp>
 #include <tejoy/detail/modules/update_sorter_module.hpp>
+#include <tejoy/detail/modules/discovery_module.hpp>
 #include <tejoy/events/message.hpp>
+#include <tejoy/events/updates.hpp>
 #include <tejoy/node.hpp>
 
 namespace tejoy
@@ -21,13 +23,11 @@ namespace tejoy
     if (!storage_.data.contains("/node/contacts"_json_pointer))
       storage_.data["/node/contacts"_json_pointer] = nlohmann::json({});
 
-    request_data_subs_.push_back(bus_.make_subscriber<events::RequestPort>(
-        [this](auto &e)
-        { e.promise.set_value(port_); }));
-    request_data_subs_.push_back(bus_.make_subscriber<events::RequestIp>(
-        [this](auto &e)
-        { e.promise.set_value("127.0.0.1"); }));
-    request_data_subs_.push_back(bus_.make_subscriber<events::SendMessageRequest>(
+    request_data_subs_.push_back(bus_.make_subscriber<events::RequestPort>([this](auto &e)
+                                                                           { e.promise.set_value(port_); }));
+    request_data_subs_.push_back(bus_.make_subscriber<events::RequestIp>([this](auto &e)
+                                                                         { e.promise.set_value("127.0.0.1"); }));
+    request_data_subs_.push_back(bus_.make_subscriber<events::SendConfiguredUpdateRequest>(
         [this](auto &e)
         {
           auto &contact = storage_.data
@@ -37,14 +37,24 @@ namespace tejoy
           uint32_t pkg_id = contact.value("last_pkg_id", (uint32_t)0) + 1;
           contact["last_pkg_id"] = pkg_id;
 
-          nlohmann::json update = {{"pkg_id", pkg_id}, {"type", "message"}, {"data", {{"text", e.text}}}};
+          nlohmann::json update({
+              {"type", e.type},
+              {"pkg_id", pkg_id},
+              {"data", e.data},
+              {"no_ack", e.no_ack},
+              {"no_encrypt", e.no_encrypt},
+          });
           bus_.publish(std::make_shared<events::detail::SendUpdateRequest>(update, e.to));
         }));
+    request_data_subs_.push_back(bus_.make_subscriber<events::SendMessageRequest>(
+        [this](auto &e)
+        { bus_.publish(std::make_shared<events::SendConfiguredUpdateRequest>(nlohmann::json({{"text", e.text}}), "message", e.to)); }));
 
     module_manager_.create_module<detail::modules::NetworkModule>("/network"_json_pointer);
     module_manager_.create_module<detail::modules::UpdateManagerModule>("/update_manager"_json_pointer);
     module_manager_.create_module<detail::modules::UpdateSorterModule>("/update_sorter"_json_pointer);
     module_manager_.create_module<detail::modules::AckModule>("/ack"_json_pointer);
+    module_manager_.create_module<detail::modules::DiscoveryModule>("/discovery"_json_pointer);
     module_manager_.start_all();
   }
 

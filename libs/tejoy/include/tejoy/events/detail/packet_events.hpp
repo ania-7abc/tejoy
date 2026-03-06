@@ -50,8 +50,6 @@ namespace tejoy::events::detail
   {
     SendUpdateRequest(nlohmann::json update, tejoy::User to)
         : update(std::move(update)), to(std::move(to)) {}
-    SendUpdateRequest(const SendUpdateRequest &e)
-        : SendUpdateRequest(e.update, e.to) {}
     nlohmann::json update;
     tejoy::User to;
   };
