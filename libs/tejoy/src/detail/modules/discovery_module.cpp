@@ -63,6 +63,8 @@ namespace tejoy::detail::modules
 
   void DiscoveryModule::on_allo_received(const events::AlloUpdateReceived &e)
   {
+    if (e.from.box.get_public_key() == i_.box.get_public_key())
+      return;
     publish<events::DiscoveredNewNode>(e.from);
     if (!anonymous_)
       publish<events::SendConfiguredUpdateRequest>(nlohmann::json::object(), "imok", e.from, false, true);

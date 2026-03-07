@@ -32,6 +32,8 @@ namespace tejoy::detail::modules
     uint16_t discovery_port_;
     size_t ping_interval_s_;
     bool anonymous_;
+
+    tejoy::User i_;
   };
 
 } // namespace tejoy::detail::modules
