@@ -23,10 +23,6 @@ namespace tejoy
     if (!storage_.data.contains("/node/contacts"_json_pointer))
       storage_.data["/node/contacts"_json_pointer] = nlohmann::json({});
 
-    request_data_subs_.push_back(bus_.make_subscriber<events::RequestPort>([this](auto &e)
-                                                                           { e.promise.set_value(port_); }));
-    request_data_subs_.push_back(bus_.make_subscriber<events::RequestIp>([this](auto &e)
-                                                                         { e.promise.set_value("127.0.0.1"); }));
     request_data_subs_.push_back(bus_.make_subscriber<events::SendConfiguredUpdateRequest>(
         [this](auto &e)
         {

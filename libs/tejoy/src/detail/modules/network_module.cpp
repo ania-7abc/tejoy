@@ -13,20 +13,17 @@ namespace tejoy::detail::modules
   {
     srand(time(nullptr));
 
-    config_.emplace("loss", nlohmann::json::object());
     config_.emplace("print", false);
+    config_.emplace("port", (uint16_t)5768);
     config_["loss"].emplace("enable", false);
     config_["loss"].emplace("percent", 40);
 
     print_ = config_["print"].get<bool>();
     simulate_loss_ = config_["loss"]["enable"].get<bool>();
     loss_percent_ = config_["loss"]["percent"].get<int>();
+    uint16_t port = config_["port"].get<uint16_t>();
 
-    std::promise<uint16_t> promise;
-    auto ft = promise.get_future();
-    publish<events::RequestPort>(promise);
-
-    udp_.emplace(ft.get());
+    udp_.emplace(port);
     udp_.value().set_callback([this](auto &message, auto &ip, auto port)
                               { on_network_message(message, ip, port); });
     subscribe<events::detail::SendPacketRequest>([this](auto &e)
@@ -36,6 +33,11 @@ namespace tejoy::detail::modules
                                                          { udp_.value().join_multicast_group(e.ip); });
     subscribe<events::detail::LeaveMulticastGroupRequest>([this](auto &e)
                                                           { udp_.value().leave_multicast_group(e.ip); });
+
+    subscribe<events::RequestPort>([port](auto &e)
+                                   { e.promise.set_value(port); });
+    subscribe<events::RequestIp>([](auto &e)
+                                 { e.promise.set_value("127.0.0.1"); });
   }
 
   void NetworkModule::on_stop()
@@ -46,7 +48,7 @@ namespace tejoy::detail::modules
 
   void NetworkModule::on_send_packet_request(const events::detail::SendPacketRequest &e)
   {
-    if (rand() % 100 < loss_percent_)
+    if (simulate_loss_ && rand() % 100 < loss_percent_)
     {
       if (print_)
         std::cout << "Not sent message \"" << e.message << "\" to " << e.ip << ":" << e.port << std::endl;
