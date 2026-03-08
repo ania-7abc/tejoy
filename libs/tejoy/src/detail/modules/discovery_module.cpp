@@ -68,20 +68,20 @@ void DiscoveryModule::on_stop()
 
 void DiscoveryModule::on_allo_received(const events::AlloUpdateReceived &event)
 {
-    if (event.from.box.get_public_key() == i_.box.get_public_key())
+    if (event.sender.box.get_public_key() == i_.box.get_public_key())
     {
         return;
     }
-    publish<events::DiscoveredNewNode>(event.from);
+    publish<events::DiscoveredNewNode>(event.sender);
     if (!anonymous_)
     {
-        publish<events::SendConfiguredUpdateRequest>(nlohmann::json::object(), "imok", event.from, false, true);
+        publish<events::SendConfiguredUpdateRequest>(nlohmann::json::object(), "imok", event.sender, false, true);
     }
 }
 
 void DiscoveryModule::on_imok_received(const events::ImokUpdateReceived &event)
 {
-    publish<events::DiscoveredNewNode>(event.from);
+    publish<events::DiscoveredNewNode>(event.sender);
 }
 
 void DiscoveryModule::on_timer()

@@ -32,7 +32,7 @@ auto main() -> int
     tejoy::Node node("data");
 
     auto sub1 = node.get_event_bus().make_subscriber<tejoy::events::MessageUpdateReceived>([](auto &event) {
-        std::cout << "\"" << event.text << "\" from " << event.from.ip << ":" << event.from.port << std::endl;
+        std::cout << "\"" << event.text << "\" from " << event.sender.ip << ":" << event.sender.port << std::endl;
     });
     auto sub2 = node.get_event_bus().make_subscriber<tejoy::events::DiscoveredNewNode>(
         [](auto &event) { std::cout << "Found " << event.node.ip << std::endl; });

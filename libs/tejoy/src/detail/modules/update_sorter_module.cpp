@@ -30,7 +30,7 @@ void UpdateSorterModule::on_update_received(const events::detail::UpdateReceived
     uint32_t pkg_id = event.update.at("pkg_id").get<uint32_t>();
     if (type == "ack")
     {
-        publish<events::AckUpdateReceived>(pkg_id, event.from);
+        publish<events::AckUpdateReceived>(pkg_id, event.sender);
     }
 
     if (std::find(last_ids_.begin(), last_ids_.end(), pkg_id) != last_ids_.end())
@@ -41,15 +41,16 @@ void UpdateSorterModule::on_update_received(const events::detail::UpdateReceived
 
     if (type == "message")
     {
-        publish<events::MessageUpdateReceived>(event.update.at("data").at("text").get<std::string>(), pkg_id, event.from);
+        publish<events::MessageUpdateReceived>(event.update.at("data").at("text").get<std::string>(), pkg_id,
+                                               event.sender);
     }
     else if (type == "allo")
     {
-        publish<events::AlloUpdateReceived>(event.from);
+        publish<events::AlloUpdateReceived>(event.sender);
     }
     else if (type == "imok")
     {
-        publish<events::ImokUpdateReceived>(event.from);
+        publish<events::ImokUpdateReceived>(event.sender);
     }
     else
     {

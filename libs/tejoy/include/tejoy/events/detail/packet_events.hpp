@@ -36,17 +36,17 @@ struct SendPacketRequest : event_system::Event
 
 struct UpdateReceived : event_system::Event
 {
-    UpdateReceived(nlohmann::json update, tejoy::User from) : update(std::move(update)), from(std::move(from))
+    UpdateReceived(nlohmann::json update, tejoy::User sender) : update(std::move(update)), sender(std::move(sender))
     {
     }
     nlohmann::json update;
-    tejoy::User from;
+    tejoy::User sender;
 };
 
 struct SendAckUpdateRequest : event_system::Event
 {
     explicit SendAckUpdateRequest(const UpdateReceived &event)
-        : pkg_id(event.update.at("pkg_id").get<uint32_t>()), recipient(event.from)
+        : pkg_id(event.update.at("pkg_id").get<uint32_t>()), recipient(event.sender)
     {
     }
     uint32_t pkg_id;
