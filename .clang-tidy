@@ -1,0 +1,4 @@
+# .clang-tidy
+Checks: 'google-*, modernize-*, readability-*, performance-*, cppcoreguidelines-*'
+WarningsAsErrors: '*'
+HeaderFilterRegex: '.*'
