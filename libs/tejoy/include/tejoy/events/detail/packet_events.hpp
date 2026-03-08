@@ -6,52 +6,59 @@
 #include <cstdint>
 #include <string>
 
-#include <nlohmann/json.hpp>
 #include <event_system/event.hpp>
+#include <nlohmann/json.hpp>
 
 namespace tejoy::events::detail
 {
 
-  struct PacketReceived : event_system::Event
-  {
-    PacketReceived(std::string message, std::string ip, uint16_t port)
-        : message(std::move(message)), ip(std::move(ip)), port(port) {}
+struct PacketReceived : event_system::Event
+{
+    PacketReceived(std::string message, std::string sender_ip, uint16_t port)
+        : message(std::move(message)), sender_ip(std::move(sender_ip)), port(port)
+    {
+    }
     std::string message;
-    std::string ip;
+    std::string sender_ip;
     uint16_t port;
-  };
+};
 
-  struct SendPacketRequest : event_system::Event
-  {
-    SendPacketRequest(std::string message, std::string ip, uint16_t port)
-        : message(std::move(message)), ip(std::move(ip)), port(port) {}
+struct SendPacketRequest : event_system::Event
+{
+    SendPacketRequest(std::string message, std::string recipient_ip, uint16_t port)
+        : message(std::move(message)), recipient_ip(std::move(recipient_ip)), port(port)
+    {
+    }
     std::string message;
-    std::string ip;
+    std::string recipient_ip;
     uint16_t port;
-  };
+};
 
-  struct UpdateReceived : event_system::Event
-  {
-    UpdateReceived(nlohmann::json update, tejoy::User from)
-        : update(std::move(update)), from(std::move(from)) {}
+struct UpdateReceived : event_system::Event
+{
+    UpdateReceived(nlohmann::json update, tejoy::User from) : update(std::move(update)), from(std::move(from))
+    {
+    }
     nlohmann::json update;
     tejoy::User from;
-  };
+};
 
-  struct SendAckUpdateRequest : event_system::Event
-  {
-    SendAckUpdateRequest(const UpdateReceived &e)
-        : pkg_id(e.update.at("pkg_id").get<uint32_t>()), to(e.from) {}
+struct SendAckUpdateRequest : event_system::Event
+{
+    explicit SendAckUpdateRequest(const UpdateReceived &event) : pkg_id(event.update.at("pkg_id").get<uint32_t>()), recipient(event.from)
+    {
+    }
     uint32_t pkg_id;
-    tejoy::User to;
-  };
+    tejoy::User recipient;
+};
 
-  struct SendUpdateRequest : event_system::Event
-  {
-    SendUpdateRequest(nlohmann::json update, tejoy::User to)
-        : update(std::move(update)), to(std::move(to)) {}
+struct SendUpdateRequest : event_system::Event
+{
+    SendUpdateRequest(nlohmann::json update, tejoy::User recipient) : update(std::move(update)), recipient(std::move(recipient))
+    {
+    }
     nlohmann::json update;
-    tejoy::User to;
-  };
+    tejoy::User recipient;
+};
 
 } // namespace tejoy::events::detail

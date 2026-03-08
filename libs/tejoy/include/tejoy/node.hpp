@@ -16,9 +16,9 @@
 namespace tejoy
 {
 
-  using EventBus = event_system::EventBus;
-  class Node
-  {
+using EventBus = event_system::EventBus;
+class Node
+{
   private:
     Storage storage_;
     EventBus bus_;
@@ -27,10 +27,15 @@ namespace tejoy
     std::vector<std::shared_ptr<event_system::Subscriber>> request_data_subs_;
 
   public:
-    Node(std::string data_path, uint16_t port = 5768);
+    // NOLINTNEXTLINE(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+    explicit Node(std::string data_path, uint16_t port = 5768);
     ~Node();
+    Node(const Node &) = delete;
+    auto operator=(const Node &) -> Node & = delete;
+    Node(Node &&) = delete;
+    auto operator=(Node &&) -> Node & = delete;
 
-    EventBus &get_event_bus();
-  };
+    auto get_event_bus() -> EventBus &;
+};
 
 } // namespace tejoy

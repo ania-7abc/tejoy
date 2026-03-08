@@ -8,16 +8,20 @@
 namespace tejoy::events::detail
 {
 
-  struct JoinMulticastGroupRequest : event_system::Event
-  {
-    JoinMulticastGroupRequest(std::string ip) : ip(std::move(ip)) {}
-    std::string ip;
-  };
+struct JoinMulticastGroupRequest : event_system::Event
+{
+    explicit JoinMulticastGroupRequest(std::string multicast_ip) : multicast_ip(std::move(multicast_ip))
+    {
+    }
+    std::string multicast_ip;
+};
 
-  struct LeaveMulticastGroupRequest : event_system::Event
-  {
-    LeaveMulticastGroupRequest(std::string ip) : ip(std::move(ip)) {}
-    std::string ip;
-  };
+struct LeaveMulticastGroupRequest : event_system::Event
+{
+    explicit LeaveMulticastGroupRequest(std::string multicast_ip) : multicast_ip(std::move(multicast_ip))
+    {
+    }
+    std::string multicast_ip;
+};
 
 } // namespace tejoy::events::detail

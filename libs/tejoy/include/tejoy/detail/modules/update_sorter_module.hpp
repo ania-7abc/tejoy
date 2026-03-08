@@ -9,17 +9,17 @@
 namespace tejoy::detail::modules
 {
 
-  class UpdateSorterModule : public tejoy::detail::modules::Module
-  {
+class UpdateSorterModule : public tejoy::detail::modules::Module
+{
   public:
     using tejoy::detail::modules::Module::Module;
     void on_start() override;
     void on_stop() override;
 
   private:
-    void on_update_received(const tejoy::events::detail::UpdateReceived &e);
+    void on_update_received(const tejoy::events::detail::UpdateReceived &event);
 
     boost::circular_buffer<uint32_t> last_ids_;
-  };
+};
 
 } // namespace tejoy::detail::modules

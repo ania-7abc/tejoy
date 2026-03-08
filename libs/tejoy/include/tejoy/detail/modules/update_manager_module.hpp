@@ -10,19 +10,19 @@
 namespace tejoy::detail::modules
 {
 
-  class UpdateManagerModule : public tejoy::detail::modules::Module
-  {
+class UpdateManagerModule : public tejoy::detail::modules::Module
+{
   public:
     using tejoy::detail::modules::Module::Module;
     void on_start() override;
     void on_stop() override;
 
   private:
-    void on_send_update_request(const tejoy::events::detail::SendUpdateRequest &e);
-    void on_packet_received(const tejoy::events::detail::PacketReceived &e);
+    void on_send_update_request(const tejoy::events::detail::SendUpdateRequest &event);
+    void on_packet_received(const tejoy::events::detail::PacketReceived &event);
 
     User i_;
-    bool always_no_encrypt_;
-  };
+    bool always_no_encrypt_{};
+};
 
 } // namespace tejoy::detail::modules

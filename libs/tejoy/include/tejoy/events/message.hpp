@@ -10,11 +10,13 @@
 namespace tejoy::events
 {
 
-  struct SendMessageRequest : event_system::Event
-  {
-    SendMessageRequest(std::string text, User to) : text(std::move(text)), to(std::move(to)) {}
+struct SendMessageRequest : event_system::Event
+{
+    SendMessageRequest(std::string text, User recipient) : text(std::move(text)), recipient(std::move(recipient))
+    {
+    }
     std::string text;
-    tejoy::User to;
-  };
+    tejoy::User recipient;
+};
 
 } // namespace tejoy::events
