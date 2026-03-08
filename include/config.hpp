@@ -1,5 +1,7 @@
 // config.hpp
 #pragma once
-#define STORAGE_DIR "data"
+#include <string>
+#include <cstdint>
 
-#define PORT 5768
+constexpr std::string STORAGE_DIR = "data";
+constexpr uint16_t PORT = 5768;
