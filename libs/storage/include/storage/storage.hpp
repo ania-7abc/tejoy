@@ -17,7 +17,7 @@ class Storage
     nlohmann::json data_;
 
   public:
-    auto data() -> nlohmann::json
+    auto data() -> nlohmann::json &
     {
         return data_;
     }
