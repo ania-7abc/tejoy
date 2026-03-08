@@ -25,7 +25,7 @@ class NetworkModule : public tejoy::detail::modules::Module
 
   private:
     void on_send_packet_request(const tejoy::events::detail::SendPacketRequest &event);
-    void on_network_message(const std::string &message, const std::string &sender_ip, uint16_t port);
+    void on_network_message(const std::string &message, const std::string &sender_ip, uint16_t sender_port);
 
     std::optional<UDP> udp_;
 

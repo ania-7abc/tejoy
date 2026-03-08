@@ -12,7 +12,8 @@
 class UDP
 {
   public:
-    using Callback = std::function<void(const std::string &message, const std::string &sender_ip, uint16_t port)>;
+    using Callback =
+        std::function<void(const std::string &message, const std::string &sender_ip, uint16_t sender_port)>;
     explicit UDP(uint16_t port);
     ~UDP();
     UDP(const UDP &) = delete;
@@ -23,7 +24,7 @@ class UDP
     void set_callback(Callback callback);
     void stop();
 
-    void send(const std::string &msg, const std::string &recipient_ip, uint16_t port);
+    void send(const std::string &msg, const std::string &recipient_ip, uint16_t recipient_port);
 
     void join_multicast_group(const std::string &multicast_ip);
     void leave_multicast_group(const std::string &multicast_ip);

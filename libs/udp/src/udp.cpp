@@ -37,9 +37,9 @@ void UDP::stop()
     }
 }
 
-void UDP::send(const std::string &msg, const std::string &recipient_ip, uint16_t port)
+void UDP::send(const std::string &msg, const std::string &recipient_ip, uint16_t recipient_port)
 {
-    auto endpoint = boost::asio::ip::udp::endpoint(boost::asio::ip::make_address(recipient_ip), port);
+    auto endpoint = boost::asio::ip::udp::endpoint(boost::asio::ip::make_address(recipient_ip), recipient_port);
 
     socket_.async_send_to(boost::asio::buffer(msg), endpoint, [this](auto error_code, size_t) {});
 }

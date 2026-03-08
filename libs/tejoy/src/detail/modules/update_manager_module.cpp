@@ -57,8 +57,8 @@ void UpdateManagerModule::on_send_update_request(const events::detail::SendUpdat
 
     if (!no_encrypt)
     {
-        packet = nlohmann::json(
-            {{"no_encrypt", false}, {"data", Base64::encode(i_.box.encrypt(event.update.dump(), event.recipient.box))}});
+        packet = nlohmann::json({{"no_encrypt", false},
+                                 {"data", Base64::encode(i_.box.encrypt(event.update.dump(), event.recipient.box))}});
     }
     else
     {
@@ -76,11 +76,12 @@ void UpdateManagerModule::on_packet_received(const events::detail::PacketReceive
     {
         publish<events::detail::UpdateReceived>(
             nlohmann::json::parse(i_.box.decrypt(Base64::decode(packet.at("data")), from_box)),
-            User{.box = from_box, .ip = event.sender_ip, .port = event.port});
+            User{.box = from_box, .ip = event.sender_ip, .port = event.sender_port});
     }
     else
     {
-        publish<events::detail::UpdateReceived>(packet.at("data"), User{.box = from_box, .ip = event.sender_ip, .port = event.port});
+        publish<events::detail::UpdateReceived>(
+            packet.at("data"), User{.box = from_box, .ip = event.sender_ip, .port = event.sender_port});
     }
 }
 

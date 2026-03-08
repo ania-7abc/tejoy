@@ -14,24 +14,24 @@ namespace tejoy::events::detail
 
 struct PacketReceived : event_system::Event
 {
-    PacketReceived(std::string message, std::string sender_ip, uint16_t port)
-        : message(std::move(message)), sender_ip(std::move(sender_ip)), port(port)
+    PacketReceived(std::string message, std::string sender_ip, uint16_t sender_port)
+        : message(std::move(message)), sender_ip(std::move(sender_ip)), sender_port(sender_port)
     {
     }
     std::string message;
     std::string sender_ip;
-    uint16_t port;
+    uint16_t sender_port;
 };
 
 struct SendPacketRequest : event_system::Event
 {
-    SendPacketRequest(std::string message, std::string recipient_ip, uint16_t port)
-        : message(std::move(message)), recipient_ip(std::move(recipient_ip)), port(port)
+    SendPacketRequest(std::string message, std::string recipient_ip, uint16_t recipient_port)
+        : message(std::move(message)), recipient_ip(std::move(recipient_ip)), recipient_port(recipient_port)
     {
     }
     std::string message;
     std::string recipient_ip;
-    uint16_t port;
+    uint16_t recipient_port;
 };
 
 struct UpdateReceived : event_system::Event
@@ -45,7 +45,8 @@ struct UpdateReceived : event_system::Event
 
 struct SendAckUpdateRequest : event_system::Event
 {
-    explicit SendAckUpdateRequest(const UpdateReceived &event) : pkg_id(event.update.at("pkg_id").get<uint32_t>()), recipient(event.from)
+    explicit SendAckUpdateRequest(const UpdateReceived &event)
+        : pkg_id(event.update.at("pkg_id").get<uint32_t>()), recipient(event.from)
     {
     }
     uint32_t pkg_id;
@@ -54,7 +55,8 @@ struct SendAckUpdateRequest : event_system::Event
 
 struct SendUpdateRequest : event_system::Event
 {
-    SendUpdateRequest(nlohmann::json update, tejoy::User recipient) : update(std::move(update)), recipient(std::move(recipient))
+    SendUpdateRequest(nlohmann::json update, tejoy::User recipient)
+        : update(std::move(update)), recipient(std::move(recipient))
     {
     }
     nlohmann::json update;

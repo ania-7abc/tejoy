@@ -26,8 +26,9 @@ void NetworkModule::on_start()
     uint16_t port = config_["port"].get<uint16_t>();
 
     udp_.emplace(port);
-    udp_.value().set_callback(
-        [this](auto &message, auto &sender_ip, auto port) { on_network_message(message, sender_ip, port); });
+    udp_.value().set_callback([this](auto &message, auto &sender_ip, auto sender_port) {
+        on_network_message(message, sender_ip, sender_port);
+    });
     subscribe<events::detail::SendPacketRequest>([this](auto &event) { on_send_packet_request(event); });
 
     subscribe<events::detail::JoinMulticastGroupRequest>(
@@ -53,21 +54,21 @@ void NetworkModule::on_send_packet_request(const events::detail::SendPacketReque
         if (print_)
         {
             std::cout << "Not sent message \"" << event.message << "\" recipient " << event.recipient_ip << ":"
-                      << event.port << '\n';
+                      << event.recipient_port << '\n';
         }
         return;
     }
-    udp_.value().send(event.message, event.recipient_ip, event.port);
+    udp_.value().send(event.message, event.recipient_ip, event.recipient_port);
     if (print_)
     {
-        std::cout << "Sent message \"" << event.message << "\" recipient " << event.recipient_ip << ":" << event.port
-                  << '\n';
+        std::cout << "Sent message \"" << event.message << "\" recipient " << event.recipient_ip << ":"
+                  << event.recipient_port << '\n';
     }
 }
 
-void NetworkModule::on_network_message(const std::string &message, const std::string &sender_ip, uint16_t port)
+void NetworkModule::on_network_message(const std::string &message, const std::string &sender_ip, uint16_t sender_port)
 {
-    publish<events::detail::PacketReceived>(message, sender_ip, port);
+    publish<events::detail::PacketReceived>(message, sender_ip, sender_port);
 }
 
 } // namespace tejoy::detail::modules
