@@ -29,7 +29,7 @@ auto main() -> int
     std::signal(SIGINT, handle_signal);
     std::cout << "Press Ctrl+C to exit" << '\n';
 
-    tejoy::Node node("data", PORT);
+    tejoy::Node node("data");
 
     auto sub1 = node.get_event_bus().make_subscriber<tejoy::events::MessageUpdateReceived>([](auto &event) {
         std::cout << "\"" << event.text << "\" from " << event.from.ip << ":" << event.from.port << std::endl;

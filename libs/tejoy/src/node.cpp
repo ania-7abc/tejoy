@@ -13,8 +13,8 @@
 namespace tejoy
 {
 
-Node::Node(std::string data_path, uint16_t port)
-    : storage_(std::move(data_path)), module_manager_(bus_, storage_), port_(port)
+Node::Node(std::string data_path)
+    : storage_(std::move(data_path)), module_manager_(bus_, storage_)
 {
     storage_.load();
 
