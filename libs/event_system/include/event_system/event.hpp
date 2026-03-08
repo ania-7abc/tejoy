@@ -4,17 +4,29 @@
 namespace event_system
 {
 
-  class Subscriber;
+class Subscriber;
 
-  class Event
-  {
+class Event
+{
   public:
     virtual ~Event() = default;
-    Subscriber *sender() const { return sender_; }
-    void set_sender(Subscriber *s) { sender_ = s; }
+    Event() = default;
+    Event(const Event &) = default;
+    auto operator=(const Event &) -> Event & = default;
+    Event(Event &&) = default;
+    auto operator=(Event &&) -> Event & = default;
+
+    [[nodiscard]] auto sender() const -> Subscriber *
+    {
+        return sender_;
+    }
+    void set_sender(Subscriber *sender)
+    {
+        sender_ = sender;
+    }
 
   private:
     Subscriber *sender_ = nullptr;
-  };
+};
 
 } // namespace event_system

@@ -1,38 +1,43 @@
 // subscriber.hpp
 #pragma once
 
-#include <memory>
 #include <functional>
+#include <memory>
 
 namespace event_system
 {
 
-  class EventBus;
+class EventBus;
 
-  class Subscriber : public std::enable_shared_from_this<Subscriber>
-  {
+class Subscriber : public std::enable_shared_from_this<Subscriber>
+{
     friend class EventBus;
 
   public:
-    explicit Subscriber(EventBus &bus) : bus_(bus) {}
+    explicit Subscriber(EventBus &bus) : bus_(bus)
+    {
+    }
     virtual ~Subscriber() = default;
 
-    Subscriber(const Subscriber &) = delete;
-    Subscriber &operator=(const Subscriber &) = delete;
+    explicit Subscriber(const Subscriber &) = delete;
+    virtual auto operator=(const Subscriber &) -> Subscriber & = delete;
+    explicit Subscriber(Subscriber &&) = delete;
+    virtual auto operator=(Subscriber &&) -> Subscriber & = delete;
 
   protected:
     template <typename EventType>
-    void subscribe(std::function<void(const EventType &)> handler,
-                   Subscriber *senderFilter = nullptr);
+    void subscribe(std::function<void(const EventType &)> handler, Subscriber *senderFilter = nullptr);
 
-    template <typename EventType, typename... Args>
-    void publish(Args &&...args);
+    template <typename EventType, typename... Args> void publish(Args &&...args);
 
-    EventBus &bus() { return bus_; }
+    auto bus() -> EventBus &
+    {
+        return bus_;
+    }
 
   private:
     EventBus &bus_;
-  };
+};
 
 } // namespace event_system
 
@@ -41,19 +46,17 @@ namespace event_system
 namespace event_system
 {
 
-  template <typename EventType>
-  void Subscriber::subscribe(std::function<void(const EventType &)> handler,
-                             Subscriber *senderFilter)
-  {
+template <typename EventType>
+void Subscriber::subscribe(std::function<void(const EventType &)> handler, Subscriber *senderFilter)
+{
     bus_.subscribe(weak_from_this(), std::move(handler), senderFilter);
-  }
+}
 
-  template <typename EventType, typename... Args>
-  void Subscriber::publish(Args &&...args)
-  {
+template <typename EventType, typename... Args> void Subscriber::publish(Args &&...args)
+{
     auto event = std::make_shared<EventType>(std::forward<Args>(args)...);
     event->set_sender(this);
     bus_.publish(event);
-  }
+}
 
 } // namespace event_system
