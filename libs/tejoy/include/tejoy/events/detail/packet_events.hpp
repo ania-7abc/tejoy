@@ -1,13 +1,10 @@
 // packet_events.hpp
 #pragma once
-
-#include <tejoy/user.hpp>
-
 #include <cstdint>
-#include <string>
-
 #include <event_system/event.hpp>
 #include <nlohmann/json.hpp>
+#include <string>
+#include <tejoy/user.hpp>
 
 namespace tejoy::events::detail
 {
@@ -41,16 +38,6 @@ struct UpdateReceived : event_system::Event
     }
     nlohmann::json update;
     tejoy::User sender;
-};
-
-struct SendAckUpdateRequest : event_system::Event
-{
-    explicit SendAckUpdateRequest(const UpdateReceived &event)
-        : pkg_id(event.update.at("pkg_id").get<uint32_t>()), recipient(event.sender)
-    {
-    }
-    uint32_t pkg_id;
-    tejoy::User recipient;
 };
 
 struct SendUpdateRequest : event_system::Event

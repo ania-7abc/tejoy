@@ -1,5 +1,4 @@
 // ack_module.cpp
-
 #include <tejoy/detail/modules/ack_module.hpp>
 #include <tejoy/events/errors.hpp>
 
@@ -87,7 +86,9 @@ void AckModule::on_update_received(const events::detail::UpdateReceived &event)
     std::string type = event.update.at("type").get<std::string>();
     if (type != "ack")
     {
-        publish<events::detail::SendAckUpdateRequest>(event);
+        publish<events::detail::SendUpdateRequest>(
+            nlohmann::json({{"data", {}}, {"type", "ack"}, {"pkg_id", event.update.at("pkg_id").get<uint32_t>()}}),
+            event.sender);
     }
 }
 
@@ -112,7 +113,8 @@ void AckModule::handle_timeout(uint32_t pkg_id)
     auto found_update = pending_.find(pkg_id);
     if (found_update != pending_.end())
     {
-        publish<events::detail::SendUpdateRequest>(found_update->second.event.update, found_update->second.event.recipient);
+        publish<events::detail::SendUpdateRequest>(found_update->second.event.update,
+                                                   found_update->second.event.recipient);
     }
 }
 
