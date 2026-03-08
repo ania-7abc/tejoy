@@ -1,6 +1,6 @@
 add_library(base64 SHARED)
 
-# Collect source files – new .cpp files will be picked up automatically
+# Collect source files - new .cpp files will be picked up automatically
 file(GLOB SOURCES CONFIGURE_DEPENDS "src/*.cpp")
 target_sources(base64 PRIVATE ${SOURCES})
 
