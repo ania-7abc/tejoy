@@ -1,12 +1,9 @@
 // update_manager_module.cpp
-
+#include <base64/base64.hpp>
+#include <future>
+#include <secret_box/secret_box.hpp>
 #include <tejoy/detail/modules/update_manager_module.hpp>
 #include <tejoy/events/data_requests.hpp>
-
-#include <future>
-
-#include <base64/base64.hpp>
-#include <secret_box/secret_box.hpp>
 
 namespace tejoy::detail::modules
 {
@@ -34,10 +31,6 @@ void UpdateManagerModule::on_start()
     always_no_encrypt_ = config_.emplace("always_no_encrypt", false).first.value().get<bool>();
 
     subscribe<events::detail::SendUpdateRequest>([this](auto &event) { on_send_update_request(event); });
-    subscribe<events::detail::SendAckUpdateRequest>([this](auto &event) {
-        nlohmann::json update({{"type", "ack"}, {"pkg_id", event.pkg_id}});
-        on_send_update_request(events::detail::SendUpdateRequest(update, event.recipient));
-    });
     subscribe<events::detail::PacketReceived>([this](auto &event) { on_packet_received(event); });
     subscribe<events::RequestI>([this](auto &event) { event.promise.set_value(i_); });
 }
@@ -57,8 +50,7 @@ void UpdateManagerModule::on_send_update_request(const events::detail::SendUpdat
 
     if (!no_encrypt)
     {
-        packet = nlohmann::json({{"no_encrypt", false},
-                                 {"data", Base64::encode(i_.box.encrypt(event.update.dump(), event.recipient.box))}});
+        packet = nlohmann::json({{"data", Base64::encode(i_.box.encrypt(event.update.dump(), event.recipient.box))}});
     }
     else
     {
@@ -72,16 +64,16 @@ void UpdateManagerModule::on_packet_received(const events::detail::PacketReceive
 {
     nlohmann::json packet = nlohmann::json::parse(event.message.begin(), event.message.end());
     SecretBox from_box(Base64::decode(packet.at("id")));
-    if (!packet.at("no_encrypt").get<bool>())
+    if (packet.value("no_encrypt", false))
     {
         publish<events::detail::UpdateReceived>(
-            nlohmann::json::parse(i_.box.decrypt(Base64::decode(packet.at("data")), from_box)),
-            User{.box = from_box, .ip = event.sender_ip, .port = event.sender_port});
+            packet.at("data"), User{.box = from_box, .ip = event.sender_ip, .port = event.sender_port});
     }
     else
     {
         publish<events::detail::UpdateReceived>(
-            packet.at("data"), User{.box = from_box, .ip = event.sender_ip, .port = event.sender_port});
+            nlohmann::json::parse(i_.box.decrypt(Base64::decode(packet.at("data")), from_box)),
+            User{.box = from_box, .ip = event.sender_ip, .port = event.sender_port});
     }
 }
 
