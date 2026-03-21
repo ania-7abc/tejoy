@@ -8,9 +8,9 @@
 #include <iostream>
 
 #include <tejoy/events/data_requests.hpp>
+#include <tejoy/events/detail/updates.hpp>
 #include <tejoy/events/discovery.hpp>
 #include <tejoy/events/message.hpp>
-#include <tejoy/events/updates.hpp>
 #include <tejoy/node.hpp>
 
 // NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
@@ -31,8 +31,12 @@ auto main() -> int
 
     tejoy::Node node("data");
 
-    auto sub1 = node.get_event_bus().make_subscriber<tejoy::events::MessageUpdateReceived>([](auto &event) {
-        std::cout << "\"" << event.text << "\" from " << event.sender.ip << ":" << event.sender.port << std::endl;
+    auto sub1 = node.get_event_bus().make_subscriber<tejoy::events::detail::UpdateReceived>([](auto &event) {
+        if (event.update.at("type").template get<std::string>() == "message")
+        {
+            std::cout << "\"" << event.update.at("data").at("text").template get<std::string>() << "\" from "
+                      << event.sender.ip << ":" << event.sender.port << std::endl;
+        }
     });
     auto sub2 = node.get_event_bus().make_subscriber<tejoy::events::DiscoveredNewNode>(
         [](auto &event) { std::cout << "Found " << event.node.ip << std::endl; });
