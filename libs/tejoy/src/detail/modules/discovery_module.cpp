@@ -2,8 +2,7 @@
 
 #include <tejoy/detail/modules/discovery_module.hpp>
 #include <tejoy/events/data_requests.hpp>
-#include <tejoy/events/detail/multicast_events.hpp>
-#include <tejoy/events/detail/packet_events.hpp>
+#include <tejoy/events/detail/multicast.hpp>
 #include <tejoy/events/discovery.hpp>
 
 namespace tejoy::detail::modules
@@ -17,22 +16,15 @@ DiscoveryModule::DiscoveryModule(event_system::EventBus &bus, nlohmann::json &co
 void DiscoveryModule::on_start()
 {
     config_.emplace("discovery_ip", "239.116.101.97").first.value().get_to(discovery_ip_);
-    if (!config_.contains("discovery_port"))
-    {
-        std::promise<uint16_t> promise;
-        auto fut = promise.get_future();
-        publish<events::RequestPort>(promise);
-
-        config_["discovery_port"] = discovery_port_ = fut.get();
-    }
-    else
-    {
-        config_["discovery_port"].get_to(discovery_port_);
-    }
     // NOLINTNEXTLINE(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
     config_.emplace("ping_interval_s", static_cast<std::size_t>(15)).first.value().get_to(ping_interval_s_);
     config_.emplace("anonymous", false).first.value().get_to(anonymous_);
     bool send_allo = config_.emplace("send_allo", true).first.value().get<bool>();
+
+    std::promise<uint16_t> promise;
+    std::future<uint16_t> future = promise.get_future();
+    publish<events::RequestPort>(promise);
+    port_ = future.get();
 
     work_guard_ = std::make_unique<boost::asio::io_context::work>(io_context_);
     io_thread_ = std::thread([this] { io_context_.run(); });
@@ -44,17 +36,16 @@ void DiscoveryModule::on_start()
     }
 
     subscribe<events::RequestDiscoveryIp>([this](auto &event) { event.promise.set_value(discovery_ip_); });
-    subscribe<events::RequestDiscoveryPort>([this](auto &event) { event.promise.set_value(discovery_port_); });
 
-    subscribe<events::AlloUpdateReceived>([this](auto &event) { on_allo_received(event); });
-    subscribe<events::ImokUpdateReceived>([this](auto &event) { on_imok_received(event); });
+    subscribe_update(detail::UpdateTypes::DIS_FIND, [this](auto &event) { on_dis_find_received(event); });
+    subscribe_update(detail::UpdateTypes::DIS_OK, [this](auto &event) { on_dis_ok_received(event); });
 
-    publish<events::detail::JoinMulticastGroupRequest>(discovery_ip_);
+    publish<events::detail::JoinMulticastGroup>(discovery_ip_);
 }
 
 void DiscoveryModule::on_stop()
 {
-    publish<events::detail::LeaveMulticastGroupRequest>(discovery_ip_);
+    publish<events::detail::LeaveMulticastGroup>(discovery_ip_);
 
     timer_.cancel();
 
@@ -66,28 +57,30 @@ void DiscoveryModule::on_stop()
     }
 }
 
-void DiscoveryModule::on_allo_received(const events::AlloUpdateReceived &event)
+void DiscoveryModule::on_dis_find_received(const events::detail::UpdateReceived &event)
 {
     if (event.sender.box.get_public_key() == i_.box.get_public_key())
     {
-        return;
+        // return;
     }
     publish<events::DiscoveredNewNode>(event.sender);
     if (!anonymous_)
     {
-        publish<events::SendConfiguredUpdateRequest>(nlohmann::json::object(), "imok", event.sender, false, true);
+        publish<events::detail::SendConfiguredUpdateRequest>(nlohmann::json::object(), detail::UpdateTypes::DIS_OK,
+                                                             event.sender);
     }
 }
 
-void DiscoveryModule::on_imok_received(const events::ImokUpdateReceived &event)
+void DiscoveryModule::on_dis_ok_received(const events::detail::UpdateReceived &event)
 {
     publish<events::DiscoveredNewNode>(event.sender);
 }
 
 void DiscoveryModule::on_timer()
 {
-    User recipient{.ip = discovery_ip_, .port = discovery_port_};
-    publish<events::SendConfiguredUpdateRequest>(nlohmann::json::object(), "allo", recipient, true, true);
+    User recipient{.ip = discovery_ip_, .port = port_};
+    publish<events::detail::SendConfiguredUpdateRequest>(nlohmann::json::object(), detail::UpdateTypes::DIS_FIND,
+                                                         recipient, true);
     start_timer();
 }
 

@@ -1,10 +1,11 @@
 // discover_module.hpp
 #pragma once
-
-#include <tejoy/detail/modules/module.hpp>
-#include <tejoy/events/updates.hpp>
-
+#include <cstdint>
 #include <nlohmann/json.hpp>
+#include <optional>
+#include <tejoy/detail/modules/module.hpp>
+#include <tejoy/events/detail/updates.hpp>
+#include <udp/udp.hpp>
 
 namespace tejoy::detail::modules
 {
@@ -17,8 +18,8 @@ class DiscoveryModule : public tejoy::detail::modules::Module
     void on_stop() override;
 
   private:
-    void on_allo_received(const tejoy::events::AlloUpdateReceived &event);
-    void on_imok_received(const tejoy::events::ImokUpdateReceived &event);
+    void on_dis_find_received(const tejoy::events::detail::UpdateReceived &event);
+    void on_dis_ok_received(const tejoy::events::detail::UpdateReceived &event);
     void on_timer();
     void start_timer();
 
@@ -29,7 +30,7 @@ class DiscoveryModule : public tejoy::detail::modules::Module
     boost::asio::steady_timer timer_;
 
     std::string discovery_ip_;
-    uint16_t discovery_port_{};
+    uint16_t port_{};
     size_t ping_interval_s_{};
     bool anonymous_{};
 

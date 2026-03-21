@@ -7,7 +7,7 @@
 
 UDP::UDP(uint16_t port)
     : work_guard_(boost::asio::make_work_guard(io_)), thread_([this]() { io_.run(); }),
-      socket_(io_, boost::asio::ip::udp::endpoint(boost::asio::ip::udp::v4(), port))
+      socket_(io_, boost::asio::ip::udp::endpoint(boost::asio::ip::udp::v4(), port)), port_(port)
 {
 }
 
@@ -60,6 +60,11 @@ void UDP::set_multicast_interface(const std::string &local_ip)
 {
     auto address = boost::asio::ip::make_address(local_ip);
     socket_.set_option(boost::asio::ip::multicast::outbound_interface(address.to_v4()));
+}
+
+auto UDP::port() const -> uint16_t
+{
+    return port_;
 }
 
 void UDP::receive()

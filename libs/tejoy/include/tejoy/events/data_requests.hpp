@@ -7,6 +7,7 @@
 #include <future>
 
 #include <event_system/event.hpp>
+#include <udp/udp.hpp>
 
 namespace tejoy::events
 {
@@ -35,14 +36,6 @@ struct RequestDiscoveryIp : event_system::Event
     {
     }
     std::promise<std::string> &promise;
-};
-
-struct RequestDiscoveryPort : event_system::Event
-{
-    explicit RequestDiscoveryPort(std::promise<uint16_t> &promise) : promise(promise)
-    {
-    }
-    std::promise<uint16_t> &promise;
 };
 
 struct RequestI : event_system::Event

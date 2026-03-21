@@ -30,6 +30,8 @@ class UDP
     void leave_multicast_group(const std::string &multicast_ip);
     void set_multicast_interface(const std::string &local_ip);
 
+    [[nodiscard]] auto port() const -> uint16_t;
+
   private:
     void receive();
 
@@ -43,4 +45,6 @@ class UDP
     std::array<char, 1 << 16> buffer_{};
     Callback callback_;
     bool running_{true};
+
+    uint16_t port_;
 };
