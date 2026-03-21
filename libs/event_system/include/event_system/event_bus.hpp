@@ -32,7 +32,7 @@ class EventBus
 
     template <typename EventType, typename T>
     void subscribe(std::weak_ptr<T> subscriber, std::function<void(const EventType &)> handler,
-                   Subscriber *sender_filter = nullptr)
+                   const Subscriber *sender_filter = nullptr)
     {
         static_assert(std::is_base_of_v<Event, EventType>, "EventType must derive from Event");
         subscribe_impl(
@@ -47,9 +47,9 @@ class EventBus
     }
 
     template <typename EventType>
-    auto make_subscriber(std::function<void(const EventType &)> callback, Subscriber *sender_filter = nullptr);
+    auto make_subscriber(std::function<void(const EventType &)> callback, const Subscriber *sender_filter = nullptr);
 
-    template <typename EventType, typename... Args> void publish(Subscriber *sender, Args &&...args)
+    template <typename EventType, typename... Args> void publish(const Subscriber *sender, Args &&...args)
     {
         static_assert(std::is_base_of_v<Event, EventType>, "EventType must derive from Event");
 
@@ -66,12 +66,12 @@ class EventBus
     struct Subscription
     {
         std::function<void(EventPtr)> handler;
-        Subscriber *sender_filter;
+        const Subscriber *sender_filter;
         std::weak_ptr<void> weak_subscriber;
     };
 
     void subscribe_impl(const std::type_index &eventType, std::function<void(EventPtr)> handler,
-                        Subscriber *senderFilter, std::weak_ptr<void> weakSubscriber);
+                        const Subscriber *senderFilter, std::weak_ptr<void> weakSubscriber);
 
     std::map<std::type_index, std::list<Subscription>> subscriptions_;
     std::mutex mutex_;
@@ -89,7 +89,7 @@ namespace event_system
 {
 
 template <typename EventType>
-auto EventBus::make_subscriber(std::function<void(const EventType &)> callback, Subscriber *sender_filter)
+auto EventBus::make_subscriber(std::function<void(const EventType &)> callback, const Subscriber *sender_filter)
 {
     static_assert(std::is_base_of_v<Event, EventType>, "EventType must derive from Event");
     auto sub = std::make_shared<Subscriber>(*this);

@@ -16,17 +16,17 @@ class Event
     Event(Event &&) = default;
     auto operator=(Event &&) -> Event & = default;
 
-    [[nodiscard]] auto sender() const -> Subscriber *
+    [[nodiscard]] auto sender() const -> const Subscriber *
     {
         return sender_;
     }
-    void set_sender(Subscriber *sender)
+    void set_sender(const Subscriber *sender)
     {
         sender_ = sender;
     }
 
   private:
-    Subscriber *sender_ = nullptr;
+    const Subscriber *sender_ = nullptr;
 };
 
 } // namespace event_system

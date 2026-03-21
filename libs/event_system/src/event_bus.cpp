@@ -21,7 +21,7 @@ EventBus::~EventBus()
 }
 
 void EventBus::subscribe_impl(const std::type_index &eventType, std::function<void(EventPtr)> handler,
-                              Subscriber *senderFilter, std::weak_ptr<void> weakSubscriber)
+                              const Subscriber *senderFilter, std::weak_ptr<void> weakSubscriber)
 {
     std::lock_guard<std::mutex> lock(mutex_);
     subscriptions_[eventType].push_back({std::move(handler), senderFilter, std::move(weakSubscriber)});
