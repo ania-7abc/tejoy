@@ -1,4 +1,4 @@
-// packet_events.hpp
+// packets.hpp
 #pragma once
 #include <cstdint>
 #include <event_system/event.hpp>
@@ -29,25 +29,6 @@ struct SendPacketRequest : event_system::Event
     std::string message;
     std::string recipient_ip;
     uint16_t recipient_port;
-};
-
-struct UpdateReceived : event_system::Event
-{
-    UpdateReceived(nlohmann::json update, tejoy::User sender) : update(std::move(update)), sender(std::move(sender))
-    {
-    }
-    nlohmann::json update;
-    tejoy::User sender;
-};
-
-struct SendUpdateRequest : event_system::Event
-{
-    SendUpdateRequest(nlohmann::json update, tejoy::User recipient)
-        : update(std::move(update)), recipient(std::move(recipient))
-    {
-    }
-    nlohmann::json update;
-    tejoy::User recipient;
 };
 
 } // namespace tejoy::events::detail

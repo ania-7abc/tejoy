@@ -1,17 +1,13 @@
 // ack_module.hpp
 #pragma once
-
-#include <tejoy/detail/modules/module.hpp>
-#include <tejoy/events/detail/packet_events.hpp>
-#include <tejoy/events/updates.hpp>
-
+#include <boost/asio.hpp>
 #include <memory>
 #include <mutex>
+#include <nlohmann/json.hpp>
+#include <tejoy/detail/modules/module.hpp>
+#include <tejoy/events/detail/updates.hpp>
 #include <thread>
 #include <unordered_map>
-
-#include <boost/asio.hpp>
-#include <nlohmann/json.hpp>
 #include <utility>
 
 namespace tejoy::detail::modules
@@ -37,9 +33,9 @@ class AckModule : public tejoy::detail::modules::Module
     };
 
     void on_send_update_request(const tejoy::events::detail::SendUpdateRequest &event);
-    void on_ack_received(const tejoy::events::AckUpdateReceived &event);
+    void on_ack_received(const tejoy::events::detail::UpdateReceived &event);
 
-    void on_update_received(const tejoy::events::detail::UpdateReceived &event);
+    void on_update_received(const tejoy::events::detail::UpdateReceived &event) const;
 
     void start_timer(PendingUpdate &update);
     void handle_timeout(uint32_t pkg_id);

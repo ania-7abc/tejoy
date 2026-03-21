@@ -16,7 +16,7 @@ void AckModule::on_start()
 
     subscribe<events::detail::SendUpdateRequest>([this](const auto &event) { on_send_update_request(event); });
     subscribe<events::detail::UpdateReceived>([this](const auto &event) { on_update_received(event); });
-    subscribe<events::AckUpdateReceived>([this](const auto &event) { on_ack_received(event); });
+    subscribe_update(detail::UpdateTypes::ACK, [this](const auto &event) { on_ack_received(event); });
 }
 
 void AckModule::on_stop()
@@ -31,8 +31,7 @@ void AckModule::on_stop()
 
 void AckModule::on_send_update_request(const events::detail::SendUpdateRequest &event)
 {
-    bool no_ack = event.update.value("no_ack", false);
-    if (no_ack)
+    if (event.update.value("no_ack", false))
     {
         return;
     }
@@ -64,10 +63,10 @@ void AckModule::on_send_update_request(const events::detail::SendUpdateRequest &
     }
 }
 
-void AckModule::on_ack_received(const events::AckUpdateReceived &event)
+void AckModule::on_ack_received(const events::detail::UpdateReceived &event)
 {
     std::lock_guard<std::mutex> lock(pending_mutex_);
-    auto found_update = pending_.find(event.pkg_id);
+    auto found_update = pending_.find(event.update.at("data").at("pkg_id").get<uint32_t>());
     if (found_update != pending_.end())
     {
         found_update->second.timer->cancel();
@@ -75,21 +74,16 @@ void AckModule::on_ack_received(const events::AckUpdateReceived &event)
     }
 }
 
-void AckModule::on_update_received(const events::detail::UpdateReceived &event)
+void AckModule::on_update_received(const events::detail::UpdateReceived &event) const
 {
-    bool no_ack = event.update.value("no_ack", false);
-    if (no_ack)
+    if (event.update.value("no_ack", false) || event.update.at("type").get<std::string>() == detail::UpdateTypes::ACK)
     {
         return;
     }
 
-    std::string type = event.update.at("type").get<std::string>();
-    if (type != "ack")
-    {
-        publish<events::detail::SendUpdateRequest>(
-            nlohmann::json({{"data", {}}, {"type", "ack"}, {"pkg_id", event.update.at("pkg_id").get<uint32_t>()}}),
-            event.sender);
-    }
+    publish<events::detail::SendConfiguredUpdateRequest>(
+        nlohmann::json({{"pkg_id", event.update.at("pkg_id").get<uint32_t>()}}), detail::UpdateTypes::ACK, event.sender,
+        true);
 }
 
 void AckModule::start_timer(PendingUpdate &update)
