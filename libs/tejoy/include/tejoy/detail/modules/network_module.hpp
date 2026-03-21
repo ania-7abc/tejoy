@@ -1,13 +1,10 @@
 // network_module.hpp
 #pragma once
-
-#include <tejoy/detail/modules/module.hpp>
-#include <tejoy/events/detail/packet_events.hpp>
-
 #include <cstdint>
-#include <string>
-
 #include <storage/storage.hpp>
+#include <string>
+#include <tejoy/detail/modules/module.hpp>
+#include <tejoy/events/detail/packets.hpp>
 #include <udp/udp.hpp>
 
 namespace tejoy::detail::modules

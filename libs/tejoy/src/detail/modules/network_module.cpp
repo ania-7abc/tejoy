@@ -1,10 +1,8 @@
 // network_module.cpp
-
+#include <iostream>
 #include <tejoy/detail/modules/network_module.hpp>
 #include <tejoy/events/data_requests.hpp>
-#include <tejoy/events/detail/multicast_events.hpp>
-
-#include <iostream>
+#include <tejoy/events/detail/multicast.hpp>
 
 namespace tejoy::detail::modules
 {
@@ -13,31 +11,30 @@ void NetworkModule::on_start()
 {
     srand(time(nullptr));
 
-    config_.emplace("print", false);
-    // NOLINTNEXTLINE(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+    // NOLINTBEGIN(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+    config_.emplace("print", false).first.value().get_to(print_);
     config_.emplace("port", static_cast<uint16_t>(5768));
-    config_["loss"].emplace("enable", false);
-    // NOLINTNEXTLINE(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
-    config_["loss"].emplace("percent", 40);
+    config_["loss"].emplace("enable", false).first.value().get_to(simulate_loss_);
+    config_["loss"].emplace("percent", 40).first.value().get_to(loss_percent_);
+    // NOLINTEND(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 
-    print_ = config_["print"].get<bool>();
-    simulate_loss_ = config_["loss"]["enable"].get<bool>();
-    loss_percent_ = config_["loss"]["percent"].get<int>();
     uint16_t port = config_["port"].get<uint16_t>();
 
     udp_.emplace(port);
+
     udp_.value().set_callback([this](auto &message, auto &sender_ip, auto sender_port) {
         on_network_message(message, sender_ip, sender_port);
     });
-    subscribe<events::detail::SendPacketRequest>([this](auto &event) { on_send_packet_request(event); });
 
-    subscribe<events::detail::JoinMulticastGroupRequest>(
-        [this](auto &event) { udp_.value().join_multicast_group(event.multicast_ip); });
-    subscribe<events::detail::LeaveMulticastGroupRequest>(
-        [this](auto &event) { udp_.value().leave_multicast_group(event.multicast_ip); });
+    subscribe<events::detail::SendPacketRequest>([this](auto &event) { on_send_packet_request(event); });
 
     subscribe<events::RequestPort>([port](auto &event) { event.promise.set_value(port); });
     subscribe<events::RequestIp>([](auto &event) { event.promise.set_value("127.0.0.1"); });
+
+    subscribe<events::detail::JoinMulticastGroup>(
+        [this](auto &event) { udp_.value().join_multicast_group(event.multicast_ip); });
+    subscribe<events::detail::LeaveMulticastGroup>(
+        [this](auto &event) { udp_.value().leave_multicast_group(event.multicast_ip); });
 }
 
 void NetworkModule::on_stop()
@@ -53,7 +50,7 @@ void NetworkModule::on_send_packet_request(const events::detail::SendPacketReque
     {
         if (print_)
         {
-            std::cout << "Not sent message \"" << event.message << "\" recipient " << event.recipient_ip << ":"
+            std::cout << "Not sent message \"" << event.message << "\" to " << event.recipient_ip << ":"
                       << event.recipient_port << '\n';
         }
         return;
@@ -61,13 +58,17 @@ void NetworkModule::on_send_packet_request(const events::detail::SendPacketReque
     udp_.value().send(event.message, event.recipient_ip, event.recipient_port);
     if (print_)
     {
-        std::cout << "Sent message \"" << event.message << "\" recipient " << event.recipient_ip << ":"
-                  << event.recipient_port << '\n';
+        std::cout << "Sent message \"" << event.message << "\" to " << event.recipient_ip << ":" << event.recipient_port
+                  << '\n';
     }
 }
 
 void NetworkModule::on_network_message(const std::string &message, const std::string &sender_ip, uint16_t sender_port)
 {
+    if (print_)
+    {
+        std::cout << "Received message \"" << message << "\" from " << sender_ip << ":" << sender_port << '\n';
+    }
     publish<events::detail::PacketReceived>(message, sender_ip, sender_port);
 }
 
