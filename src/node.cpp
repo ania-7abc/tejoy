@@ -1,5 +1,6 @@
 // node.cpp
 
+#include <nlohmann/json.hpp>
 #include <tejoy/detail/modules/ack_module.hpp>
 #include <tejoy/detail/modules/discovery_module.hpp>
 #include <tejoy/detail/modules/network_module.hpp>
@@ -11,13 +12,11 @@
 namespace tejoy
 {
 
-Node::Node(std::string data_path) : storage_(std::move(data_path)), module_manager_(bus_, storage_)
+Node::Node(nlohmann::json &data) : data_(data), module_manager_(bus_, data_)
 {
-    storage_.load();
-
-    if (!storage_.data().contains("/node/contacts"_json_pointer))
+    if (!data_.contains("/node/contacts"_json_pointer))
     {
-        storage_.data()["/node/contacts"_json_pointer] = nlohmann::json({});
+        data_["/node/contacts"_json_pointer] = nlohmann::json({});
     }
 
     request_data_subs_.push_back(bus_.make_subscriber<events::SendMessageRequest>([this](auto &event) {
@@ -35,7 +34,6 @@ Node::Node(std::string data_path) : storage_(std::move(data_path)), module_manag
 Node::~Node()
 {
     module_manager_.stop_all();
-    storage_.save();
 }
 
 auto Node::get_event_bus() -> EventBus &

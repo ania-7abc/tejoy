@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.14)
-project(tejoy VERSION 1.2.0 LANGUAGES CXX)
+project(tejoy VERSION 1.3.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -50,18 +50,12 @@ FetchContent_Declare(
 )
 
 FetchContent_Declare(
-    storage
-    GIT_REPOSITORY https://github.com/ania-7abc/storage
-    GIT_TAG v1.1.0
-)
-
-FetchContent_Declare(
     udp
     GIT_REPOSITORY https://github.com/ania-7abc/udp
     GIT_TAG v1.0.1
 )
 
-FetchContent_MakeAvailable(base64 event_system secret_box storage udp)
+FetchContent_MakeAvailable(base64 event_system secret_box udp)
 
 find_package(nlohmann_json REQUIRED)
 target_link_libraries(tejoy PUBLIC
@@ -69,7 +63,6 @@ target_link_libraries(tejoy PUBLIC
     event_system
     nlohmann_json::nlohmann_json
     secret_box
-    storage
     udp
 )
 

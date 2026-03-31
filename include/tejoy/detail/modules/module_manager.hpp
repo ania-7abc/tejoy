@@ -8,7 +8,6 @@
 #include <unordered_map>
 
 #include <nlohmann/json.hpp>
-#include <storage/storage.hpp>
 
 namespace tejoy::detail::modules
 {
@@ -16,17 +15,17 @@ namespace tejoy::detail::modules
 class ModuleManager
 {
   public:
-    explicit ModuleManager(event_system::EventBus &bus, Storage &storage);
+    explicit ModuleManager(event_system::EventBus &bus, nlohmann::json &data);
 
     template <typename T, typename... Args>
     auto create_module(const nlohmann::json_pointer<std::string> &path_in_config, Args &&...args) -> T &
     {
         static_assert(std::is_base_of_v<Module, T>, "T must be derived from Module");
-        if (!storage_.data().contains(path_in_config))
+        if (!data_.contains(path_in_config))
         {
-            storage_.data()[path_in_config] = {};
+            data_[path_in_config] = {};
         }
-        auto module = std::make_shared<T>(bus_, storage_.data().at(path_in_config), std::forward<Args>(args)...);
+        auto module = std::make_shared<T>(bus_, data_.at(path_in_config), std::forward<Args>(args)...);
         if (modules_.find(std::type_index(typeid(T))) != modules_.end())
         {
             throw std::runtime_error("Module of this type already exists");
@@ -67,7 +66,7 @@ class ModuleManager
     void stop_all();
 
   private:
-    Storage &storage_;            // NOLINT(cppcoreguidelines-avoid-const-or-ref-data-members)
+    nlohmann::json &data_;        // NOLINT(cppcoreguidelines-avoid-const-or-ref-data-members)
     event_system::EventBus &bus_; // NOLINT(cppcoreguidelines-avoid-const-or-ref-data-members)
     std::unordered_map<std::type_index, std::shared_ptr<tejoy::detail::modules::Module>> modules_;
 };

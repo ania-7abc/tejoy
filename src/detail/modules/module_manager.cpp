@@ -5,7 +5,7 @@
 namespace tejoy::detail::modules
 {
 
-ModuleManager::ModuleManager(event_system::EventBus &bus, Storage &storage) : bus_(bus), storage_(storage)
+ModuleManager::ModuleManager(event_system::EventBus &bus, nlohmann::json &data) : bus_(bus), data_(data)
 {
 }
 

@@ -1,7 +1,6 @@
 // network_module.hpp
 #pragma once
 #include <cstdint>
-#include <storage/storage.hpp>
 #include <string>
 #include <tejoy/detail/modules/module.hpp>
 #include <tejoy/events/detail/packets.hpp>

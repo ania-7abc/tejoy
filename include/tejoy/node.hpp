@@ -4,7 +4,6 @@
 #include <event_system/event_bus.hpp>
 #include <event_system/subscriber.hpp>
 #include <memory>
-#include <storage/storage.hpp>
 #include <string>
 #include <tejoy/detail/modules/module_manager.hpp>
 #include <tejoy/events/data_requests.hpp>
@@ -17,14 +16,13 @@ using EventBus = event_system::EventBus;
 class Node
 {
   private:
-    Storage storage_;
+    nlohmann::json &data_;
     EventBus bus_;
     tejoy::detail::modules::ModuleManager module_manager_;
     std::vector<std::shared_ptr<event_system::Subscriber>> request_data_subs_;
 
   public:
-    // NOLINTNEXTLINE(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
-    explicit Node(std::string data_path);
+    explicit Node(nlohmann::json &data);
     ~Node();
     Node(const Node &) = delete;
     auto operator=(const Node &) -> Node & = delete;

@@ -2,7 +2,6 @@
 #pragma once
 #include <boost/circular_buffer.hpp>
 #include <set>
-#include <storage/storage.hpp>
 #include <tejoy/detail/modules/module.hpp>
 #include <tejoy/events/detail/packets.hpp>
 #include <tejoy/events/detail/updates.hpp>
