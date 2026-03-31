@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.14)
-project(tejoy VERSION 1.1.0 LANGUAGES CXX)
+project(tejoy VERSION 1.2.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -64,13 +64,13 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(base64 event_system secret_box storage udp)
 
 find_package(nlohmann_json REQUIRED)
-target_link_libraries(tejoy PRIVATE
+target_link_libraries(tejoy PUBLIC
     base64
     event_system
+    nlohmann_json::nlohmann_json
     secret_box
     storage
     udp
-    nlohmann_json::nlohmann_json
 )
 
 if(BUILD_DOCS)
@@ -82,7 +82,7 @@ if(BUILD_DOCS)
         )
     else()
         message(SEND_ERROR "Doxygen not found")
-    endif() 
+    endif()
 endif()
 
 install(TARGETS tejoy EXPORT tejoyTargets
