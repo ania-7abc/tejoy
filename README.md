@@ -67,10 +67,6 @@ cmake --build build
 sudo cmake --install build
 ```
 
-## Documentation
-
-Detailed API documentation and usage examples are available in the [Wiki](https://github.com/ania-7abc/tejoy/wiki).
-
 ## Quick Example
 
 ```cpp
