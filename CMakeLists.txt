@@ -1,9 +1,10 @@
 cmake_minimum_required(VERSION 3.14)
-project(tejoy VERSION 1.0.2 LANGUAGES CXX)
+project(tejoy VERSION 1.0.3 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 option(BUILD_SHARED_LIBS "Build shared libraries" OFF)
+option(BUILD_DOCS "Build Doxygen documentation" OFF)
 
 add_library(tejoy)
 
@@ -71,6 +72,18 @@ target_link_libraries(tejoy PRIVATE
     udp
     nlohmann_json::nlohmann_json
 )
+
+if(BUILD_DOCS)
+    find_package(Doxygen)
+    if(DOXYGEN_FOUND)
+        doxygen_add_docs(doxygen-docs
+            ${CMAKE_CURRENT_SOURCE_DIR}/include
+            ${CMAKE_CURRENT_SOURCE_DIR}/src
+        )
+    else()
+        message(SEND_ERROR "Doxygen not found")
+    endif() 
+endif()
 
 install(TARGETS tejoy EXPORT tejoyTargets
     LIBRARY DESTINATION lib
