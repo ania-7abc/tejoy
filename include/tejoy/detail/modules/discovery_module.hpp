@@ -5,7 +5,6 @@
 #include <optional>
 #include <tejoy/detail/modules/module.hpp>
 #include <tejoy/events/detail/updates.hpp>
-#include <udp/udp.hpp>
 
 namespace tejoy::detail::modules
 {
