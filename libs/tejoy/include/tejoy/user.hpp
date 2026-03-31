@@ -11,15 +11,15 @@
 namespace tejoy
 {
 
-  struct User
-  {
+struct User
+{
     SecretBox box = SecretBox(false);
     std::string ip;
     uint16_t port{};
-  };
+};
 
-  inline void to_json(nlohmann::json &json, const User &user)
-  {
+inline void to_json(nlohmann::json &json, const User &user)
+{
     json = nlohmann::json{};
     json["ip"] = user.ip;
     json["port"] = user.port;
@@ -31,10 +31,10 @@ namespace tejoy
     {
         json["id"] = Base64::encode(user.box.get_public_key());
     }
-  }
+}
 
-  inline void from_json(const nlohmann::json &json, User &user)
-  {
+inline void from_json(const nlohmann::json &json, User &user)
+{
     json.at("ip").get_to(user.ip);
     json.at("port").get_to(user.port);
     if (json.contains("id") && json.contains("key"))
@@ -53,6 +53,6 @@ namespace tejoy
     {
         user.box = SecretBox(false);
     }
-  }
+}
 
-  } // namespace tejoy
+} // namespace tejoy

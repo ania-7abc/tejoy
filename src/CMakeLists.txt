@@ -3,6 +3,7 @@ add_executable(tejoy_demo main.cpp)
 # Link all libraries
 target_link_libraries(tejoy_demo PRIVATE
     tejoy
+    nlohmann_json::nlohmann_json
 )
 
 # Add top-level include directory for config.hpp
