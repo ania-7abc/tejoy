@@ -38,7 +38,7 @@ class Module : public event_system::Subscriber
     nlohmann::json &config_; // NOLINT(cppcoreguidelines-non-private-member-variables-in-classes)
     void subscribe_update(const std::string_view &update_type,
                           const std::function<void(const tejoy::events::detail::UpdateReceived &)> &handler,
-                          Subscriber *senderFilter = nullptr)
+                          std::type_index sender_filter = typeid(void))
     {
         subscribe<tejoy::events::detail::UpdateReceived>(
             [update_type, handler](const tejoy::events::detail::UpdateReceived &event) {
@@ -47,7 +47,7 @@ class Module : public event_system::Subscriber
                     handler(event);
                 }
             },
-            senderFilter);
+            sender_filter);
     }
 };
 

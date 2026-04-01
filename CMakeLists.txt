@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.14)
-project(tejoy VERSION 1.6.0 LANGUAGES CXX)
+project(tejoy VERSION 1.7.0 LANGUAGES CXX)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 option(BUILD_SHARED_LIBS "Build shared libraries" OFF)
 option(BUILD_DOCS "Build Doxygen documentation" OFF)
@@ -41,7 +41,7 @@ FetchContent_Declare(
 FetchContent_Declare(
     event_system
     GIT_REPOSITORY https://github.com/ania-7abc/event_system
-    GIT_TAG v1.0.3
+    GIT_TAG v2.0.0
 )
 
 FetchContent_Declare(

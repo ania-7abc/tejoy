@@ -13,22 +13,19 @@ void NetworkModule::on_start()
 
     // NOLINTBEGIN(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
     config_.emplace("print", false).first.value().get_to(print_);
-    config_.emplace("port", static_cast<uint16_t>(5768));
+    config_.emplace("port", static_cast<uint16_t>(5768)).first.value().get_to(port_);
     config_["loss"].emplace("enable", false).first.value().get_to(simulate_loss_);
     config_["loss"].emplace("percent", 40).first.value().get_to(loss_percent_);
     // NOLINTEND(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 
-    uint16_t port = config_["port"].get<uint16_t>();
-
-    udp_.emplace(port);
-
+    udp_.emplace(port_);
     udp_.value().set_callback([this](auto &message, auto &sender_ip, auto sender_port) {
         on_network_message(message, sender_ip, sender_port);
     });
 
     subscribe<events::detail::SendPacketRequest>([this](auto &event) { on_send_packet_request(event); });
 
-    subscribe<events::RequestPort>([port](auto &event) { event.promise.set_value(port); });
+    subscribe<events::RequestPort>([this](auto &event) { event.promise.set_value(port_); });
     subscribe<events::RequestIp>([](auto &event) { event.promise.set_value("127.0.0.1"); });
 
     subscribe<events::detail::JoinMulticastGroup>(

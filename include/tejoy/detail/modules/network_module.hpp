@@ -26,6 +26,7 @@ class NetworkModule : public tejoy::detail::modules::Module
     std::optional<UDP> udp_;
 
     bool print_{};
+    uint16_t port_{};
     bool simulate_loss_{};
     size_t loss_percent_{};
 };
