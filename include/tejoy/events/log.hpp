@@ -7,12 +7,12 @@ namespace tejoy::events
 
 struct LogEvent : event_system::Event
 {
-    explicit LogEvent(std::type_index event_type, std::type_index from)
+    explicit LogEvent(std::string event_type, std::string from)
         : event_type(std::move(event_type)), from(std::move(from))
     {
     }
-    std::type_index event_type;
-    std::type_index from;
+    std::string event_type;
+    std::string from;
 };
 
 } // namespace tejoy::events

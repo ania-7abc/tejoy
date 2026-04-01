@@ -1,7 +1,9 @@
 // user_code_helper.cpp
+#include <boost/core/demangle.hpp>
 #include <tejoy/events/data_requests.hpp>
 #include <tejoy/events/detail/updates.hpp>
 #include <tejoy/events/discovery.hpp>
+#include <tejoy/events/log.hpp>
 #include <tejoy/events/message.hpp>
 #include <tejoy/user_code_helper.hpp>
 
@@ -27,6 +29,7 @@ void UserCodeHelper::start()
     subscribe<events::DiscoveredNewNode>([this](auto &event) { on_discovered_node_handler(event.node); });
     subscribe<events::InvalidUpdateError>([this](auto &event) { on_invalid_update_error_handler(event); });
     subscribe<events::UpdateSendError>([this](auto &event) { on_update_send_error_handler(event); });
+    subscribe<events::LogEvent>([this](auto &event) { on_log_handler(event.event_type, event.from); });
 }
 
 std::string UserCodeHelper::get_ip()
@@ -84,6 +87,11 @@ void UserCodeHelper::on_invalid_update_error(std::function<void(const events::In
 void UserCodeHelper::on_update_send_error(std::function<void(const events::UpdateSendError &)> handler)
 {
     on_update_send_error_handler = std::move(handler);
+}
+
+void UserCodeHelper::on_log(std::function<void(const std::string &event_type, const std::string &from)> handler)
+{
+    on_log_handler = std::move(handler);
 }
 
 } // namespace tejoy

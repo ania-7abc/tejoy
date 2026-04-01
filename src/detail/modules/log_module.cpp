@@ -63,12 +63,13 @@ void LogModule::on_any_event(const event_system::AnyEvent &event)
             from.assign(from.substr(pos + 2));
     }
 
-    if (reply_console_)
-        std::cout << "Received event \"" << type << "\" from \"" << from << "\"" << std::endl;
     if (reply_event_)
-        publish<events::LogEvent>(event.original_type, event.sender());
+        publish<events::LogEvent>(type, from);
+    std::string log_str = "Received event \"" + type + "\" from \"" + from + "\"";
+    if (reply_console_)
+        std::cout << log_str << std::endl;
     if (reply_file_ != "")
-        SimpleIO::append(reply_file_, type + " from " + from + "\n");
+        SimpleIO::append(reply_file_, log_str + "\n");
 }
 
 } // namespace tejoy::detail::modules
