@@ -19,4 +19,13 @@ struct SendMessageRequest : event_system::Event
     tejoy::User recipient;
 };
 
+struct MessageReceived : event_system::Event
+{
+    MessageReceived(std::string text, User sender) : text(std::move(text)), sender(std::move(sender))
+    {
+    }
+    std::string text;
+    tejoy::User sender;
+};
+
 } // namespace tejoy::events

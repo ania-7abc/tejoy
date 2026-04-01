@@ -7,6 +7,7 @@
 #include <string>
 #include <tejoy/detail/modules/module_manager.hpp>
 #include <tejoy/events/data_requests.hpp>
+#include <tejoy/user_code_helper.hpp>
 #include <vector>
 
 namespace tejoy
@@ -17,9 +18,9 @@ class Node
 {
   private:
     nlohmann::json &data_;
-    EventBus bus_;
     tejoy::detail::modules::ModuleManager module_manager_;
-    std::vector<std::shared_ptr<event_system::Subscriber>> request_data_subs_;
+    std::shared_ptr<UserCodeHelper> uch_;
+    EventBus bus_;
 
   public:
     explicit Node(nlohmann::json &data);
@@ -30,6 +31,7 @@ class Node
     auto operator=(Node &&) -> Node & = delete;
 
     auto get_event_bus() -> EventBus &;
+    auto get_uch() -> UserCodeHelper &;
 };
 
 } // namespace tejoy
