@@ -4,6 +4,7 @@
 #include <nlohmann/json.hpp>
 #include <tejoy/detail/modules/ack_module.hpp>
 #include <tejoy/detail/modules/discovery_module.hpp>
+#include <tejoy/detail/modules/log_module.hpp>
 #include <tejoy/detail/modules/network_module.hpp>
 #include <tejoy/detail/modules/update_manager_module.hpp>
 #include <tejoy/events/message.hpp>
@@ -20,6 +21,7 @@ Node::Node(nlohmann::json &data) : bus_(), data_(data), module_manager_(bus_, da
         data_["/node/contacts"_json_pointer] = nlohmann::json({});
     }
 
+    module_manager_.create_module<detail::modules::LogModule>("/log"_json_pointer);
     module_manager_.create_module<detail::modules::NetworkModule>("/network"_json_pointer);
     module_manager_.create_module<detail::modules::UpdateManagerModule>("/update_manager"_json_pointer);
     module_manager_.create_module<detail::modules::AckModule>("/ack"_json_pointer);

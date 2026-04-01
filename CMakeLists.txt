@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.14)
-project(tejoy VERSION 1.7.0 LANGUAGES CXX)
+project(tejoy VERSION 1.8.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -11,6 +11,7 @@ add_library(tejoy)
 target_sources(tejoy PRIVATE
     src/detail/modules/ack_module.cpp
     src/detail/modules/discovery_module.cpp
+    src/detail/modules/log_module.cpp
     src/detail/modules/module_manager.cpp
     src/detail/modules/network_module.cpp
     src/detail/modules/update_manager_module.cpp
@@ -51,15 +52,24 @@ FetchContent_Declare(
 )
 
 FetchContent_Declare(
+    simple_io
+    GIT_REPOSITORY https://github.com/ania-7abc/simple_io
+    GIT_TAG v1.2.0
+)
+
+FetchContent_Declare(
     udp
     GIT_REPOSITORY https://github.com/ania-7abc/udp
     GIT_TAG v1.0.1
 )
 
-FetchContent_MakeAvailable(base64 event_system secret_box udp)
+FetchContent_MakeAvailable(base64 event_system secret_box simple_io udp)
 
 find_package(nlohmann_json REQUIRED)
-target_link_libraries(tejoy PUBLIC
+target_link_libraries(tejoy
+    PRIVATE
+    simple_io
+    PUBLIC
     base64
     event_system
     nlohmann_json::nlohmann_json
