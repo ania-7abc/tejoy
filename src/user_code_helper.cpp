@@ -1,5 +1,4 @@
 // user_code_helper.cpp
-#pragma once
 #include <tejoy/events/detail/updates.hpp>
 #include <tejoy/events/message.hpp>
 #include <tejoy/user_code_helper.hpp>

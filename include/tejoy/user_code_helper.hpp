@@ -7,10 +7,13 @@ namespace tejoy
 
 class UserCodeHelper : public event_system::Subscriber
 {
-  public:
+  private:
+    friend class Node;
     using Subscriber::Subscriber;
 
     void start();
+
+  public:
 };
 
 } // namespace tejoy
