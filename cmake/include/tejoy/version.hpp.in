@@ -1,0 +1,13 @@
+// version.hpp.in
+#pragma once
+#include <string_view>
+
+namespace tejoy::Version
+{
+
+inline constexpr int TEJOY_VERSION_YEAR = @tejoy_VERSION_MAJOR@;
+inline constexpr int TEJOY_VERSION_MONTH = @tejoy_VERSION_MINOR@;
+inline constexpr int TEJOY_VERSION_PATCH = @tejoy_VERSION_PATCH@;
+inline constexpr std::string_view TEJOY_VERSION = "@tejoy_VERSION@";
+
+} // namespace tejoy::Version

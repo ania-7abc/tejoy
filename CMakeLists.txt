@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.14)
 project(tejoy
-    VERSION 26.4.1
+    VERSION 26.4.2
     HOMEPAGE_URL https://github.com/ania-7abc/tejoy
     DESCRIPTION "C++17 library to build secure peer-to-peer messengers with encryption"
     LANGUAGES CXX
@@ -36,6 +36,16 @@ set_target_properties(tejoy PROPERTIES
 target_include_directories(tejoy PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
     $<INSTALL_INTERFACE:include>
+)
+
+target_include_directories(tejoy PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>
+    $<INSTALL_INTERFACE:include>
+)
+
+configure_file(
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/include/tejoy/version.hpp.in"
+    "${CMAKE_CURRENT_BINARY_DIR}/include/tejoy/version.hpp"
 )
 
 include(FetchContent)
