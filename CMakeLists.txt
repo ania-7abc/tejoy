@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.14)
-project(tejoy VERSION 2.0.0 LANGUAGES CXX)
+project(tejoy VERSION 2.1.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -20,6 +20,7 @@ target_sources(tejoy PRIVATE
 target_sources(tejoy PRIVATE
     src/node.cpp
     src/user_code_helper.cpp
+    src/user.cpp
 )
 
 set_target_properties(tejoy PROPERTIES
@@ -65,14 +66,16 @@ FetchContent_Declare(
 
 FetchContent_MakeAvailable(base64 event_system secret_box simple_io udp)
 
+find_package(Boost REQUIRED COMPONENTS system)
 find_package(nlohmann_json REQUIRED)
 target_link_libraries(tejoy
     PRIVATE
     simple_io
-    PUBLIC
     base64
+    PUBLIC
     event_system
     nlohmann_json::nlohmann_json
+    Boost::system
     secret_box
     udp
 )
