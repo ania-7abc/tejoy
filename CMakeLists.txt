@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.14)
-project(tejoy VERSION 2.2.0 LANGUAGES CXX)
+project(tejoy VERSION 2.3.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -14,6 +14,7 @@ target_sources(tejoy PRIVATE
     src/detail/modules/log_module.cpp
     src/detail/modules/module_manager.cpp
     src/detail/modules/network_module.cpp
+    src/detail/modules/pairing_module.cpp
     src/detail/modules/update_manager_module.cpp
 )
 
@@ -43,7 +44,7 @@ FetchContent_Declare(
 FetchContent_Declare(
     event_system
     GIT_REPOSITORY https://github.com/ania-7abc/event_system
-    GIT_TAG v2.0.0
+    GIT_TAG v2.1.0
 )
 
 FetchContent_Declare(
