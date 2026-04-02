@@ -22,4 +22,12 @@ struct PingOk : event_system::Event
     User ping_user;
 };
 
+struct PingFailed : event_system::Event
+{
+    explicit PingFailed(User ping_user) : ping_user(std::move(ping_user))
+    {
+    }
+    User ping_user;
+};
+
 } // namespace tejoy::events

@@ -23,6 +23,7 @@ class UserCodeHelper : public event_system::Subscriber
     void on_update_send_error(std::function<void(const events::UpdateSendError &error)> handler);
     void on_log(const std::function<void(const std::string &event_type, const std::string &from)> &handler);
     void on_ping_ok(const std::function<void(const User &ping_user)> &handler);
+    void on_ping_failed(const std::function<void(const User &ping_user)> &handler);
 
     auto get_ip() -> std::string;
     auto get_port() -> uint16_t;

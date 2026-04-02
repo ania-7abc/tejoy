@@ -94,4 +94,9 @@ void UserCodeHelper::on_ping_ok(const std::function<void(const User &ping_user)>
     on<events::PingOk>([handler](auto &event) { handler(event.ping_user); });
 }
 
+void UserCodeHelper::on_ping_failed(const std::function<void(const User &ping_user)> &handler)
+{
+    on<events::PingFailed>([handler](auto &event) { handler(event.ping_user); });
+}
+
 } // namespace tejoy
