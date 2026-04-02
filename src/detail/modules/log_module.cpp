@@ -18,10 +18,12 @@ void LogModule::on_start()
     config_["reply"].emplace("console", false).first.value().get_to(reply_console_);
     config_["reply"].emplace("file", "").first.value().get_to(reply_file_);
 
-    if (reply_file_ != "")
+    if (!reply_file_.empty())
     {
         if (SimpleIO::exists(reply_file_))
+        {
             SimpleIO::remove(reply_file_);
+        }
         SimpleIO::write(reply_file_, "");
     }
 
@@ -35,41 +37,59 @@ void LogModule::on_stop()
 void LogModule::on_any_event(const event_system::AnyEvent &event)
 {
     if (event.original_type == typeid(events::LogEvent))
+    {
         return;
+    }
 
     std::string type = boost::core::demangle(event.original_type.name());
     std::string from = boost::core::demangle(event.sender().name());
 
     bool log = true;
 
-    if (filter_from_.size() != 0)
+    if (!filter_from_.empty())
     {
         log = false;
-        for (int i = 0; i < filter_from_.size(); i++)
-            if (filter_from_[i] == from)
+        for (const auto &element : filter_from_)
+        {
+            if (element == from)
+            {
                 log = true;
+            }
+        }
     }
 
     if (!log)
+    {
         return;
+    }
 
     if (short_names_)
     {
         size_t pos = type.rfind("::");
         if (pos != std::string::npos)
+        {
             type.assign(type.substr(pos + 2));
+        }
         pos = from.rfind("::");
         if (pos != std::string::npos)
+        {
             from.assign(from.substr(pos + 2));
+        }
     }
 
     if (reply_event_)
+    {
         publish<events::LogEvent>(type, from);
+    }
     std::string log_str = "Received event \"" + type + "\" from \"" + from + "\"";
     if (reply_console_)
-        std::cout << log_str << std::endl;
-    if (reply_file_ != "")
+    {
+        std::cout << log_str << '\n';
+    }
+    if (!reply_file_.empty())
+    {
         SimpleIO::append(reply_file_, log_str + "\n");
+    }
 }
 
 } // namespace tejoy::detail::modules

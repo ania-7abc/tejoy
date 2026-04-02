@@ -21,10 +21,10 @@ class LogModule : public tejoy::detail::modules::Module
     void on_any_event(const event_system::AnyEvent &event);
 
     std::vector<std::string> filter_from_;
-    bool reply_event_;
-    bool reply_console_;
+    bool reply_event_{};
+    bool reply_console_{};
     std::string reply_file_;
-    bool short_names_;
+    bool short_names_{};
 };
 
 } // namespace tejoy::detail::modules

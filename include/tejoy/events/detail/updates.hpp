@@ -20,15 +20,6 @@ struct SendConfiguredUpdateRequest : event_system::Event
     bool no_ack;
 };
 
-struct UpdateReceived : event_system::Event
-{
-    UpdateReceived(nlohmann::json update, tejoy::User sender) : update(std::move(update)), sender(std::move(sender))
-    {
-    }
-    nlohmann::json update;
-    tejoy::User sender;
-};
-
 struct SendUpdateRequest : event_system::Event
 {
     SendUpdateRequest(nlohmann::json update, tejoy::User recipient)
@@ -37,6 +28,15 @@ struct SendUpdateRequest : event_system::Event
     }
     nlohmann::json update;
     tejoy::User recipient;
+};
+
+struct UpdateReceived : event_system::Event
+{
+    UpdateReceived(nlohmann::json update, tejoy::User sender) : update(std::move(update)), sender(std::move(sender))
+    {
+    }
+    nlohmann::json update;
+    tejoy::User sender;
 };
 
 } // namespace tejoy::events::detail

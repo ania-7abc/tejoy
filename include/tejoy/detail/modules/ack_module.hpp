@@ -26,7 +26,7 @@ class AckModule : public tejoy::detail::modules::Module
         size_t attempts{};
         std::unique_ptr<boost::asio::steady_timer> timer;
         uint32_t pkg_id{};
-        explicit PendingUpdate(tejoy::events::detail::SendUpdateRequest event) : event(std::move(std::move(event)))
+        explicit PendingUpdate(tejoy::events::detail::SendUpdateRequest event) : event(std::move(event))
         {
         }
     };

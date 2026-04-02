@@ -58,8 +58,8 @@ void AckModule::on_send_update_request(const events::detail::SendUpdateRequest &
         }
         else
         {
+            publish<events::UpdateSendError>(update.event, "Max attempts exceeded");
             pending_.erase(found_update);
-            publish<events::UpdateSendError>(pkg_id, "Max attempts exceeded");
         }
     }
 }

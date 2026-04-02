@@ -6,6 +6,7 @@
 #include <tejoy/events/message.hpp>
 #include <tejoy/events/ping.hpp>
 #include <tejoy/user_code_helper.hpp>
+#include <utility>
 
 namespace tejoy
 {
@@ -26,7 +27,7 @@ void UserCodeHelper::start()
     });
 }
 
-std::string UserCodeHelper::get_ip()
+auto UserCodeHelper::get_ip() -> std::string
 {
     auto promise = std::promise<std::string>();
     auto fut = promise.get_future();
@@ -34,7 +35,7 @@ std::string UserCodeHelper::get_ip()
     return fut.get();
 }
 
-uint16_t UserCodeHelper::get_port()
+auto UserCodeHelper::get_port() -> uint16_t
 {
     auto promise = std::promise<uint16_t>();
     auto fut = promise.get_future();
@@ -42,7 +43,7 @@ uint16_t UserCodeHelper::get_port()
     return fut.get();
 }
 
-std::string UserCodeHelper::get_discovery_ip()
+auto UserCodeHelper::get_discovery_ip() -> std::string
 {
     auto promise = std::promise<std::string>();
     auto fut = promise.get_future();
@@ -50,7 +51,7 @@ std::string UserCodeHelper::get_discovery_ip()
     return fut.get();
 }
 
-User UserCodeHelper::get_i()
+auto UserCodeHelper::get_i() -> User
 {
     auto promise = std::promise<tejoy::User>();
     auto fut = promise.get_future();
@@ -68,32 +69,27 @@ void UserCodeHelper::ping(const User &ping_user)
     publish<events::PingRequest>(ping_user);
 }
 
-void UserCodeHelper::on_message(std::function<void(const std::string &text, const User &from)> handler)
+void UserCodeHelper::on_message(const std::function<void(const std::string &text, const User &from)> &handler)
 {
     on<events::MessageReceived>([handler](auto &event) { handler(event.text, event.sender); });
 }
 
-void UserCodeHelper::on_discovered_node(std::function<void(const tejoy::User &node)> handler)
+void UserCodeHelper::on_discovered_node(const std::function<void(const tejoy::User &node)> &handler)
 {
     on<events::DiscoveredNewNode>([handler](auto &event) { handler(event.node); });
 }
 
-void UserCodeHelper::on_invalid_update_error(std::function<void(const events::InvalidUpdateError &error)> handler)
-{
-    on<events::InvalidUpdateError>(handler);
-}
-
 void UserCodeHelper::on_update_send_error(std::function<void(const events::UpdateSendError &error)> handler)
 {
-    on<events::UpdateSendError>(handler);
+    on<events::UpdateSendError>(std::move(handler));
 }
 
-void UserCodeHelper::on_log(std::function<void(const std::string &event_type, const std::string &from)> handler)
+void UserCodeHelper::on_log(const std::function<void(const std::string &event_type, const std::string &from)> &handler)
 {
     on<events::LogEvent>([handler](auto &event) { handler(event.event_type, event.from); });
 }
 
-void UserCodeHelper::on_ping_ok(std::function<void(const User &ping_user)> handler)
+void UserCodeHelper::on_ping_ok(const std::function<void(const User &ping_user)> &handler)
 {
     on<events::PingOk>([handler](auto &event) { handler(event.ping_user); });
 }

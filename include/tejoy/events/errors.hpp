@@ -1,30 +1,19 @@
 // errors.hpp
 #pragma once
-
-#include <string>
-
 #include <event_system/event.hpp>
+#include <string>
+#include <tejoy/events/detail/updates.hpp>
 
 namespace tejoy::events
 {
 
 struct UpdateSendError : event_system::Event
 {
-    UpdateSendError(uint32_t pkg_id, std::string reason) : pkg_id(pkg_id), reason(std::move(reason))
+    UpdateSendError(detail::SendUpdateRequest update, std::string reason)
+        : update(std::move(update)), reason(std::move(reason))
     {
     }
-    uint32_t pkg_id;
-    std::string reason;
-};
-
-struct InvalidUpdateError : event_system::Event
-{
-    InvalidUpdateError(uint32_t pkg_id, std::string type, std::string reason)
-        : pkg_id(pkg_id), type(std::move(type)), reason(std::move(reason))
-    {
-    }
-    uint32_t pkg_id;
-    std::string type;
+    detail::SendUpdateRequest update;
     std::string reason;
 };
 
