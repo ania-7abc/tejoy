@@ -4,6 +4,7 @@
 #include <tejoy/events/discovery.hpp>
 #include <tejoy/events/log.hpp>
 #include <tejoy/events/message.hpp>
+#include <tejoy/events/ping.hpp>
 #include <tejoy/user_code_helper.hpp>
 
 namespace tejoy
@@ -23,12 +24,6 @@ void UserCodeHelper::start()
                                              event.sender);
         }
     });
-
-    subscribe<events::MessageReceived>([this](auto &event) { on_message_handler(event.text, event.sender); });
-    subscribe<events::DiscoveredNewNode>([this](auto &event) { on_discovered_node_handler(event.node); });
-    subscribe<events::InvalidUpdateError>([this](auto &event) { on_invalid_update_error_handler(event); });
-    subscribe<events::UpdateSendError>([this](auto &event) { on_update_send_error_handler(event); });
-    subscribe<events::LogEvent>([this](auto &event) { on_log_handler(event.event_type, event.from); });
 }
 
 std::string UserCodeHelper::get_ip()
@@ -68,29 +63,39 @@ void UserCodeHelper::send_message(const std::string &text, const User &recipient
     publish<events::SendMessageRequest>(text, recipient);
 }
 
-void UserCodeHelper::on_message(std::function<void(const std::string &, const User &)> handler)
+void UserCodeHelper::ping(const User &ping_user)
 {
-    on_message_handler = std::move(handler);
+    publish<events::PingRequest>(ping_user);
 }
 
-void UserCodeHelper::on_discovered_node(std::function<void(const tejoy::User &)> handler)
+void UserCodeHelper::on_message(std::function<void(const std::string &text, const User &from)> handler)
 {
-    on_discovered_node_handler = std::move(handler);
+    on<events::MessageReceived>([handler](auto &event) { handler(event.text, event.sender); });
 }
 
-void UserCodeHelper::on_invalid_update_error(std::function<void(const events::InvalidUpdateError &)> handler)
+void UserCodeHelper::on_discovered_node(std::function<void(const tejoy::User &node)> handler)
 {
-    on_invalid_update_error_handler = std::move(handler);
+    on<events::DiscoveredNewNode>([handler](auto &event) { handler(event.node); });
 }
 
-void UserCodeHelper::on_update_send_error(std::function<void(const events::UpdateSendError &)> handler)
+void UserCodeHelper::on_invalid_update_error(std::function<void(const events::InvalidUpdateError &error)> handler)
 {
-    on_update_send_error_handler = std::move(handler);
+    on<events::InvalidUpdateError>(handler);
+}
+
+void UserCodeHelper::on_update_send_error(std::function<void(const events::UpdateSendError &error)> handler)
+{
+    on<events::UpdateSendError>(handler);
 }
 
 void UserCodeHelper::on_log(std::function<void(const std::string &event_type, const std::string &from)> handler)
 {
-    on_log_handler = std::move(handler);
+    on<events::LogEvent>([handler](auto &event) { handler(event.event_type, event.from); });
+}
+
+void UserCodeHelper::on_ping_ok(std::function<void(const User &ping_user)> handler)
+{
+    on<events::PingOk>([handler](auto &event) { handler(event.ping_user); });
 }
 
 } // namespace tejoy

@@ -11,11 +11,19 @@ class UserCodeHelper : public event_system::Subscriber
 {
   public:
     void send_message(const std::string &text, const User &recipient);
-    void on_message(std::function<void(const std::string &, const User &)> handler);
-    void on_discovered_node(std::function<void(const tejoy::User &)> handler);
-    void on_invalid_update_error(std::function<void(const events::InvalidUpdateError &)> handler);
-    void on_update_send_error(std::function<void(const events::UpdateSendError &)> handler);
+    void ping(const User &ping_user);
+
+    template <typename EventType> void on(std::function<void(const EventType &event)> handler)
+    {
+        handlers.push_back(bus().make_subscriber<EventType>([handler](auto &event) { handler(event); }));
+    }
+
+    void on_message(std::function<void(const std::string &text, const User &from)> handler);
+    void on_discovered_node(std::function<void(const tejoy::User &node)> handler);
+    void on_invalid_update_error(std::function<void(const events::InvalidUpdateError &error)> handler);
+    void on_update_send_error(std::function<void(const events::UpdateSendError &error)> handler);
     void on_log(std::function<void(const std::string &event_type, const std::string &from)> handler);
+    void on_ping_ok(std::function<void(const User &ping_user)> handler);
 
     std::string get_ip();
     uint16_t get_port();
@@ -28,11 +36,7 @@ class UserCodeHelper : public event_system::Subscriber
 
     void start();
 
-    std::function<void(const std::string &, const User &)> on_message_handler = [](auto, auto) {};
-    std::function<void(const tejoy::User &)> on_discovered_node_handler = [](auto) {};
-    std::function<void(const events::InvalidUpdateError &)> on_invalid_update_error_handler = [](auto) {};
-    std::function<void(const events::UpdateSendError &)> on_update_send_error_handler = [](auto) {};
-    std::function<void(const std::string &event_type, const std::string &from)> on_log_handler = [](auto, auto) {};
+    std::vector<std::shared_ptr<Subscriber>> handlers;
 };
 
 } // namespace tejoy
