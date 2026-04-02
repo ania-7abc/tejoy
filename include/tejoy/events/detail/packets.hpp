@@ -2,7 +2,6 @@
 #pragma once
 #include <cstdint>
 #include <event_system/event.hpp>
-#include <nlohmann/json.hpp>
 #include <string>
 #include <tejoy/user.hpp>
 

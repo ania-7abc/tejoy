@@ -1,4 +1,5 @@
 // ack_module.cpp
+#include <nlohmann/json.hpp>
 #include <tejoy/detail/modules/ack_module.hpp>
 #include <tejoy/events/errors.hpp>
 

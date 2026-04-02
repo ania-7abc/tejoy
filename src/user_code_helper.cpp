@@ -1,5 +1,4 @@
 // user_code_helper.cpp
-#include <boost/core/demangle.hpp>
 #include <tejoy/events/data_requests.hpp>
 #include <tejoy/events/detail/updates.hpp>
 #include <tejoy/events/discovery.hpp>

@@ -7,7 +7,6 @@
 #include <future>
 
 #include <event_system/event.hpp>
-#include <udp/udp.hpp>
 
 namespace tejoy::events
 {

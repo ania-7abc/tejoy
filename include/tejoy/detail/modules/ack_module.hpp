@@ -3,7 +3,6 @@
 #include <boost/asio.hpp>
 #include <memory>
 #include <mutex>
-#include <nlohmann/json.hpp>
 #include <tejoy/detail/modules/module.hpp>
 #include <tejoy/events/detail/updates.hpp>
 #include <thread>
