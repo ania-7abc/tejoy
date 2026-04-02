@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.14)
 project(tejoy
-    VERSION 26.4.0
+    VERSION 26.4.1
     HOMEPAGE_URL https://github.com/ania-7abc/tejoy
     DESCRIPTION "C++17 library to build secure peer-to-peer messengers with encryption"
     LANGUAGES CXX

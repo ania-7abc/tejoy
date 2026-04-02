@@ -11,14 +11,14 @@ namespace tejoy::detail::modules
 void PairingModule::on_start()
 {
     subscribe_update(UpdateTypes::PING, [this](auto &event) { on_ping(event); });
-    subscribe_update(UpdateTypes::PING_OK, [this](auto &event) { on_ping_ok(event); });
+    subscribe_update(UpdateTypes::PONG, [this](auto &event) { on_ping_ok(event); });
     subscribe<events::PingRequest>([this](auto &event) { on_ping_request(event); });
     subscribe<events::UpdateSendError>([this](auto &event) { on_update_send_error(event); });
 }
 
 void PairingModule::on_ping(const tejoy::events::detail::UpdateReceived &event)
 {
-    publish<events::detail::SendConfiguredUpdateRequest>(nlohmann::json::object(), UpdateTypes::PING_OK, event.sender);
+    publish<events::detail::SendConfiguredUpdateRequest>(nlohmann::json::object(), UpdateTypes::PONG, event.sender);
 }
 
 void PairingModule::on_ping_ok(const tejoy::events::detail::UpdateReceived &event)

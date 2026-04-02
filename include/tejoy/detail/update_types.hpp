@@ -10,6 +10,6 @@ inline constexpr std::string_view ACK = "ack";
 inline constexpr std::string_view DIS_FIND = "dis_find";
 inline constexpr std::string_view DIS_OK = "dis_ok";
 inline constexpr std::string_view PING = "ping";
-inline constexpr std::string_view PING_OK = "ping_ok";
+inline constexpr std::string_view PONG = "pong";
 
 } // namespace tejoy::detail::UpdateTypes
