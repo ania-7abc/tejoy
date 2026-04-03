@@ -43,13 +43,9 @@ void UpdateManagerModule::on_start()
         {
             std::string key;
             if (event.recipient.box.has_public_key())
-            {
                 key = Base64::encode(event.recipient.box.get_public_key());
-            }
             else
-            {
                 key = "no_id";
-            }
             pkg_id = config_.emplace("last_pkg_id", nlohmann::json::object())
                          .first.value()
                          .value(key, static_cast<uint32_t>(0)) +
@@ -76,9 +72,7 @@ void UpdateManagerModule::on_send_raw_update_request(const events::detail::SendR
     nlohmann::json packet = event.update;
     bool no_encrypt = always_no_encrypt_ || !event.recipient.box.has_public_key();
     if (!no_encrypt)
-    {
         packet = Base64::encode(i_.box.encrypt(packet.dump(), event.recipient.box));
-    }
     packet = nlohmann::json(
         {{"no_encrypt", no_encrypt}, {"update", packet}, {"id", Base64::encode(i_.box.get_public_key())}});
     publish<events::detail::SendPacketRequest>(packet.dump(), event.recipient.ip, event.recipient.port);
@@ -92,14 +86,10 @@ void UpdateManagerModule::on_packet_received(const events::detail::PacketReceive
 
     nlohmann::json update = packet.at("update");
     if (!packet.at("no_encrypt").get<bool>())
-    {
         update = nlohmann::json::parse(i_.box.decrypt(Base64::decode(update), sender.box));
-    }
 
     if (is_duplicate(pub_raw, update.at("pkg_id")))
-    {
         return;
-    }
 
     nlohmann::json data = update.at("data");
     auto type = update.at("type").get<std::string>();
@@ -117,9 +107,7 @@ auto UpdateManagerModule::is_duplicate(const std::vector<uint8_t> &recipient_id,
     last_id_iterators_.push_back(it);
 
     if (!inserted)
-    {
         return true;
-    }
 
     if (last_id_iterators_.full())
     {

@@ -63,9 +63,7 @@ void NetworkModule::on_send_packet_request(const events::detail::SendPacketReque
 void NetworkModule::on_network_message(const std::string &message, const std::string &sender_ip, uint16_t sender_port)
 {
     if (print_)
-    {
         std::cout << "Received message \"" << message << "\" from " << sender_ip << ":" << sender_port << '\n';
-    }
     publish<events::detail::PacketReceived>(message, sender_ip, sender_port);
 }
 

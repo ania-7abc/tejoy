@@ -43,9 +43,7 @@ class Module : public event_system::Subscriber
         subscribe<tejoy::events::detail::UpdateReceived>(
             [update_type, handler](const tejoy::events::detail::UpdateReceived &event) {
                 if (event.type == update_type)
-                {
                     handler(event);
-                }
             },
             sender_filter);
     }

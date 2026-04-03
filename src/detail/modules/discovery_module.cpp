@@ -31,9 +31,7 @@ void DiscoveryModule::on_start()
 
     timer_ = std::move(boost::asio::steady_timer(io_context_));
     if (send_allo)
-    {
         start_timer();
-    }
 
     subscribe<events::RequestDiscoveryIp>([this](auto &event) { event.promise.set_value(discovery_ip_); });
 
@@ -52,22 +50,16 @@ void DiscoveryModule::on_stop()
     work_guard_.reset();
     io_context_.stop();
     if (io_thread_.joinable())
-    {
         io_thread_.join();
-    }
 }
 
 void DiscoveryModule::on_dis_find_received(const events::detail::UpdateReceived &event)
 {
     if (event.sender.box.get_public_key() == i_.box.get_public_key())
-    {
         return;
-    }
     publish<events::DiscoveredNewNode>(event.sender);
     if (!anonymous_)
-    {
         publish<events::detail::SendUpdateRequest>(nlohmann::json::object(), detail::UpdateTypes::DIS_OK, event.sender);
-    }
 }
 
 void DiscoveryModule::on_dis_ok_received(const events::detail::UpdateReceived &event)
@@ -88,9 +80,7 @@ void DiscoveryModule::start_timer()
     timer_.expires_after(std::chrono::seconds(ping_interval_s_));
     timer_.async_wait([this](auto error_code) {
         if (!error_code)
-        {
             on_timer();
-        }
     });
 }
 

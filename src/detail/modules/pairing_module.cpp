@@ -34,9 +34,7 @@ void PairingModule::on_ping_request(const events::PingRequest &event)
 void PairingModule::on_update_send_error(const events::UpdateSendError &event)
 {
     if (event.update.update.at("type").get<std::string>() == UpdateTypes::PING)
-    {
         publish<events::PingFailed>(event.update.recipient);
-    }
 }
 
 } // namespace tejoy::detail::modules

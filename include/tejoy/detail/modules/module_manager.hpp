@@ -22,14 +22,10 @@ class ModuleManager
     {
         static_assert(std::is_base_of_v<Module, T>, "T must be derived from Module");
         if (!data_.contains(path_in_config))
-        {
             data_[path_in_config] = {};
-        }
         auto module = std::make_shared<T>(bus_, data_.at(path_in_config), std::forward<Args>(args)...);
         if (modules_.find(std::type_index(typeid(T))) != modules_.end())
-        {
             throw std::runtime_error("Module of this type already exists");
-        }
         modules_[std::type_index(typeid(T))] = module;
         return *module;
     }
@@ -38,9 +34,7 @@ class ModuleManager
     {
         auto module = modules_.find(std::type_index(typeid(T)));
         if (module == modules_.end())
-        {
             throw std::runtime_error("Module not found");
-        }
         return *std::dynamic_pointer_cast<T>(module->second);
     }
 

@@ -19,9 +19,7 @@ void UserCodeHelper::start()
 
     subscribe<events::detail::UpdateReceived>([this](auto &event) {
         if (event.type == "message")
-        {
             publish<events::MessageReceived>(event.data.at("text").template get<std::string>(), event.sender);
-        }
     });
 }
 

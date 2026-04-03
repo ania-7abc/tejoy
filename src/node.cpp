@@ -18,9 +18,7 @@ namespace tejoy
 Node::Node(nlohmann::json &data) : data_(data), module_manager_(bus_, data_)
 {
     if (!data_.contains("/node/contacts"_json_pointer))
-    {
         data_["/node/contacts"_json_pointer] = nlohmann::json({});
-    }
 
     module_manager_.create_module<detail::modules::AckModule>("/ack"_json_pointer);
     module_manager_.create_module<detail::modules::DiscoveryModule>("/discovery"_json_pointer);

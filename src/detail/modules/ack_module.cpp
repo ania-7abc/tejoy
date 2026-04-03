@@ -25,17 +25,13 @@ void AckModule::on_stop()
     work_guard_.reset();
     io_context_.stop();
     if (io_thread_.joinable())
-    {
         io_thread_.join();
-    }
 }
 
 void AckModule::on_send_update_request(const events::detail::SendRawUpdateRequest &event)
 {
     if (event.update.value("no_ack", false))
-    {
         return;
-    }
 
     uint32_t pkg_id = event.update.at("pkg_id").get<uint32_t>();
 
@@ -78,9 +74,7 @@ void AckModule::on_ack_received(const events::detail::UpdateReceived &event)
 void AckModule::on_update_received(const events::detail::UpdateReceived &event) const
 {
     if (event.no_ack || event.type == detail::UpdateTypes::ACK)
-    {
         return;
-    }
 
     publish<events::detail::SendUpdateRequest>(nlohmann::json({{"pkg_id", event.pkg_id}}), detail::UpdateTypes::ACK,
                                                event.sender, true);
@@ -89,15 +83,11 @@ void AckModule::on_update_received(const events::detail::UpdateReceived &event) 
 void AckModule::start_timer(PendingUpdate &update)
 {
     if (!update.timer)
-    {
         update.timer = std::make_unique<boost::asio::steady_timer>(io_context_);
-    }
     update.timer->expires_after(std::chrono::milliseconds(retry_interval_ms_));
     update.timer->async_wait([this, pkg_id = update.pkg_id](const auto &error_code) {
         if (!error_code)
-        {
             handle_timeout(pkg_id);
-        }
     });
 }
 
