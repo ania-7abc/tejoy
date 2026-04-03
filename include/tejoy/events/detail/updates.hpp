@@ -4,25 +4,28 @@
 #include <string>
 #include <tejoy/detail/update_types.hpp>
 #include <tejoy/user.hpp>
+#include <utility>
 
 namespace tejoy::events::detail
 {
 
-struct SendConfiguredUpdateRequest : event_system::Event
+struct SendUpdateRequest : event_system::Event
 {
-    SendConfiguredUpdateRequest(nlohmann::json data, std::string_view type, User recipient, bool no_ack = false)
-        : data(std::move(data)), type(type), recipient(std::move(recipient)), no_ack(no_ack)
+    SendUpdateRequest(nlohmann::json data, std::string_view type, User recipient, bool no_ack = false,
+                      uint32_t pkg_id = 0)
+        : data(std::move(data)), type(type), recipient(std::move(recipient)), no_ack(no_ack), pkg_id(pkg_id)
     {
     }
     nlohmann::json data;
     std::string_view type;
     User recipient;
     bool no_ack;
+    uint32_t pkg_id;
 };
 
-struct SendUpdateRequest : event_system::Event
+struct SendRawUpdateRequest : event_system::Event
 {
-    SendUpdateRequest(nlohmann::json update, tejoy::User recipient)
+    SendRawUpdateRequest(nlohmann::json update, tejoy::User recipient)
         : update(std::move(update)), recipient(std::move(recipient))
     {
     }
@@ -32,11 +35,15 @@ struct SendUpdateRequest : event_system::Event
 
 struct UpdateReceived : event_system::Event
 {
-    UpdateReceived(nlohmann::json update, tejoy::User sender) : update(std::move(update)), sender(std::move(sender))
+    UpdateReceived(nlohmann::json data, std::string type, User sender, bool no_ack, uint32_t pkg_id)
+        : data(std::move(data)), type(std::move(type)), sender(std::move(sender)), no_ack(no_ack), pkg_id(pkg_id)
     {
     }
-    nlohmann::json update;
-    tejoy::User sender;
+    nlohmann::json data;
+    std::string type;
+    User sender;
+    bool no_ack;
+    uint32_t pkg_id;
 };
 
 } // namespace tejoy::events::detail

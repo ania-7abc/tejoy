@@ -9,11 +9,11 @@ namespace tejoy::events
 
 struct UpdateSendError : event_system::Event
 {
-    UpdateSendError(detail::SendUpdateRequest update, std::string reason)
+    UpdateSendError(detail::SendRawUpdateRequest update, std::string reason)
         : update(std::move(update)), reason(std::move(reason))
     {
     }
-    detail::SendUpdateRequest update;
+    detail::SendRawUpdateRequest update;
     std::string reason;
 };
 

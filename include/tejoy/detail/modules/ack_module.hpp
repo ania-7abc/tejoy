@@ -22,16 +22,16 @@ class AckModule : public tejoy::detail::modules::Module
   private:
     struct PendingUpdate
     {
-        tejoy::events::detail::SendUpdateRequest event;
+        tejoy::events::detail::SendRawUpdateRequest event;
         size_t attempts{};
         std::unique_ptr<boost::asio::steady_timer> timer;
         uint32_t pkg_id{};
-        explicit PendingUpdate(tejoy::events::detail::SendUpdateRequest event) : event(std::move(event))
+        explicit PendingUpdate(tejoy::events::detail::SendRawUpdateRequest event) : event(std::move(event))
         {
         }
     };
 
-    void on_send_update_request(const tejoy::events::detail::SendUpdateRequest &event);
+    void on_send_update_request(const tejoy::events::detail::SendRawUpdateRequest &event);
     void on_ack_received(const tejoy::events::detail::UpdateReceived &event);
 
     void on_update_received(const tejoy::events::detail::UpdateReceived &event) const;

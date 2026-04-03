@@ -61,13 +61,12 @@ void DiscoveryModule::on_dis_find_received(const events::detail::UpdateReceived 
 {
     if (event.sender.box.get_public_key() == i_.box.get_public_key())
     {
-        // return;
+        return;
     }
     publish<events::DiscoveredNewNode>(event.sender);
     if (!anonymous_)
     {
-        publish<events::detail::SendConfiguredUpdateRequest>(nlohmann::json::object(), detail::UpdateTypes::DIS_OK,
-                                                             event.sender);
+        publish<events::detail::SendUpdateRequest>(nlohmann::json::object(), detail::UpdateTypes::DIS_OK, event.sender);
     }
 }
 
@@ -79,8 +78,8 @@ void DiscoveryModule::on_dis_ok_received(const events::detail::UpdateReceived &e
 void DiscoveryModule::on_timer()
 {
     User recipient{.ip = discovery_ip_, .port = port_};
-    publish<events::detail::SendConfiguredUpdateRequest>(nlohmann::json::object(), detail::UpdateTypes::DIS_FIND,
-                                                         recipient, true);
+    publish<events::detail::SendUpdateRequest>(nlohmann::json::object(), detail::UpdateTypes::DIS_FIND, recipient,
+                                               true);
     start_timer();
 }
 

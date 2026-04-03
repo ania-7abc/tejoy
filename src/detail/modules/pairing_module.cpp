@@ -18,7 +18,7 @@ void PairingModule::on_start()
 
 void PairingModule::on_ping(const tejoy::events::detail::UpdateReceived &event)
 {
-    publish<events::detail::SendConfiguredUpdateRequest>(nlohmann::json::object(), UpdateTypes::PONG, event.sender);
+    publish<events::detail::SendUpdateRequest>(nlohmann::json::object(), UpdateTypes::PONG, event.sender);
 }
 
 void PairingModule::on_ping_ok(const tejoy::events::detail::UpdateReceived &event)
@@ -28,7 +28,7 @@ void PairingModule::on_ping_ok(const tejoy::events::detail::UpdateReceived &even
 
 void PairingModule::on_ping_request(const events::PingRequest &event)
 {
-    publish<events::detail::SendConfiguredUpdateRequest>(nlohmann::json::object(), UpdateTypes::PING, event.ping_user);
+    publish<events::detail::SendUpdateRequest>(nlohmann::json::object(), UpdateTypes::PING, event.ping_user);
 }
 
 void PairingModule::on_update_send_error(const events::UpdateSendError &event)

@@ -14,15 +14,13 @@ namespace tejoy
 void UserCodeHelper::start()
 {
     subscribe<events::SendMessageRequest>([this](auto &event) {
-        publish<events::detail::SendConfiguredUpdateRequest>(nlohmann::json({{"text", event.text}}), "message",
-                                                             event.recipient);
+        publish<events::detail::SendUpdateRequest>(nlohmann::json({{"text", event.text}}), "message", event.recipient);
     });
 
     subscribe<events::detail::UpdateReceived>([this](auto &event) {
-        if (event.update.at("type").template get<std::string>() == "message")
+        if (event.type == "message")
         {
-            publish<events::MessageReceived>(event.update.at("data").at("text").template get<std::string>(),
-                                             event.sender);
+            publish<events::MessageReceived>(event.data.at("text").template get<std::string>(), event.sender);
         }
     });
 }

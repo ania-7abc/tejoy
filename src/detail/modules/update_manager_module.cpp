@@ -33,33 +33,37 @@ void UpdateManagerModule::on_start()
         // NOLINTNEXTLINE(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
         config_.emplace("dedup_buf_size", static_cast<std::size_t>(10)).first.value().get<std::size_t>());
 
-    subscribe<events::detail::SendUpdateRequest>([this](auto &event) { on_send_update_request(event); });
+    subscribe<events::detail::SendRawUpdateRequest>([this](auto &event) { on_send_raw_update_request(event); });
     subscribe<events::detail::PacketReceived>([this](auto &event) { on_packet_received(event); });
     subscribe<events::RequestI>([this](auto &event) { event.promise.set_value(i_); });
 
-    subscribe<events::detail::SendConfiguredUpdateRequest>([this](auto &event) {
-        std::string key;
-        if (event.recipient.box.has_public_key())
+    subscribe<events::detail::SendUpdateRequest>([this](auto &event) {
+        uint32_t pkg_id = event.pkg_id;
+        if (pkg_id == 0)
         {
-            key = Base64::encode(event.recipient.box.get_public_key());
+            std::string key;
+            if (event.recipient.box.has_public_key())
+            {
+                key = Base64::encode(event.recipient.box.get_public_key());
+            }
+            else
+            {
+                key = "no_id";
+            }
+            pkg_id = config_.emplace("last_pkg_id", nlohmann::json::object())
+                         .first.value()
+                         .value(key, static_cast<uint32_t>(0)) +
+                     1;
+            config_["last_pkg_id"][key] = pkg_id;
         }
-        else
-        {
-            key = "no_id";
-        }
-        uint32_t pkg_id = config_.emplace("last_pkg_id", nlohmann::json::object())
-                              .first.value()
-                              .value(key, static_cast<uint32_t>(0)) +
-                          1;
-        config_["last_pkg_id"][key] = pkg_id;
 
         nlohmann::json update({
+            {"data", event.data},
             {"type", event.type},
             {"pkg_id", pkg_id},
-            {"data", event.data},
             {"no_ack", event.no_ack},
         });
-        publish<events::detail::SendUpdateRequest>(update, event.recipient);
+        publish<events::detail::SendRawUpdateRequest>(update, event.recipient);
     });
 }
 
@@ -67,23 +71,16 @@ void UpdateManagerModule::on_stop()
 {
 }
 
-void UpdateManagerModule::on_send_update_request(const events::detail::SendUpdateRequest &event) const
+void UpdateManagerModule::on_send_raw_update_request(const events::detail::SendRawUpdateRequest &event) const
 {
-    nlohmann::json packet;
-    bool no_encrypt = false;
-
-    no_encrypt |= always_no_encrypt_;
-    no_encrypt |= !event.recipient.box.has_public_key();
-
+    nlohmann::json packet = event.update;
+    bool no_encrypt = always_no_encrypt_ || !event.recipient.box.has_public_key();
     if (!no_encrypt)
     {
-        packet = nlohmann::json({{"data", Base64::encode(i_.box.encrypt(event.update.dump(), event.recipient.box))}});
+        packet = Base64::encode(i_.box.encrypt(packet.dump(), event.recipient.box));
     }
-    else
-    {
-        packet = nlohmann::json({{"data", event.update}});
-    }
-    packet.emplace("id", Base64::encode(i_.box.get_public_key()));
+    packet = nlohmann::json(
+        {{"no_encrypt", no_encrypt}, {"update", packet}, {"id", Base64::encode(i_.box.get_public_key())}});
     publish<events::detail::SendPacketRequest>(packet.dump(), event.recipient.ip, event.recipient.port);
 }
 
@@ -93,21 +90,23 @@ void UpdateManagerModule::on_packet_received(const events::detail::PacketReceive
     std::vector<uint8_t> pub_raw = Base64::decode(packet.at("id"));
     User sender{.box = SecretBox(pub_raw), .ip = event.sender_ip, .port = event.sender_port};
 
-    nlohmann::json update;
-    if (packet.at("data").is_string())
+    nlohmann::json update = packet.at("update");
+    if (!packet.at("no_encrypt").get<bool>())
     {
-        update = nlohmann::json::parse(i_.box.decrypt(Base64::decode(packet.at("data")), sender.box));
-    }
-    else
-    {
-        update = packet.at("data");
+        update = nlohmann::json::parse(i_.box.decrypt(Base64::decode(update), sender.box));
     }
 
     if (is_duplicate(pub_raw, update.at("pkg_id")))
     {
         return;
     }
-    publish<events::detail::UpdateReceived>(update, sender);
+
+    nlohmann::json data = update.at("data");
+    auto type = update.at("type").get<std::string>();
+    auto no_ack = update.value("no_ack", false);
+    auto pkg_id = update.at("pkg_id").get<uint32_t>();
+
+    publish<events::detail::UpdateReceived>(data, type, sender, no_ack, pkg_id);
 }
 
 auto UpdateManagerModule::is_duplicate(const std::vector<uint8_t> &recipient_id, uint32_t pkg_id) -> bool

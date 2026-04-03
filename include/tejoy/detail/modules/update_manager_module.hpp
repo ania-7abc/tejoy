@@ -18,7 +18,7 @@ class UpdateManagerModule : public tejoy::detail::modules::Module
     void on_stop() override;
 
   private:
-    void on_send_update_request(const tejoy::events::detail::SendUpdateRequest &event) const;
+    void on_send_raw_update_request(const tejoy::events::detail::SendRawUpdateRequest &event) const;
     void on_packet_received(const tejoy::events::detail::PacketReceived &event);
 
     auto is_duplicate(const std::vector<uint8_t> &recipient_id, uint32_t pkg_id) -> bool;
