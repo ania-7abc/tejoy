@@ -20,11 +20,17 @@ void DiscoveryModule::on_start()
     config_.emplace("ping_interval_s", static_cast<std::size_t>(15)).first.value().get_to(ping_interval_s_);
     config_.emplace("anonymous", false).first.value().get_to(anonymous_);
     bool send_allo = config_.emplace("send_allo", true).first.value().get<bool>();
+    config_.emplace("discover_i", false).first.value().get_to(discover_i_);
 
-    std::promise<uint16_t> promise;
-    std::future<uint16_t> future = promise.get_future();
-    publish<events::RequestPort>(promise);
-    port_ = future.get();
+    auto promise_port = std::promise<uint16_t>();
+    auto future_port = promise_port.get_future();
+    publish<events::RequestPort>(promise_port);
+    port_ = future_port.get();
+
+    auto promise_i = std::promise<User>();
+    auto future_i = promise_i.get_future();
+    publish<events::RequestI>(promise_i);
+    i_ = future_i.get();
 
     work_guard_ = std::make_unique<boost::asio::io_context::work>(io_context_);
     io_thread_ = std::thread([this] { io_context_.run(); });
@@ -55,7 +61,7 @@ void DiscoveryModule::on_stop()
 
 void DiscoveryModule::on_dis_find_received(const events::detail::UpdateReceived &event)
 {
-    if (event.sender.box.get_public_key() == i_.box.get_public_key())
+    if (event.sender.box.get_public_key() == i_.box.get_public_key() && !discover_i_)
         return;
     publish<events::DiscoveredNewNode>(event.sender);
     if (!anonymous_)

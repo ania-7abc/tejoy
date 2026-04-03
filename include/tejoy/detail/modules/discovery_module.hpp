@@ -32,6 +32,7 @@ class DiscoveryModule : public tejoy::detail::modules::Module
     uint16_t port_{};
     size_t ping_interval_s_{};
     bool anonymous_{};
+    bool discover_i_{};
 
     tejoy::User i_;
 };
