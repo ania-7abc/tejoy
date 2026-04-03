@@ -15,7 +15,7 @@ class PairingModule : public tejoy::detail::modules::Module
 
   private:
     void on_ping(const tejoy::events::detail::UpdateReceived &event);
-    void on_ping_ok(const tejoy::events::detail::UpdateReceived &event);
+    void on_pong(const tejoy::events::detail::UpdateReceived &event);
 
     void on_ping_request(const events::PingRequest &event);
     void on_update_send_error(const events::UpdateSendError &event);
