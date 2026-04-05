@@ -48,7 +48,7 @@ void AckModule::on_send_update_request(const events::detail::SendRawUpdateReques
     else
     {
         auto &update = found_update->second;
-        if (++update.attempts < max_attempts_)
+        if (update.attempts++ < max_attempts_)
         {
             start_timer(update);
         }
