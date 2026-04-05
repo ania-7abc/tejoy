@@ -3,7 +3,8 @@
 #include <future>
 #include <secret_box/secret_box.hpp>
 #include <tejoy/detail/modules/update_manager_module.hpp>
-#include <tejoy/events/data_requests.hpp>
+#include <tejoy/events/network.hpp>
+#include <tejoy/events/others.hpp>
 
 namespace tejoy::detail::modules
 {

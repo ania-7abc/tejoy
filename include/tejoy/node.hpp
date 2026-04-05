@@ -1,12 +1,8 @@
 // node.hpp
 #pragma once
-#include <cstdint>
 #include <event_system/event_bus.hpp>
-#include <event_system/subscriber.hpp>
 #include <memory>
-#include <string>
 #include <tejoy/detail/modules/module_manager.hpp>
-#include <tejoy/events/data_requests.hpp>
 #include <tejoy/user_code_helper.hpp>
 #include <vector>
 
@@ -18,7 +14,7 @@ class Node
 {
   private:
     nlohmann::json &data_;
-    tejoy::detail::modules::ModuleManager module_manager_;
+    detail::modules::ModuleManager module_manager_;
     std::shared_ptr<UserCodeHelper> uch_;
     EventBus bus_;
 

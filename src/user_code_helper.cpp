@@ -1,9 +1,11 @@
 // user_code_helper.cpp
-#include <tejoy/events/data_requests.hpp>
+#include <tejoy/events/contacts.hpp>
 #include <tejoy/events/detail/updates.hpp>
 #include <tejoy/events/discovery.hpp>
 #include <tejoy/events/log.hpp>
 #include <tejoy/events/message.hpp>
+#include <tejoy/events/network.hpp>
+#include <tejoy/events/others.hpp>
 #include <tejoy/events/ping.hpp>
 #include <tejoy/user_code_helper.hpp>
 #include <utility>

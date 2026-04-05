@@ -1,8 +1,8 @@
 // network_module.cpp
 #include <iostream>
 #include <tejoy/detail/modules/network_module.hpp>
-#include <tejoy/events/data_requests.hpp>
 #include <tejoy/events/detail/multicast.hpp>
+#include <tejoy/events/network.hpp>
 
 namespace tejoy::detail::modules
 {

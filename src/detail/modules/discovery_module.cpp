@@ -1,9 +1,9 @@
 // discover_module.hpp
-
 #include <tejoy/detail/modules/discovery_module.hpp>
-#include <tejoy/events/data_requests.hpp>
 #include <tejoy/events/detail/multicast.hpp>
 #include <tejoy/events/discovery.hpp>
+#include <tejoy/events/network.hpp>
+#include <tejoy/events/others.hpp>
 
 namespace tejoy::detail::modules
 {
