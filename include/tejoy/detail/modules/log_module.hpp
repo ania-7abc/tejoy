@@ -6,10 +6,10 @@
 namespace tejoy::detail::modules
 {
 
-class LogModule : public tejoy::detail::modules::Module
+class LogModule : public Module
 {
   public:
-    using tejoy::detail::modules::Module::Module;
+    using Module::Module;
     void on_start() override;
     void on_stop() override;
     auto priority() const -> int override

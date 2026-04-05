@@ -8,10 +8,10 @@
 
 namespace tejoy::detail::modules
 {
-class NetworkModule : public tejoy::detail::modules::Module
+class NetworkModule : public detail::modules::Module
 {
   public:
-    using tejoy::detail::modules::Module::Module;
+    using Module::Module;
     void on_start() override;
     void on_stop() override;
     auto priority() const -> int override
@@ -20,7 +20,7 @@ class NetworkModule : public tejoy::detail::modules::Module
     }
 
   private:
-    void on_send_packet_request(const tejoy::events::detail::SendPacketRequest &event);
+    void on_send_packet_request(const events::detail::SendPacketRequest &event);
     void on_network_message(const std::string &message, const std::string &sender_ip, uint16_t sender_port);
 
     std::optional<UDP> udp_;

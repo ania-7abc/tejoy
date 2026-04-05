@@ -9,7 +9,7 @@
 namespace tejoy::detail::modules
 {
 
-class DiscoveryModule : public tejoy::detail::modules::Module
+class DiscoveryModule : public Module
 {
   public:
     explicit DiscoveryModule(event_system::EventBus &bus, nlohmann::json &config);
@@ -17,8 +17,8 @@ class DiscoveryModule : public tejoy::detail::modules::Module
     void on_stop() override;
 
   private:
-    void on_dis_find_received(const tejoy::events::detail::UpdateReceived &event);
-    void on_dis_ok_received(const tejoy::events::detail::UpdateReceived &event);
+    void on_dis_find_received(const events::detail::UpdateReceived &event);
+    void on_dis_ok_received(const events::detail::UpdateReceived &event);
     void on_timer();
     void start_timer();
 
@@ -34,7 +34,7 @@ class DiscoveryModule : public tejoy::detail::modules::Module
     bool anonymous_{};
     bool discover_i_{};
 
-    tejoy::User i_;
+    User i_;
 };
 
 } // namespace tejoy::detail::modules

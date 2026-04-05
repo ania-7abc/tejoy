@@ -25,12 +25,12 @@ struct SendUpdateRequest : event_system::Event
 
 struct SendRawUpdateRequest : event_system::Event
 {
-    SendRawUpdateRequest(nlohmann::json update, tejoy::User recipient)
+    SendRawUpdateRequest(nlohmann::json update, User recipient)
         : update(std::move(update)), recipient(std::move(recipient))
     {
     }
     nlohmann::json update;
-    tejoy::User recipient;
+    User recipient;
 };
 
 struct UpdateReceived : event_system::Event
@@ -44,6 +44,8 @@ struct UpdateReceived : event_system::Event
     User sender;
     bool no_ack;
     uint32_t pkg_id;
+
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE(UpdateReceived, data, type, sender, no_ack, pkg_id)
 };
 
 } // namespace tejoy::events::detail

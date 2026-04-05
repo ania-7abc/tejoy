@@ -12,29 +12,29 @@
 namespace tejoy::detail::modules
 {
 
-class AckModule : public tejoy::detail::modules::Module
+class AckModule : public Module
 {
   public:
-    using tejoy::detail::modules::Module::Module;
+    using Module::Module;
     void on_start() override;
     void on_stop() override;
 
   private:
     struct PendingUpdate
     {
-        tejoy::events::detail::SendRawUpdateRequest event;
+        events::detail::SendRawUpdateRequest event;
         size_t attempts{};
         std::unique_ptr<boost::asio::steady_timer> timer;
         uint32_t pkg_id{};
-        explicit PendingUpdate(tejoy::events::detail::SendRawUpdateRequest event) : event(std::move(event))
+        explicit PendingUpdate(events::detail::SendRawUpdateRequest event) : event(std::move(event))
         {
         }
     };
 
-    void on_send_update_request(const tejoy::events::detail::SendRawUpdateRequest &event);
-    void on_ack_received(const tejoy::events::detail::UpdateReceived &event);
+    void on_send_update_request(const events::detail::SendRawUpdateRequest &event);
+    void on_ack_received(const events::detail::UpdateReceived &event);
 
-    void on_update_received(const tejoy::events::detail::UpdateReceived &event) const;
+    void on_update_received(const events::detail::UpdateReceived &event) const;
 
     void start_timer(PendingUpdate &update);
     void handle_timeout(uint32_t pkg_id);

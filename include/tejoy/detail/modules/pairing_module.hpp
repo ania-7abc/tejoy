@@ -7,15 +7,15 @@
 namespace tejoy::detail::modules
 {
 
-class PairingModule : public tejoy::detail::modules::Module
+class PairingModule : public Module
 {
   public:
-    using tejoy::detail::modules::Module::Module;
+    using Module::Module;
     void on_start() override;
 
   private:
-    void on_ping(const tejoy::events::detail::UpdateReceived &event);
-    void on_pong(const tejoy::events::detail::UpdateReceived &event);
+    void on_ping(const UpdateReceived &event);
+    void on_pong(const UpdateReceived &event);
 
     void on_ping_request(const events::PingRequest &event);
     void on_update_send_error(const events::UpdateSendError &event);

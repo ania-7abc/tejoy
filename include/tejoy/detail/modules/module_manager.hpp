@@ -62,7 +62,7 @@ class ModuleManager
   private:
     nlohmann::json &data_;        // NOLINT(cppcoreguidelines-avoid-const-or-ref-data-members)
     event_system::EventBus &bus_; // NOLINT(cppcoreguidelines-avoid-const-or-ref-data-members)
-    std::unordered_map<std::type_index, std::shared_ptr<tejoy::detail::modules::Module>> modules_;
+    std::unordered_map<std::type_index, std::shared_ptr<Module>> modules_;
 };
 
 } // namespace tejoy::detail::modules

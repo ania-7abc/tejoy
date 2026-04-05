@@ -19,7 +19,7 @@ class UserCodeHelper : public event_system::Subscriber
     }
 
     void on_message(const std::function<void(const std::string &text, const User &from)> &handler);
-    void on_discovered_node(const std::function<void(const tejoy::User &node)> &handler);
+    void on_discovered_node(const std::function<void(const User &node)> &handler);
     void on_update_send_error(std::function<void(const events::UpdateSendError &error)> handler);
     void on_log(const std::function<void(const std::string &event_type, const std::string &from)> &handler);
     void on_ping_ok(const std::function<void(const User &ping_user)> &handler);

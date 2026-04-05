@@ -10,16 +10,16 @@
 namespace tejoy::detail::modules
 {
 
-class UpdateManagerModule : public tejoy::detail::modules::Module
+class UpdateManagerModule : public detail::modules::Module
 {
   public:
-    using tejoy::detail::modules::Module::Module;
+    using detail::modules::Module::Module;
     void on_start() override;
     void on_stop() override;
 
   private:
-    void on_send_raw_update_request(const tejoy::events::detail::SendRawUpdateRequest &event) const;
-    void on_packet_received(const tejoy::events::detail::PacketReceived &event);
+    void on_send_raw_update_request(const events::detail::SendRawUpdateRequest &event) const;
+    void on_packet_received(const events::detail::PacketReceived &event);
 
     auto is_duplicate(const std::vector<uint8_t> &recipient_id, uint32_t pkg_id) -> bool;
 

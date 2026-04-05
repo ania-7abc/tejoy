@@ -16,7 +16,7 @@ struct SendMessageRequest : event_system::Event
     {
     }
     std::string text;
-    tejoy::User recipient;
+    User recipient;
 };
 
 struct MessageReceived : event_system::Event
@@ -25,7 +25,7 @@ struct MessageReceived : event_system::Event
     {
     }
     std::string text;
-    tejoy::User sender;
+    User sender;
 };
 
 } // namespace tejoy::events
