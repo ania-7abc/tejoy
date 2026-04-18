@@ -6,6 +6,8 @@
 
 A C++17 P2P networking library with modular architecture.
 
+## The project is not abandoned - I just ran into a tricky bug that I haven't been able to solve for a long time.
+
 ## Description
 
 tejoy provides a foundation for building peer-to-peer applications with features like node discovery, encrypted messaging, and event-driven architecture.
