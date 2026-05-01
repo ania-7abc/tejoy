@@ -12,36 +12,22 @@ namespace tejoy::detail::modules
 class Module : public event_system::Subscriber
 {
   public:
-    explicit Module(event_system::EventBus &bus, nlohmann::json &config)
-        : event_system::Subscriber(bus), config_(config)
+    explicit Module(event_system::EventBus &bus, nlohmann::json &config) : Subscriber(bus), config_(config)
     {
     }
-    ~Module() override = default;
 
-    explicit Module(const Module &) = delete;
-    auto operator=(const Module &) -> Module & = delete;
-    explicit Module(Module &&) = delete;
-    auto operator=(Module &&) -> Module & = delete;
-
-    virtual void on_start()
+    virtual void run_subscribes()
     {
-    }
-    virtual void on_stop()
-    {
-    }
-    [[nodiscard]] virtual auto priority() const -> int
-    {
-        return 0;
     }
 
   protected:
     nlohmann::json &config_; // NOLINT(cppcoreguidelines-non-private-member-variables-in-classes)
     void subscribe_update(const std::string_view &update_type,
                           const std::function<void(const events::detail::UpdateReceived &)> &handler,
-                          std::type_index sender_filter = typeid(void))
+                          const std::type_index sender_filter = typeid(void))
     {
         subscribe<events::detail::UpdateReceived>(
-            [update_type, handler](const events::detail::UpdateReceived &event) {
+            [update_type, handler](const events::detail::UpdateReceived &event) -> void {
                 if (event.type == update_type)
                     handler(event);
             },

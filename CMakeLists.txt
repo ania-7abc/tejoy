@@ -15,11 +15,12 @@ add_library(tejoy)
 
 target_sources(tejoy PRIVATE
     src/detail/modules/ack_module.cpp
+    src/detail/modules/contacts_module.cpp
     src/detail/modules/discovery_module.cpp
     src/detail/modules/log_module.cpp
     src/detail/modules/module_manager.cpp
     src/detail/modules/network_module.cpp
-    src/detail/modules/pairing_module.cpp
+    src/detail/modules/ping_module.cpp
     src/detail/modules/update_manager_module.cpp
 )
 
@@ -53,13 +54,13 @@ include(FetchContent)
 FetchContent_Declare(
     base64
     GIT_REPOSITORY https://github.com/ania-7abc/base64
-    GIT_TAG v1.0.3
+    GIT_TAG v1.0.5
 )
 
 FetchContent_Declare(
     event_system
     GIT_REPOSITORY https://github.com/ania-7abc/event_system
-    GIT_TAG v2.1.0
+    GIT_TAG v2.2.0
 )
 
 FetchContent_Declare(
@@ -77,12 +78,13 @@ FetchContent_Declare(
 FetchContent_Declare(
     udp
     GIT_REPOSITORY https://github.com/ania-7abc/udp
-    GIT_TAG v1.0.1
+    GIT_TAG v1.3.0
 )
 
 FetchContent_MakeAvailable(base64 event_system secret_box simple_io udp)
 
-find_package(Boost REQUIRED COMPONENTS system)
+find_package(Boost CONFIG REQUIRED COMPONENTS headers)
+find_package(ZLIB REQUIRED)
 find_package(nlohmann_json REQUIRED)
 target_link_libraries(tejoy
     PRIVATE
@@ -91,7 +93,7 @@ target_link_libraries(tejoy
     PUBLIC
     event_system
     nlohmann_json::nlohmann_json
-    Boost::system
+    Boost::headers
     secret_box
     udp
 )

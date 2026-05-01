@@ -10,7 +10,7 @@
 namespace tejoy::detail::modules
 {
 
-void LogModule::on_start()
+LogModule::LogModule(event_system::EventBus &bus, nlohmann::json &config) : Module(bus, config)
 {
     config_.emplace("from", nlohmann::json::array()).first.value().get_to(filter_from_);
     config_.emplace("short_names", false).first.value().get_to(short_names_);
@@ -24,15 +24,14 @@ void LogModule::on_start()
             SimpleIO::remove(reply_file_);
         SimpleIO::write(reply_file_, "");
     }
+}
 
+void LogModule::run_subscribes()
+{
     subscribe<event_system::AnyEvent>([this](auto &event) { on_any_event(event); });
 }
 
-void LogModule::on_stop()
-{
-}
-
-void LogModule::on_any_event(const event_system::AnyEvent &event)
+void LogModule::on_any_event(const event_system::AnyEvent &event) const
 {
     if (event.original_type == typeid(events::LogEvent))
         return;
@@ -65,7 +64,7 @@ void LogModule::on_any_event(const event_system::AnyEvent &event)
 
     if (reply_event_)
         publish<events::LogEvent>(type, from);
-    std::string log_str = "Received event \"" + type + "\" from \"" + from + "\"";
+    const std::string log_str = "Received event \"" + type + "\" from \"" + from + "\"";
     if (reply_console_)
         std::cout << log_str << '\n';
     if (!reply_file_.empty())

@@ -9,16 +9,15 @@ namespace tejoy::detail::modules
 class LogModule : public Module
 {
   public:
-    using Module::Module;
-    void on_start() override;
-    void on_stop() override;
-    auto priority() const -> int override
+    explicit LogModule(event_system::EventBus &bus, nlohmann::json &config);
+    void run_subscribes() override;
+    static auto priority() -> int
     {
         return 1000; // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
     }
 
   private:
-    void on_any_event(const event_system::AnyEvent &event);
+    void on_any_event(const event_system::AnyEvent &event) const;
 
     std::vector<std::string> filter_from_;
     bool reply_event_{};

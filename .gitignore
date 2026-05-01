@@ -2,3 +2,6 @@
 tmp
 build/
 compileCommands.json
+.cache/
+.vscode/
+cmake-build-debug/

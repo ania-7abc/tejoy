@@ -6,21 +6,24 @@
 namespace tejoy::detail::modules
 {
 
-void AckModule::on_start()
+AckModule::AckModule(event_system::EventBus &bus, nlohmann::json &config)
+    : Module::Module(bus, config), io_context_(), work_guard_(boost::asio::make_work_guard(io_context_))
 {
     config_.emplace("max_attempts", static_cast<std::size_t>(3)).first.value().get_to(max_attempts_);
     // NOLINTNEXTLINE(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
     config_.emplace("retry_interval_ms", static_cast<std::size_t>(2000)).first.value().get_to(retry_interval_ms_);
 
-    work_guard_ = std::make_unique<boost::asio::io_context::work>(io_context_);
-    io_thread_ = std::thread([this] { io_context_.run(); });
+    io_thread_ = std::jthread([this] { io_context_.run(); });
+}
 
+void AckModule::run_subscribes()
+{
     subscribe<events::detail::SendRawUpdateRequest>([this](const auto &event) { on_send_update_request(event); });
     subscribe<events::detail::UpdateReceived>([this](const auto &event) { on_update_received(event); });
     subscribe_update(detail::UpdateTypes::ACK, [this](const auto &event) { on_ack_received(event); });
 }
 
-void AckModule::on_stop()
+AckModule::~AckModule()
 {
     work_guard_.reset();
     io_context_.stop();
@@ -33,36 +36,32 @@ void AckModule::on_send_update_request(const events::detail::SendRawUpdateReques
     if (event.update.value("no_ack", false))
         return;
 
-    uint32_t pkg_id = event.update.at("pkg_id").get<uint32_t>();
+    const uint32_t pkg_id = event.update.at("pkg_id").get<uint32_t>();
 
-    std::lock_guard<std::mutex> lock(pending_mutex_);
-    auto found_update = pending_.find(pkg_id);
-    if (found_update == pending_.end())
+    std::scoped_lock lock(pending_mutex_);
+    if (const auto found_update = pending_.find(pkg_id); found_update == pending_.end())
     {
         PendingUpdate update(event);
         update.attempts = 1;
         update.pkg_id = pkg_id;
         start_timer(update);
-        pending_.emplace(pkg_id, std::move(update));
+        pending_.try_emplace(pkg_id, std::move(update));
+    }
+    else if (auto &update = found_update->second; update.attempts++ < max_attempts_)
+    {
+        start_timer(update);
     }
     else
     {
-        auto &update = found_update->second;
-        if (update.attempts++ < max_attempts_)
-        {
-            start_timer(update);
-        }
-        else
-        {
-            publish<events::UpdateSendError>(update.event, "Max attempts exceeded");
-            pending_.erase(found_update);
-        }
+        publish<events::UpdateSendError>(update.event, "Max attempts exceeded");
+        pending_.erase(found_update);
     }
+}
 }
 
 void AckModule::on_ack_received(const events::detail::UpdateReceived &event)
 {
-    std::lock_guard<std::mutex> lock(pending_mutex_);
+    std::scoped_lock lock(pending_mutex_);
     auto found_update = pending_.find(event.data.at("pkg_id").get<uint32_t>());
     if (found_update != pending_.end())
     {
@@ -91,9 +90,9 @@ void AckModule::start_timer(PendingUpdate &update)
     });
 }
 
-void AckModule::handle_timeout(uint32_t pkg_id)
+void AckModule::handle_timeout(const uint32_t pkg_id)
 {
-    std::lock_guard<std::mutex> lock(pending_mutex_);
+    std::scoped_lock lock(pending_mutex_);
     auto found_update = pending_.find(pkg_id);
     if (found_update != pending_.end())
     {

@@ -2,27 +2,25 @@
 #pragma once
 #include <cstdint>
 #include <event_system/event.hpp>
-#include <future>
+#include <string>
 
 namespace tejoy::events
 {
 
 struct RequestIp : event_system::Event
 {
-    explicit RequestIp(std::promise<std::string> &promise) : promise(promise)
+    explicit RequestIp(std::function<void(std::string)> on_result) : on_result(std::move(on_result))
     {
     }
-    // NOLINTNEXTLINE(cppcoreguidelines-avoid-const-or-ref-data-members)
-    std::promise<std::string> &promise;
+    std::function<void(std::string)> on_result{};
 };
 
 struct RequestPort : event_system::Event
 {
-    explicit RequestPort(std::promise<uint16_t> &promise) : promise(promise)
+    explicit RequestPort(std::function<void(uint16_t)> on_result) : on_result(std::move(on_result))
     {
     }
-    // NOLINTNEXTLINE(cppcoreguidelines-avoid-const-or-ref-data-members)
-    std::promise<uint16_t> &promise;
+    std::function<void(uint16_t)> on_result;
 };
 
 } // namespace tejoy::events

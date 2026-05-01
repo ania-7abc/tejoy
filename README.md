@@ -19,23 +19,23 @@ tejoy provides a foundation for building peer-to-peer applications with features
 
 ### System Dependencies
 
-| Library | Purpose |
-|---------|---------|
-| [Boost](https://www.boost.org/) | Asio for networking |
-| [libsodium](https://doc.libsodium.org/) | Encryption |
-| [nlohmann/json](https://json.nlohmann.me/) | JSON handling |
+| Library                                    | Purpose             |
+|--------------------------------------------|---------------------|
+| [Boost](https://www.boost.org/)            | Asio for networking |
+| [libsodium](https://doc.libsodium.org/)    | Encryption          |
+| [nlohmann/json](https://json.nlohmann.me/) | JSON handling       |
 
 ### FetchContent Dependencies
 
 These are fetched automatically by CMake:
 
-| Library | Repository |
-|---------|------------|
-| base64 | [ania-7abc/base64](https://github.com/ania-7abc/base64) |
+| Library      | Repository                                                          |
+|--------------|---------------------------------------------------------------------|
+| base64       | [ania-7abc/base64](https://github.com/ania-7abc/base64)             |
 | event_system | [ania-7abc/event_system](https://github.com/ania-7abc/event_system) |
-| secret_box | [ania-7abc/secret_box](https://github.com/ania-7abc/secret_box) |
-| storage | [ania-7abc/storage](https://github.com/ania-7abc/storage) |
-| udp | [ania-7abc/udp](https://github.com/ania-7abc/udp) |
+| secret_box   | [ania-7abc/secret_box](https://github.com/ania-7abc/secret_box)     |
+| storage      | [ania-7abc/storage](https://github.com/ania-7abc/storage)           |
+| udp          | [ania-7abc/udp](https://github.com/ania-7abc/udp)                   |
 
 ## Installation
 

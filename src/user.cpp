@@ -5,6 +5,11 @@
 namespace tejoy
 {
 
+auto operator==(const User &lhs, const User &rhs) -> bool
+{
+    return lhs.box.get_public_key() == rhs.box.get_public_key();
+}
+
 void to_json(nlohmann::json &json, const User &user)
 {
     json = nlohmann::json{};
@@ -31,3 +36,8 @@ void from_json(const nlohmann::json &json, User &user)
 }
 
 } // namespace tejoy
+
+auto std::hash<tejoy::User>::operator()(const tejoy::User &user) const -> std::size_t
+{
+    return boost::hash_range(user.box.get_public_key().begin(), user.box.get_public_key().end());
+}

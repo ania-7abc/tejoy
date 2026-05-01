@@ -1,8 +1,6 @@
 // discover_module.hpp
 #pragma once
-#include <cstdint>
 #include <nlohmann/json.hpp>
-#include <optional>
 #include <tejoy/detail/modules/module.hpp>
 #include <tejoy/events/detail/updates.hpp>
 
@@ -13,18 +11,22 @@ class DiscoveryModule : public Module
 {
   public:
     explicit DiscoveryModule(event_system::EventBus &bus, nlohmann::json &config);
-    void on_start() override;
-    void on_stop() override;
+    void run_subscribes() override;
+    ~DiscoveryModule() override;
+    static auto priority() -> int
+    {
+        return 0;
+    }
 
   private:
-    void on_dis_find_received(const events::detail::UpdateReceived &event);
-    void on_dis_ok_received(const events::detail::UpdateReceived &event);
+    void on_dis_find_received(const events::detail::UpdateReceived &event) const;
+    void on_dis_ok_received(const events::detail::UpdateReceived &event) const;
     void on_timer();
     void start_timer();
 
-    boost::asio::io_context io_context_;
-    std::unique_ptr<boost::asio::io_context::work> work_guard_;
-    std::thread io_thread_;
+    boost::asio::io_context io_context_{};
+    boost::asio::executor_work_guard<boost::asio::io_context::executor_type> work_guard_;
+    std::jthread io_thread_;
 
     boost::asio::steady_timer timer_;
 

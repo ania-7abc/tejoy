@@ -1,7 +1,6 @@
 // others.hpp
 #pragma once
 #include <event_system/event.hpp>
-#include <future>
 #include <tejoy/user.hpp>
 
 namespace tejoy::events
@@ -9,11 +8,10 @@ namespace tejoy::events
 
 struct RequestI : event_system::Event
 {
-    explicit RequestI(std::promise<User> &promise) : promise(promise)
+    explicit RequestI(std::function<void(User)> on_result) : on_result(std::move(on_result))
     {
     }
-    // NOLINTNEXTLINE(cppcoreguidelines-avoid-const-or-ref-data-members)
-    std::promise<User> &promise;
+    std::function<void(User)> on_result;
 };
 
 } // namespace tejoy::events

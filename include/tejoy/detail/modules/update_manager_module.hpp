@@ -10,14 +10,19 @@
 namespace tejoy::detail::modules
 {
 
-class UpdateManagerModule : public detail::modules::Module
+class UpdateManagerModule : public Module
 {
   public:
-    using detail::modules::Module::Module;
-    void on_start() override;
-    void on_stop() override;
+    explicit UpdateManagerModule(event_system::EventBus &bus, nlohmann::json &config);
+    void run_subscribes() override;
+
+    static auto priority() -> int
+    {
+        return 90; // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+    }
 
   private:
+    void on_send_update_request(const events::detail::SendUpdateRequest &event) const;
     void on_send_raw_update_request(const events::detail::SendRawUpdateRequest &event) const;
     void on_packet_received(const events::detail::PacketReceived &event);
 

@@ -15,9 +15,13 @@ namespace tejoy::detail::modules
 class AckModule : public Module
 {
   public:
-    using Module::Module;
-    void on_start() override;
-    void on_stop() override;
+    explicit AckModule(event_system::EventBus &bus, nlohmann::json &config);
+    ~AckModule() override;
+    void run_subscribes() override;
+    static auto priority() -> int
+    {
+        return 0;
+    }
 
   private:
     struct PendingUpdate
@@ -39,9 +43,9 @@ class AckModule : public Module
     void start_timer(PendingUpdate &update);
     void handle_timeout(uint32_t pkg_id);
 
-    boost::asio::io_context io_context_;
-    std::unique_ptr<boost::asio::io_context::work> work_guard_;
-    std::thread io_thread_;
+    boost::asio::io_context io_context_{};
+    boost::asio::executor_work_guard<boost::asio::io_context::executor_type> work_guard_;
+    std::jthread io_thread_;
     std::unordered_map<uint32_t, PendingUpdate> pending_;
     std::mutex pending_mutex_;
     size_t max_attempts_{};

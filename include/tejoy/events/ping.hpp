@@ -6,28 +6,24 @@
 namespace tejoy::events
 {
 
-struct PingRequest : event_system::Event
+struct RequestPing : event_system::Event
 {
-    explicit PingRequest(User ping_user) : ping_user(std::move(ping_user))
+    explicit RequestPing(const User &ping_user, std::function<void(User)> on_result,
+                         std::function<void(std::exception_ptr)> on_error)
+        : ping_user(std::move(ping_user)), on_result(std::move(on_result)), on_error(std::move(on_error))
     {
     }
     User ping_user;
+    std::function<void(User)> on_result;
+    std::function<void(std::exception_ptr)> on_error{};
 };
 
-struct PingOk : event_system::Event
+class PingFailedError : public std::runtime_error
 {
-    explicit PingOk(User ping_user) : ping_user(std::move(ping_user))
+  public:
+    explicit PingFailedError(const std::string &message) : std::runtime_error(message)
     {
     }
-    User ping_user;
-};
-
-struct PingFailed : event_system::Event
-{
-    explicit PingFailed(User ping_user) : ping_user(std::move(ping_user))
-    {
-    }
-    User ping_user;
 };
 
 } // namespace tejoy::events
