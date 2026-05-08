@@ -12,7 +12,7 @@
 namespace tejoy
 {
 
-Node::Node(nlohmann::json &data) : data_(data), module_manager_(bus_, data_)
+Node::Node(std::shared_ptr<nlohmann::json> data) : data_(std::move(data)), module_manager_(bus_, data_)
 {
     module_manager_.create_module<detail::modules::AckModule>("/ack"_json_pointer);
     module_manager_.create_module<detail::modules::ContactsModule>("/contacts"_json_pointer);
@@ -27,9 +27,9 @@ Node::Node(nlohmann::json &data) : data_(data), module_manager_(bus_, data_)
     uch_->start();
 }
 
-auto Node::get_event_bus() -> EventBus &
+auto Node::get_event_bus() const -> EventBus &
 {
-    return bus_;
+    return *bus_;
 }
 
 auto Node::get_uch() const -> UserCodeHelper &

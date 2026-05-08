@@ -13,7 +13,12 @@ class ModuleManager
 {
   public:
     explicit ModuleManager(std::shared_ptr<event_system::EventBus> bus, std::shared_ptr<nlohmann::json> data);
+
     ~ModuleManager();
+	ModuleManager(const ModuleManager &) = default;
+	ModuleManager(ModuleManager &&) = default;
+	auto operator=(const ModuleManager &) -> ModuleManager & = default;
+	auto operator=(ModuleManager &&) -> ModuleManager & = default;
 
     template <typename T, typename... Args>
     void create_module(const nlohmann::json_pointer<std::string> &path_in_config, Args &&...args)

@@ -60,7 +60,7 @@ FetchContent_Declare(
 FetchContent_Declare(
     event_system
     GIT_REPOSITORY https://github.com/ania-7abc/event_system
-    GIT_TAG v2.2.0
+    GIT_TAG v26.5.2
 )
 
 FetchContent_Declare(

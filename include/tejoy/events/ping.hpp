@@ -2,20 +2,21 @@
 #pragma once
 #include <event_system/event.hpp>
 #include <tejoy/user.hpp>
+#include <utility>
 
 namespace tejoy::events
 {
 
 struct RequestPing : event_system::Event
 {
-    explicit RequestPing(const User &ping_user, std::function<void(User)> on_result,
+    explicit RequestPing(User ping_user, std::function<void(User)> on_result,
                          std::function<void(std::exception_ptr)> on_error)
         : ping_user(std::move(ping_user)), on_result(std::move(on_result)), on_error(std::move(on_error))
     {
     }
     User ping_user;
     std::function<void(User)> on_result;
-    std::function<void(std::exception_ptr)> on_error{};
+    std::function<void(std::exception_ptr)> on_error;
 };
 
 class PingFailedError : public std::runtime_error

@@ -9,7 +9,7 @@ namespace tejoy::detail::modules
 class LogModule : public Module
 {
   public:
-    explicit LogModule(event_system::EventBus &bus, nlohmann::json &config);
+    explicit LogModule(std::shared_ptr<event_system::EventBus> bus, nlohmann::json &config);
     void run_subscribes() override;
     static auto priority() -> int
     {

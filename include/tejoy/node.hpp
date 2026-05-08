@@ -19,8 +19,8 @@ class Node
   public:
     explicit Node(std::shared_ptr<nlohmann::json> data);
 
-    auto get_event_bus() -> EventBus &;
-    auto get_uch() const -> UserCodeHelper &;
+    [[nodiscard]] auto get_event_bus() const -> EventBus &;
+    [[nodiscard]] auto get_uch() const -> UserCodeHelper &;
 };
 
 } // namespace tejoy

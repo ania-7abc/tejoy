@@ -1,7 +1,6 @@
 *.tmp
 tmp
-build/
-compileCommands.json
+*.tmp.*
+cmake-build-*/
 .cache/
-.vscode/
-cmake-build-debug/
+.idea/

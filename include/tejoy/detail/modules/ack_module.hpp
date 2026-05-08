@@ -15,8 +15,14 @@ namespace tejoy::detail::modules
 class AckModule : public Module
 {
   public:
-    explicit AckModule(event_system::EventBus &bus, nlohmann::json &config);
-    ~AckModule() override;
+    explicit AckModule(std::shared_ptr<event_system::EventBus> bus, nlohmann::json &config);
+
+	~AckModule() override;
+	AckModule(const AckModule &) = delete;
+	AckModule(AckModule &&) = delete;
+	auto operator=(const AckModule &) -> AckModule & = delete;
+	auto operator=(AckModule &&) -> AckModule & = delete;
+
     void run_subscribes() override;
     static auto priority() -> int
     {

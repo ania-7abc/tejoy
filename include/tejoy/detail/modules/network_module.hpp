@@ -11,7 +11,7 @@ namespace tejoy::detail::modules
 class NetworkModule : public Module
 {
   public:
-    explicit NetworkModule(event_system::EventBus &bus, nlohmann::json &config);
+    explicit NetworkModule(std::shared_ptr<event_system::EventBus> bus, nlohmann::json &config);
     void run_subscribes() override;
     static auto priority() -> int
     {

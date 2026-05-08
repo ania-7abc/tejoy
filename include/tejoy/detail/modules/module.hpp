@@ -12,7 +12,8 @@ namespace tejoy::detail::modules
 class Module : public event_system::Subscriber
 {
   public:
-    explicit Module(event_system::EventBus &bus, nlohmann::json &config) : Subscriber(bus), config_(config)
+    explicit Module(std::shared_ptr<event_system::EventBus> bus, nlohmann::json &config)
+        : Subscriber(std::move(bus)), config_(config)
     {
     }
 
@@ -23,15 +24,13 @@ class Module : public event_system::Subscriber
   protected:
     nlohmann::json &config_; // NOLINT(cppcoreguidelines-non-private-member-variables-in-classes)
     void subscribe_update(const std::string_view &update_type,
-                          const std::function<void(const events::detail::UpdateReceived &)> &handler,
-                          const std::type_index sender_filter = typeid(void))
+                          const std::function<void(const events::detail::UpdateReceived &)> &handler)
     {
         subscribe<events::detail::UpdateReceived>(
             [update_type, handler](const events::detail::UpdateReceived &event) -> void {
                 if (event.type == update_type)
                     handler(event);
-            },
-            sender_filter);
+            });
     }
 };
 
