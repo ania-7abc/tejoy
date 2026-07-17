@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.5...4.0)
 project(tejoy
-        VERSION 0.1.0
+        VERSION 0.1.1
         LANGUAGES CXX
         DESCRIPTION ""
 )

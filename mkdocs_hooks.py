@@ -1,13 +1,10 @@
-import logging
+import re
 import os
 import subprocess
 import tempfile
-from pathlib import Path
 from mkdocs.config.defaults import MkDocsConfig
 from mkdocs.structure.files import Files, File
 from mkdocs.structure.pages import Page
-
-log = logging.getLogger(__name__)
 
 def on_files(files: Files, config: MkDocsConfig) -> Files:
     with tempfile.TemporaryDirectory(delete=False) as tmp_dir:
@@ -28,7 +25,7 @@ def on_files(files: Files, config: MkDocsConfig) -> Files:
         )
 
         subprocess.run(
-            ["moxygen", "-c", "-a", "-o", os.path.join(api_dir, "api-%s"), xml_dir],
+            ["moxygen", "-c", "-o", os.path.join(api_dir, "api-%s.md"), xml_dir],
             check=True,
             capture_output=True,
             text=True
@@ -45,11 +42,30 @@ def on_files(files: Files, config: MkDocsConfig) -> Files:
                     files.append(File.generated(
                         config,
                         os.path.join(filename[:-3].replace("-", "/"), "index.md"),
-                        content = content
+                        content=content
                     ))
 
     return files
 
 
 def on_page_markdown(markdown: str, page: Page, config: MkDocsConfig, files: Files) -> str:
-    return markdown
+    def repl(m):
+        text = m.group(1)
+        link = m.group(2)
+        if '#' in link:
+            base, anchor = link.split('#', 1)
+            anchor = '#' + anchor
+        else:
+            base, anchor = link, ''
+        if 'api-' in base and base.endswith('.md'):
+            name = base[:-3]
+            if name.startswith('api-'):
+                name = name[4:]
+            target_path = os.path.join('api', name.replace('-', os.sep), 'index.md')
+            current_dir = os.path.dirname(page.file.src_path)
+            rel = os.path.relpath(target_path, start=current_dir)
+            rel = rel.replace(os.sep, '/')
+            return f'[{text}]({rel}{anchor})'
+        return m.group(0)
+
+    return re.sub(r'\[([^\]]*)\]\(([^)]+)\)', repl, markdown)
