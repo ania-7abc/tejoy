@@ -1,68 +1,68 @@
 # yaml-language-server: $schema=https://squidfunk.github.io/mkdocs-material/schema.json
-site_name: "tejoy documentation"
-site_url: "https://ania-7abc.github.io/tejoy"
-site_description: "A cross-platform C++ library for building asynchronous messanger"
-site_author: "ania-7abc"
+site_name: tejoy documentation
+site_url: https://ania-7abc.github.io/tejoy
+site_description: A cross-platform C++ library for building asynchronous messanger
+site_author: ania-7abc
 copyright: "Copyright (c) 2026 ania-7abc SPDX-License-Identifier: MIT"
 
-repo_url: "https://github.com/ania-7abc/tejoy"
-edit_uri: "edit/main/docs/"
+repo_url: https://github.com/ania-7abc/tejoy
+edit_uri: edit/main/docs/
 
-docs_dir: "docs"
-site_dir: "site"
+docs_dir: docs
+site_dir: site
 remote_branch: gh-pages
 
 hooks:
   - mkdocs_hooks.py
 
+watch:
+  - examples
+  - include
+
 theme:
-  name: "material"
+  name: material
 
   features:
-    - navigation.tabs
-    - navigation.sections
-    - navigation.top
-    - navigation.tracking
-    - navigation.indexes
-    - navigation.path
-    - navigation.footer
-    - navigation.instant
-    - navigation.instant.progress
-    - navigation.instant.preview
-
-    - header.autohide
-
-    - toc.follow
-
-    - search.suggest
-    - search.highlight
-    - search.share
-
-    - content.code.annotate
-    - content.code.copy
     - content.action.edit
     - content.action.view
+    - content.code.annotate
+    - content.code.copy
     - content.tooltips
+    - header.autohide
+    - navigation.footer
+    - navigation.indexes
+    - navigation.instant
+    - navigation.instant.preview
+    - navigation.instant.progress
+    - navigation.path
+    - navigation.sections
+    - navigation.tabs
+    - navigation.top
+    - navigation.tracking
+    - search.highlight
+    - search.share
+    - search.suggest
+    - toc.follow
 
   palette:
-    - scheme: "default"
-      primary: "red"
-      accent: "red"
+    - scheme: default
+      primary: light green
+      accent: red
       media: "(prefers-color-scheme: light)"
       toggle:
-        icon: "material/weather-night"
-        name: "Switch to dark mode"
-    - scheme: "slate"
-      primary: "red"
-      accent: "red"
+        icon: material/weather-night
+        name: Switch to dark mode
+    - scheme: slate
+      primary: light green
+      accent: red
       media: "(prefers-color-scheme: dark)"
       toggle:
-        icon: "material/weather-sunny"
-        name: "Switch to light mode"
+        icon: material/weather-sunny
+        name: Switch to light mode
 
   font:
-    text: "Roboto"
-    code: "JetBrains Mono"
+    text: Roboto
+    code: JetBrains Mono
 
 plugins:
   - search
@@ -72,19 +72,29 @@ plugins:
   - offline
 
 markdown_extensions:
+  - abbr
   - admonition
+  - attr_list
+  - footnotes
+  - md_in_html
   - pymdownx.details
-  - pymdownx.superfences
-  - pymdownx.highlight:
-      use_pygments: true
-      linenums: true
-  - pymdownx.tilde
   - pymdownx.emoji:
       emoji_index: !!python/name:material.extensions.emoji.twemoji
       emoji_generator: !!python/name:material.extensions.emoji.to_svg
-  - footnotes
+  - pymdownx.highlight:
+      use_pygments: true
+      linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets:
+      auto_append:
+        - docs/includes/.abbreviations.md
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tilde
+  - tables
   - toc:
-      title: On this page
       permalink: true
       permalink_title: Anchor link to this section for reference
-  - tables

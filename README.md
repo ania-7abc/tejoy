@@ -1,8 +1,9 @@
 # tejoy
 
 [![Last Tag](https://img.shields.io/github/v/tag/ania-7abc/tejoy)](https://github.com/ania-7abc/tejoy/tags)
-[![Stars](https://img.shields.io/github/stars/ania-7abc/tejoy)](https://github.com/ania-7abc/tejoy/stargazers)
-[![Forks](https://img.shields.io/github/forks/ania-7abc/tejoy)](https://github.com/ania-7abc/tejoy/forks)
+[![Stars](https://img.shields.io/github/stars/ania-7abc/tejoy?style=flat)](https://github.com/ania-7abc/tejoy/stargazers)
+[![Forks](https://img.shields.io/github/forks/ania-7abc/tejoy?style=flat)](https://github.com/ania-7abc/tejoy/forks)
+[![Issues](https://img.shields.io/github/issues/ania-7abc/tejoy)](https://github.com/ania-7abc/tejoy/issues)
 [![License](https://img.shields.io/github/license/ania-7abc/tejoy)](https://github.com/ania-7abc/tejoy/blob/main/LICENSE)
 [![Docs](https://img.shields.io/badge/docs-tejoy-red)](https://ania-7abc.github.io/tejoy)
 
