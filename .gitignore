@@ -7,3 +7,5 @@ build
 site
 
 .cache
+
+docs/api
