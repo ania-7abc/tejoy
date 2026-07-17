@@ -1,0 +1,71 @@
+site_name: "tejoy documentation"
+site_url: "https://ania-7abc.github.io/tejoy"
+site_description: "Slogan"
+site_author: "ania-7abc"
+copyright: "Copyright (c) 2026 ania-7abc SPDX-License-Identifier: MIT"
+
+repo_url: "https://github.com/ania-7abc/tejoy"
+repo_name: "tejoy"
+edit_uri: "edit/main/docs/"
+
+docs_dir: "docs"
+site_dir: "site"
+remote_branch: gh-pages
+
+hooks:
+  - mkdocs_hooks.py
+
+theme:
+  name: "material"
+
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.top
+    - navigation.tracking
+    - toc.integrate
+    - search.suggest
+    - search.highlight
+    - search.share
+    - content.code.annotate
+    - content.code.copy
+
+  palette:
+    - scheme: "default"
+      primary: "red"
+      accent: "red"
+      media: "(prefers-color-scheme: light)"
+      toggle:
+        icon: "material/brightness-7"
+        name: "Enable dark mode"
+    - scheme: "slate"
+      primary: "red"
+      accent: "red"
+      media: "(prefers-color-scheme: dark)"
+      toggle:
+        icon: "material/brightness-4"
+        name: "Enable light mode"
+
+  font:
+    text: "Roboto"
+    code: "JetBrains Mono"
+
+plugins:
+  - search
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.highlight:
+      use_pygments: true
+      linenums: true
+  - pymdownx.tilde
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - footnotes
+  - toc:
+      permalink: true
+  - tables
+  - def_list

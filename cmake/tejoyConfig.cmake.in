@@ -1,0 +1,15 @@
+@PACKAGE_INIT@
+
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_LIST_DIR}")
+
+find_dependency(Boost 1.70.0 CONFIG REQUIRED COMPONENTS headers)
+find_dependency(Sodium REQUIRED)
+find_dependency(nlohmann_json 3.11.3 REQUIRED)
+find_dependency(event_bus 1.0.2 REQUIRED)
+
+include("${CMAKE_CURRENT_LIST_DIR}/tejoyTargets.cmake")
+
+check_required_components(tejoy)
+
+set(tejoy_INCLUDE_DIRS "@PACKAGE_INCLUDE_DIR@")
+set(tejoy_LIBRARIES tejoy::tejoy)

@@ -1,0 +1,5 @@
+INPUT                  = include
+RECURSIVE              = YES
+EXCLUDE_SYMBOLS        = *::detail::*
+GENERATE_LATEX         = NO
+EXTRACT_ALL            = YES
