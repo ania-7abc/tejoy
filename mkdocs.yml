@@ -1,3 +1,4 @@
+# yaml-language-server: $schema=https://squidfunk.github.io/mkdocs-material/schema.json
 site_name: "tejoy documentation"
 site_url: "https://ania-7abc.github.io/tejoy"
 site_description: "A cross-platform C++ library for building asynchronous messanger"
@@ -5,7 +6,6 @@ site_author: "ania-7abc"
 copyright: "Copyright (c) 2026 ania-7abc SPDX-License-Identifier: MIT"
 
 repo_url: "https://github.com/ania-7abc/tejoy"
-repo_name: "tejoy"
 edit_uri: "edit/main/docs/"
 
 docs_dir: "docs"
@@ -24,12 +24,25 @@ theme:
     - navigation.top
     - navigation.tracking
     - navigation.indexes
-    - toc.integrate
+    - navigation.path
+    - navigation.footer
+    - navigation.instant
+    - navigation.instant.progress
+    - navigation.instant.preview
+
+    - header.autohide
+
+    - toc.follow
+
     - search.suggest
     - search.highlight
     - search.share
+
     - content.code.annotate
     - content.code.copy
+    - content.action.edit
+    - content.action.view
+    - content.tooltips
 
   palette:
     - scheme: "default"
@@ -37,15 +50,15 @@ theme:
       accent: "red"
       media: "(prefers-color-scheme: light)"
       toggle:
-        icon: "material/brightness-7"
-        name: "Enable dark mode"
+        icon: "material/weather-night"
+        name: "Switch to dark mode"
     - scheme: "slate"
       primary: "red"
       accent: "red"
       media: "(prefers-color-scheme: dark)"
       toggle:
-        icon: "material/brightness-4"
-        name: "Enable light mode"
+        icon: "material/weather-sunny"
+        name: "Switch to light mode"
 
   font:
     text: "Roboto"
@@ -53,6 +66,10 @@ theme:
 
 plugins:
   - search
+  - git-committers:
+      repository: ania-7abc/tejoy
+      branch: main
+  - offline
 
 markdown_extensions:
   - admonition
@@ -67,6 +84,7 @@ markdown_extensions:
       emoji_generator: !!python/name:material.extensions.emoji.to_svg
   - footnotes
   - toc:
+      title: On this page
       permalink: true
+      permalink_title: Anchor link to this section for reference
   - tables
-  - def_list
