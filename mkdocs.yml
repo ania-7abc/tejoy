@@ -1,6 +1,6 @@
 site_name: "tejoy documentation"
 site_url: "https://ania-7abc.github.io/tejoy"
-site_description: "Slogan"
+site_description: "A cross-platform C++ library for building asynchronous messanger"
 site_author: "ania-7abc"
 copyright: "Copyright (c) 2026 ania-7abc SPDX-License-Identifier: MIT"
 

@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.5...4.0)
 project(tejoy
-        VERSION 0.1.1
+        VERSION 0.1.2
         LANGUAGES CXX
-        DESCRIPTION ""
+        DESCRIPTION "A cross-platform C++ library for building asynchronous messanger"
 )
 
 set(CMAKE_CXX_STANDARD 17)
