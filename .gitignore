@@ -7,5 +7,6 @@ build
 site
 
 .cache
+__pycache__
 
 docs/api

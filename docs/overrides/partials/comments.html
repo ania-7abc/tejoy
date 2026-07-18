@@ -1,4 +1,4 @@
-{% if not page.meta or not page.meta.no_comments %}
+{% if not "comments" in page.meta.hide %}
 <br />
 <hr />
 <h2 id="__comments">{{ lang.t("meta.comments") }}</h2>
