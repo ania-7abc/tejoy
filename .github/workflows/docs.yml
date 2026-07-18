@@ -1,0 +1,41 @@
+name: Documentation
+on:
+  push:
+    tags:
+      - '*'
+
+permissions:
+  contents: write
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: 3.x
+
+      - run: pip install zensical
+      - run: pip install git+https://github.com/squidfunk/mike.git
+      - run: python3 generate_api.py
+
+      - id: check_tag
+        run: |
+          TAG="${GITHUB_REF_NAME}"
+          if [[ "$TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "stable=true" >> $GITHUB_OUTPUT
+          else
+            echo "stable=false" >> $GITHUB_OUTPUT
+          fi
+
+      - run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+
+      - if: steps.version.outputs.stable == 'true'
+        run: mike deploy "${GITHUB_REF_NAME}" latest --push
+
+      - if: steps.version.outputs.stable == 'false'
+        run: mike deploy "${GITHUB_REF_NAME}" --push
