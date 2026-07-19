@@ -1,13 +1,5 @@
 [
   {
-    "version": ":Enter",
-    "title": ":Enter",
-    "aliases": [
-      "documentations",
-      "version$"
-    ]
-  },
-  {
     "version": "0.1.6",
     "title": "0.1.6",
     "aliases": []
