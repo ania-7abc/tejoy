@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+      <url>
+        <loc>https://ania-7abc.github.io/tejoy/v0.2.0/</loc>
+      </url>
+      <url>
+        <loc>https://ania-7abc.github.io/tejoy/v0.2.0/faq/</loc>
+      </url>
+      <url>
+        <loc>https://ania-7abc.github.io/tejoy/v0.2.0/api/</loc>
+      </url>
+      <url>
+        <loc>https://ania-7abc.github.io/tejoy/v0.2.0/api/tejoy/</loc>
+      </url>
+      <url>
+        <loc>https://ania-7abc.github.io/tejoy/v0.2.0/api/tejoy/Node/</loc>
+      </url>
+      <url>
+        <loc>https://ania-7abc.github.io/tejoy/v0.2.0/api/tejoy/detail/</loc>
+      </url>
+      <url>
+        <loc>https://ania-7abc.github.io/tejoy/v0.2.0/api/tejoy/events/</loc>
+      </url>
+      <url>
+        <loc>https://ania-7abc.github.io/tejoy/v0.2.0/api/tejoy/events/detail/</loc>
+      </url>
+      <url>
+        <loc>https://ania-7abc.github.io/tejoy/v0.2.0/examples/</loc>
+      </url>
+      <url>
+        <loc>https://ania-7abc.github.io/tejoy/v0.2.0/examples/basic_node_usage/</loc>
+      </url>
+</urlset>
