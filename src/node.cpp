@@ -1,3 +1,8 @@
+/**
+ * @file node.cpp
+ * @copyright Copyright (c) 2026 ania-7abc SPDX-License-Identifier: MIT
+ */
+
 #include <tejoy/node.hpp>
 #include <utility>
 

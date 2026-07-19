@@ -10,6 +10,8 @@
 #include <event_bus/event_bus.hpp>
 #include <nlohmann/json.hpp>
 
+#include <tejoy/detail/modules/network.hpp>
+
 /**
  * @namespace tejoy
  * @brief Main namespace of the tejoy library
@@ -28,6 +30,9 @@ namespace tejoy
         event_bus::EventBus event_bus_;
         /// Config for modules settings. Should live longer than this object
         nlohmann::json& config_;
+
+        /// Network module
+        detail::modules::Network network_;
 
     public:
         /**

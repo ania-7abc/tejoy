@@ -8,5 +8,6 @@ site
 
 .cache
 __pycache__
+.venv
 
 docs/api

@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.5...4.0)
 project(tejoy
-        VERSION 0.1.7
+        VERSION 0.2.0
         LANGUAGES CXX
         DESCRIPTION "A cross-platform C++ library for building asynchronous messanger"
 )
@@ -22,6 +22,7 @@ find_package(event_bus 2.0.0 REQUIRED)
 # Library
 add_library(tejoy
         src/node.cpp
+        src/modules/network.cpp
 )
 
 target_include_directories(tejoy PUBLIC
