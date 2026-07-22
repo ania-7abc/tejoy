@@ -7,8 +7,6 @@ import tempfile
 import shutil
 
 def convert_links(markdown, src_path):
-    if not src_path.startswith('api/'):
-        return markdown
     current_dir = os.path.dirname(src_path)
 
     def repl(m):
@@ -16,18 +14,19 @@ def convert_links(markdown, src_path):
         link = m.group(2)
         if '#' in link:
             base, anchor = link.split('#', 1)
-            anchor = '#' + anchor
+            if base == '':
+                return f'[{text}](#{anchor})'
         else:
             base, anchor = link, ''
-        if '/' in base or base.startswith('http') or base.startswith('#'):
+        if '/' in base or base.startswith('http'):
             return m.group(0)
         if not base.endswith('.md'):
             return m.group(0)
         name = base[:-3]
-        target_path = os.path.join('api', name.replace('-', os.sep), 'index.md')
+        target_path = os.path.join(name.replace('-', os.sep), 'index.md')
         rel = os.path.relpath(target_path, start=current_dir)
         rel = rel.replace(os.sep, '/')
-        return f'[{text}]({rel}{anchor})'
+        return f'[{text}]({rel}#{anchor})'
 
     return re.sub(r'\[([^]]*)]\(([^)]+)\)', repl, markdown)
 
@@ -61,7 +60,7 @@ def main():
         )
 
         subprocess.run(
-            [args.moxygen, '-c', '-o', os.path.join(md_dir, '%s.md'), xml_dir],
+            [args.moxygen, '-cHf', '-o', os.path.join(md_dir, '%s.md'), xml_dir],
             check=True,
             capture_output=True,
             text=True
@@ -80,7 +79,7 @@ def main():
                 else:
                     target_dir = filename[:-3].replace('-', os.sep)
 
-                src_path = os.path.join('api', target_dir, 'index.md')
+                src_path = os.path.join(target_dir, 'index.md')
                 new_content = convert_links(content, src_path)
 
                 output_file = os.path.join(args.output, target_dir, 'index.md')
