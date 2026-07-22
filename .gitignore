@@ -1,13 +1,62 @@
-build
-*-build-*
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
 
-.idea
-.vscode
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.venv/
+venv/
+env/
+ENV/
+.pytest_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+.tox/
+*.log
+*.pot
 
-site
+# Build
+build/
+cmake-build-*/
+*.o
+*.so
+*.a
+*.out
+*.dll
+*.lib
 
-.cache
-__pycache__
-.venv
+# Documentation
+site/
+docs/api/
+api/
+.generated/
+*.xml
+*.db
+.mike/
+.doxygen/
 
-docs/api
+# Cache & temp
+.cache/
+*.tmp
+*.temp
+*.bak
+*.orig
+*.rej
+
+# OS specific
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Secrets & environment
+.env
+.env.*
+.secrets
+*.pem
