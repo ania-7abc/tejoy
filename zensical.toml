@@ -1,15 +1,13 @@
 [project]
-
 site_name = "tejoy documentation"
 site_description = "A cross-platform C++ library for building asynchronous messanger"
 site_author = "ania-7abc"
 site_url = "https://ania-7abc.github.io/tejoy/"
+repo_url = "https://github.com/ania-7abc/tejoy"
 copyright = """
 Copyright (c) 2026 ania-7abc
 SPDX-License-Identifier: MIT
 """
-
-repo_url = "https://github.com/ania-7abc/tejoy"
 
 [project.theme]
 variant = "modern"
@@ -25,9 +23,7 @@ features = [
     "content.footnote.tooltips",
     "content.tabs.link",
     "content.tooltips",
-
     "header.autohide",
-
     "navigation.footer",
     "navigation.indexes",
     "navigation.instant",
@@ -39,9 +35,7 @@ features = [
     "navigation.tabs",
     "navigation.top",
     "navigation.tracking",
-
     "search.highlight",
-
     "toc.follow",
 ]
 
@@ -54,7 +48,7 @@ scheme = "default"
 primary = "light green"
 accent = "red"
 media = "(prefers-color-scheme: light)"
-toggle.icon = "lucide/sun"
+toggle.icon = "lucide/moon"
 toggle.name = "Switch to dark mode"
 
 [[project.theme.palette]]
@@ -62,7 +56,7 @@ scheme = "slate"
 primary = "light green"
 accent = "red"
 media = "(prefers-color-scheme: dark)"
-toggle.icon = "material/weather-sunny"
+toggle.icon = "lucide/sun"
 toggle.name = "Switch to light mode"
 
 [[project.extra.social]]
@@ -99,7 +93,7 @@ pygments_lang_class = true
 [project.markdown_extensions.pymdownx.smartsymbols]
 [project.markdown_extensions.pymdownx.superfences]
 custom_fences = [
-  { name = "mermaid", class = "mermaid", format = "pymdownx.superfences.fence_code_format" }
+    { name = "mermaid", class = "mermaid", format = "pymdownx.superfences.fence_code_format" }
 ]
 [project.markdown_extensions.pymdownx.tabbed]
 alternate_style = true
