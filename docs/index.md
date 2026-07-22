@@ -3,6 +3,7 @@ title: Home
 hide:
   - navigation
   - toc
+template: home.html
 ---
 
 # Home
