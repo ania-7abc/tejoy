@@ -11,14 +11,17 @@ Welcome to the tejoy FAQ! Here you'll find answers to the most common questions 
 
 [TOC]
 
+<style>[q]{  display: none}</style>
+[//]: # (@formatter:off)
+
 ---
 
 <!--
-  ## Lalala? { style="display: none" }
+  ## Lalala? {q}
   !!! question "Lalala?"
       Lalala
 -->
 
-## Is this a ready-made messenger? { style="display: none" }
+## Is this a ready-made messenger? {q}
 !!! question "Is this a ready-made messenger?"
     No, this is a framework on the basis of which you can create tejoy-compatible messengers
