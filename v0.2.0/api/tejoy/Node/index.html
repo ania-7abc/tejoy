@@ -18,7 +18,7 @@
         <link rel="prev" href="../">
       
       
-        <link rel="next" href="../detail/">
+        <link rel="next" href="../../../examples/">
       
       
         
@@ -483,10 +483,6 @@
       
         
       
-        
-      
-        
-      
     
     
     
@@ -610,126 +606,6 @@
             
           </ul>
         </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-      
-        
-          
-        
-      
-    
-    
-    
-      
-      
-        
-      
-    
-    
-      
-        
-        
-      
-    
-    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
-      
-        
-  
-  
-  
-    <a href="../detail/" class="md-nav__link">
-      
-  
-  
-  <span class="md-ellipsis">
-    
-  
-  detail
-
-    
-  </span>
-  
-  
-
-      
-        <span class="md-nav__icon md-icon"></span>
-      
-    </a>
-  
-
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-      
-        
-          
-        
-      
-        
-      
-    
-    
-    
-      
-      
-        
-      
-    
-    
-      
-        
-        
-      
-    
-    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
-      
-        
-  
-  
-  
-    <a href="../events/" class="md-nav__link">
-      
-  
-  
-  <span class="md-ellipsis">
-    
-  
-  events
-
-    
-  </span>
-  
-  
-
-      
-        <span class="md-nav__icon md-icon"></span>
-      
-    </a>
-  
-
       
     </li>
   
@@ -980,17 +856,6 @@
   
 </li>
         
-          <li class="md-nav__item">
-  <a href="#network_" class="md-nav__link">
-    <span class="md-ellipsis">
-      <span class="md-typeset">
-        network_
-      </span>
-    </span>
-  </a>
-  
-</li>
-        
       </ul>
     </nav>
   
@@ -1076,10 +941,6 @@
       
         
       
-        
-      
-        
-      
     
     
     
@@ -1155,7 +1016,7 @@
 </span></code></pre></div>
 <div class="language-cpp highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="k">class</span><span class="w"> </span><span class="nc">Node</span>
 </span></code></pre></div>
-<p>Defined in include/<abbr title="This project. A cross-platform C++ library for building asynchronous messanger">tejoy</abbr>/node.hpp:25</p>
+<p>Defined in include/<abbr title="This project. A cross-platform C++ library for building asynchronous messanger">tejoy</abbr>/node.hpp:23</p>
 <p>Represents 1 device on the network.</p>
 <h2 id="list-of-all-members">List of all members<a class="headerlink" href="#list-of-all-members" title="Permanent link">&para;</a></h2>
 <table>
@@ -1192,11 +1053,6 @@
 <td><code>variable</code></td>
 <td>Declared here</td>
 </tr>
-<tr>
-<td><a href="#network_"><code>network_</code></a></td>
-<td><code>variable</code></td>
-<td>Declared here</td>
-</tr>
 </tbody>
 </table>
 <h2 id="public-methods">Public Methods<a class="headerlink" href="#public-methods" title="Permanent link">&para;</a></h2>
@@ -1225,7 +1081,7 @@
 <h3 id="node_1">Node<a class="headerlink" href="#node_1" title="Permanent link">&para;</a></h3>
 <div class="language-cpp highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">Node</span><span class="p">(</span><span class="n">boost</span><span class="o">::</span><span class="n">asio</span><span class="o">::</span><span class="n">any_io_executor</span><span class="w"> </span><span class="n">executor</span><span class="p">,</span><span class="w"> </span><span class="n">nlohmann</span><span class="o">::</span><span class="n">json</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">config</span><span class="p">)</span>
 </span></code></pre></div>
-<p>Defined in include/<abbr title="This project. A cross-platform C++ library for building asynchronous messanger">tejoy</abbr>/node.hpp:46</p>
+<p>Defined in include/<abbr title="This project. A cross-platform C++ library for building asynchronous messanger">tejoy</abbr>/node.hpp:41</p>
 <p>Constructor. Builds ready-to-use <a href="#node">Node</a>.</p>
 <h4 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h4>
 <table>
@@ -1253,7 +1109,7 @@
 <h3 id="get_bus">get_bus<a class="headerlink" href="#get_bus" title="Permanent link">&para;</a></h3>
 <div class="language-cpp highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">event_bus</span><span class="o">::</span><span class="n">EventBus</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">get_bus</span><span class="p">()</span>
 </span></code></pre></div>
-<p>Defined in include/<abbr title="This project. A cross-platform C++ library for building asynchronous messanger">tejoy</abbr>/node.hpp:52</p>
+<p>Defined in include/<abbr title="This project. A cross-platform C++ library for building asynchronous messanger">tejoy</abbr>/node.hpp:47</p>
 <p>Getter. Returns a reference to the internal event bus.</p>
 <h4 id="returns">Returns<a class="headerlink" href="#returns" title="Permanent link">&para;</a></h4>
 <p>Non-const reference to the internal event bus</p>
@@ -1282,37 +1138,26 @@
 <td><a href="#config_"><code>config_</code></a></td>
 <td>Config for modules settings. Should live longer than this object.</td>
 </tr>
-<tr>
-<td><code>detail::modules::Network</code></td>
-<td><a href="#network_"><code>network_</code></a></td>
-<td>Network module.</td>
-</tr>
 </tbody>
 </table>
 <hr />
 <h3 id="executor_">executor_<a class="headerlink" href="#executor_" title="Permanent link">&para;</a></h3>
 <div class="language-cpp highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">boost</span><span class="o">::</span><span class="n">asio</span><span class="o">::</span><span class="n">any_io_executor</span><span class="w"> </span><span class="n">executor_</span>
 </span></code></pre></div>
-<p>Defined in include/<abbr title="This project. A cross-platform C++ library for building asynchronous messanger">tejoy</abbr>/node.hpp:28</p>
+<p>Defined in include/<abbr title="This project. A cross-platform C++ library for building asynchronous messanger">tejoy</abbr>/node.hpp:26</p>
 <p>Executor for all asynchronous operations.</p>
 <hr />
 <h3 id="event_bus_">event_bus_<a class="headerlink" href="#event_bus_" title="Permanent link">&para;</a></h3>
 <div class="language-cpp highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="n">event_bus</span><span class="o">::</span><span class="n">EventBus</span><span class="w"> </span><span class="n">event_bus_</span>
 </span></code></pre></div>
-<p>Defined in include/<abbr title="This project. A cross-platform C++ library for building asynchronous messanger">tejoy</abbr>/node.hpp:30</p>
+<p>Defined in include/<abbr title="This project. A cross-platform C++ library for building asynchronous messanger">tejoy</abbr>/node.hpp:28</p>
 <p>Event bus for modules communication.</p>
 <hr />
 <h3 id="config_">config_<a class="headerlink" href="#config_" title="Permanent link">&para;</a></h3>
 <div class="language-cpp highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="n">nlohmann</span><span class="o">::</span><span class="n">json</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">config_</span>
 </span></code></pre></div>
-<p>Defined in include/<abbr title="This project. A cross-platform C++ library for building asynchronous messanger">tejoy</abbr>/node.hpp:32</p>
+<p>Defined in include/<abbr title="This project. A cross-platform C++ library for building asynchronous messanger">tejoy</abbr>/node.hpp:30</p>
 <p>Config for modules settings. Should live longer than this object.</p>
-<hr />
-<h3 id="network_">network_<a class="headerlink" href="#network_" title="Permanent link">&para;</a></h3>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="n">detail</span><span class="o">::</span><span class="n">modules</span><span class="o">::</span><span class="n">Network</span><span class="w"> </span><span class="n">network_</span>
-</span></code></pre></div>
-<p>Defined in include/<abbr title="This project. A cross-platform C++ library for building asynchronous messanger">tejoy</abbr>/node.hpp:35</p>
-<p>Network module.</p>
 
 
 
@@ -1425,13 +1270,13 @@
         
         
           
-          <a href="../detail/" class="md-footer__link md-footer__link--next" aria-label="Next: detail">
+          <a href="../../../examples/" class="md-footer__link md-footer__link--next" aria-label="Next: Examples">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                detail
+                Examples
               </div>
             </div>
             <div class="md-footer__button md-icon">
