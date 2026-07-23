@@ -23,7 +23,7 @@ def convert_links(markdown, src_path):
         if not base.endswith('.md'):
             return m.group(0)
         name = base[:-3]
-        target_path = os.path.join(name.replace('-', os.sep), 'index.md')
+        target_path = os.path.join(name.replace('-', os.sep))
         rel = os.path.relpath(target_path, start=current_dir)
         rel = rel.replace(os.sep, '/')
         return f'[{text}]({rel}#{anchor})'
@@ -66,26 +66,44 @@ def main():
             text=True
         )
 
+        file_map = {}
         for root, _, filenames in os.walk(md_dir):
             for filename in filenames:
                 if not filename.endswith('.md'):
                     continue
-                file_path = os.path.join(root, filename)
-                with open(file_path, 'r', encoding='utf-8') as f:
-                    content = f.read()
+                name = filename[:-3]
+                file_map[name] = os.path.join(root, filename)
 
-                if filename == 'api.md':
-                    target_dir = ''
+        names = list(file_map.keys())
+
+        path_set = set()
+        for name in names:
+            for other in names:
+                if other != name and other.startswith(name + '-'):
+                    path_set.add(name)
+                    break
+
+        for name, file_path in file_map.items():
+            with open(file_path, 'r', encoding='utf-8') as f:
+                content = f.read()
+
+            if name == 'api':
+                output_file = os.path.join(args.output, 'index.md')
+                src_path = 'index.md'
+            else:
+                if name in path_set:
+                    target_dir = name.replace('-', os.sep)
+                    output_file = os.path.join(args.output, target_dir, 'index.md')
+                    src_path = os.path.join(target_dir, 'index.md')
                 else:
-                    target_dir = filename[:-3].replace('-', os.sep)
+                    target_path = name.replace('-', os.sep) + '.md'
+                    output_file = os.path.join(args.output, target_path)
+                    src_path = target_path
 
-                src_path = os.path.join(target_dir, 'index.md')
-                new_content = convert_links(content, src_path)
-
-                output_file = os.path.join(args.output, target_dir, 'index.md')
-                os.makedirs(os.path.dirname(output_file), exist_ok=True)
-                with open(output_file, 'w', encoding='utf-8') as f:
-                    f.write(new_content)
+            new_content = convert_links(content, src_path)
+            os.makedirs(os.path.dirname(output_file), exist_ok=True)
+            with open(output_file, 'w', encoding='utf-8') as f:
+                f.write(new_content)
 
     except Exception as e:
         print(f'Error: {e}', file=sys.stderr)
