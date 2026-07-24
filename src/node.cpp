@@ -9,7 +9,9 @@
 namespace tejoy
 {
     Node::Node(boost::asio::any_io_executor executor, nlohmann::json& config)
-        : executor_(std::move(executor)), event_bus_(executor_), config_(config)
+        : executor_(std::move(executor)), event_bus_(executor_), config_(config),
+
+          network_(executor_, event_bus_, config_["network"])
     {
     }
 
